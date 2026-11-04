@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#14305c">
+<title>원격 통역 대화</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{--navy:#14305c;--teal:#20c9aa;--bg:#f2f5f9;--card:#fff;--line:#d9e0ea;--txt:#1b2533;--sub:#667489;--red:#e5484d}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--txt);font-family:system-ui,-apple-system,"Noto Sans KR","Malgun Gothic",sans-serif;font-size:18px}
+button{font:inherit;border:0;border-radius:14px;cursor:pointer;white-space:nowrap}
+input,textarea,select{font:inherit;width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--txt)}
+textarea{resize:vertical}
+.hide{display:none!important}
+.screen{position:fixed;inset:0;display:flex;flex-direction:column}
+.top{background:var(--navy);color:#fff;padding:12px 14px;padding-top:max(12px,env(safe-area-inset-top));display:flex;align-items:center;gap:8px}
+.top h1{font-size:20px;margin:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top button{background:rgba(255,255,255,.15);color:#fff;padding:8px 12px;font-size:16px}
+.body{flex:1;overflow:auto;padding:16px}
+.big{display:block;width:100%;padding:20px;font-size:22px;font-weight:700;margin:12px 0}
+.b-main{background:var(--navy);color:#fff}
+.b-teal{background:var(--teal);color:#06322a}
+.b-line{background:#fff;color:var(--navy);border:2px solid var(--navy)}
+.b-red{background:var(--red);color:#fff}
+.card{background:var(--card);border-radius:16px;padding:16px;margin:12px 0;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.muted{color:var(--sub);font-size:15px}
+label.f{display:block;margin:16px 0 6px;font-weight:700}
+.row{display:flex;gap:8px;align-items:center}
+.langs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.langs button{background:#fff;border:2px solid var(--line);padding:12px 8px;text-align:left;font-size:17px}
+.langs button.on{border-color:var(--teal);background:#e6faf6;font-weight:700}
+.langs small{display:block;color:var(--sub);font-size:13px}
+/* 대화방 */
+#members{display:flex;gap:6px;overflow-x:auto;padding:8px 12px;background:#fff;border-bottom:1px solid var(--line)}
+.chip{flex:none;background:var(--bg);border-radius:20px;padding:4px 10px;font-size:15px;white-space:nowrap}
+.chip.me{background:#e6faf6}
+#msgs{flex:1;overflow:auto;padding:12px}
+.msg{max-width:88%;margin:10px 0;padding:10px 14px;border-radius:16px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.msg.mine{margin-left:auto;background:#dff3ff}
+.msg .who{font-size:13px;color:var(--sub);margin-bottom:4px;display:flex;gap:6px;align-items:center}
+.msg .who button{margin-left:auto;background:none;padding:0 4px;font-size:18px}
+.msg .main{font-size:21px;line-height:1.45;word-break:break-word}
+.msg .orig{font-size:14px;color:var(--sub);margin-top:6px;border-top:1px dashed var(--line);padding-top:6px}
+.msg .pending{color:var(--sub);font-style:italic}
+.sys{text-align:center;color:var(--sub);font-size:14px;margin:8px 0}
+#interim{min-height:0;padding:0 14px;color:var(--sub);font-size:17px}
+#interim:not(:empty){padding:6px 14px;background:#fffbe6}
+#phrases{display:flex;gap:8px;overflow-x:auto;padding:8px 12px;background:#fff;border-top:1px solid var(--line)}
+#phrases button{flex:none;background:var(--bg);border:1px solid var(--line);padding:8px 12px;font-size:16px;user-select:none;-webkit-user-select:none}
+.bar{background:#fff;padding:10px 12px;padding-bottom:max(10px,env(safe-area-inset-bottom));display:flex;gap:8px;align-items:flex-end;border-top:1px solid var(--line)}
+.bar textarea{flex:1;min-height:52px;max-height:120px;padding:12px;font-size:18px}
+#sendBtn{background:var(--navy);color:#fff;padding:0 16px;height:52px}
+#micBtn{width:76px;height:76px;border-radius:50%;background:var(--teal);font-size:34px;flex:none}
+#micBtn.on{background:var(--red);animation:pulse 1.2s infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 10px rgba(229,72,77,.18)}}
+#engineLbl{text-align:center;font-size:13px;color:var(--sub);background:#fff;padding:0 0 4px}
+/* 덮개 화면 */
+.sheet{position:fixed;inset:0;background:var(--bg);z-index:20;display:flex;flex-direction:column}
+#toast{position:fixed;left:50%;bottom:120px;transform:translateX(-50%);background:rgba(20,30,50,.92);color:#fff;padding:12px 18px;border-radius:14px;font-size:16px;z-index:50;max-width:90%;text-align:center}
+#ver{text-align:center;color:var(--sub);font-size:14px;padding:24px 0 40px;user-select:none}
+.adm button{display:block;width:100%;margin:8px 0;padding:14px;background:#fff;border:1px solid var(--line);text-align:left}
+pre{white-space:pre-wrap;word-break:break-all;font-size:13px;background:#fff;padding:10px;border-radius:10px}
+</style>
+</head>
+<body>
+
+<!-- 첫 화면 -->
+<div id="home" class="screen">
+  <div class="top"><h1>🗣️ 원격 통역 대화</h1><button onclick="openSettings()">⚙ 설정</button></div>
+  <div class="body">
+    <div class="card">
+      <b>휴대폰 여러 대를 연결해서 대화해요.</b>
+      <div class="muted" style="margin-top:6px">내가 말하면 번역되어 상대방 휴대폰에서 그 나라 말 목소리로 나옵니다. 상대방이 말하면 나에게 한국어로 나옵니다.</div>
+    </div>
+    <div id="needFb" class="card hide" style="border:2px solid var(--red)">
+      Firebase 설정이 아직 없어요.<br><span class="muted">설정 → "Firebase 설정값"에 붙여 넣어 주세요.</span>
+      <button class="big b-line" onclick="openSettings()">설정 열기</button>
+    </div>
+    <button class="big b-main" onclick="createRoom()">＋ 새 대화방 만들기</button>
+    <div id="recentBox" class="hide">
+      <label class="f">최근 대화방</label>
+      <div id="recent"></div>
+    </div>
+    <label class="f">방 번호로 들어가기</label>
+    <div class="row"><input id="codeIn" placeholder="예: K7M2QX" maxlength="8" style="text-transform:uppercase"><button class="b-teal" style="padding:12px 18px" onclick="joinByCode()">입장</button></div>
+  </div>
+</div>
+
+<!-- 초대 받은 사람 입장 화면 -->
+<div id="join" class="screen hide">
+  <div class="top"><h1>🗣️ 통역 대화방 / Interpreter Chat</h1></div>
+  <div class="body">
+    <div class="card">
+      <div id="jIntro" style="font-size:19px;line-height:1.5"></div>
+      <div id="jIntroTr" style="font-size:19px;line-height:1.5;margin-top:8px;color:var(--navy);font-weight:600"></div>
+    </div>
+    <label class="f">🌐 언어 선택 / Choose your language</label>
+    <div id="jLangs" class="langs"></div>
+    <label class="f">이름 / Name</label>
+    <input id="jName" placeholder="Name">
+    <button id="jGo" class="big b-teal" onclick="joinGo()">입장하기 / Enter ▶</button>
+  </div>
+</div>
+
+<!-- 대화방 -->
+<div id="room" class="screen hide">
+  <div class="top">
+    <button onclick="leaveRoom()">◀</button>
+    <h1 id="roomTitle">대화방</h1>
+    <button onclick="sendInvite()">📨 초대</button>
+    <button onclick="openSettings()">⚙</button>
+  </div>
+  <div id="members"></div>
+  <div id="msgs"></div>
+  <div id="interim"></div>
+  <div id="phrases"></div>
+  <div class="bar">
+    <textarea id="txt" rows="1" placeholder="글로 입력"></textarea>
+    <button id="sendBtn" onclick="sendTyped()">보내기</button>
+    <button id="micBtn" onclick="toggleMic()">🎤</button>
+  </div>
+  <div id="engineLbl"></div>
+</div>
+
+<!-- 초대 보내기 -->
+<div id="inviteSheet" class="sheet hide">
+  <div class="top"><h1>📨 초대 보내기</h1><button onclick="hide('inviteSheet')">닫기</button></div>
+  <div class="body">
+    <label class="f">상대방 언어 (초대 문구에 함께 표시)</label>
+    <select id="invLang" onchange="buildInvite()"></select>
+    <label class="f">보낼 문구</label>
+    <textarea id="invText" rows="7"></textarea>
+    <button class="big b-teal" onclick="shareInvite()">📤 공유 창 열기 (문자·카카오톡·왓츠앱)</button>
+    <button class="big b-line" onclick="copyInvite()">📋 복사하기</button>
+    <div class="muted">방 번호: <b id="invCode"></b></div>
+  </div>
+</div>
+
+<!-- 설정 -->
+<div id="settings" class="sheet hide">
+  <div class="top"><h1>⚙ 설정</h1><button onclick="closeSettings()">닫기</button></div>
+  <div class="body">
+    <label class="f">내 이름</label>
+    <input id="sName" placeholder="예: 이승철">
+    <label class="f">내 언어</label>
+    <select id="sLang"></select>
+    <label class="f">초대 문구 (내 소개)</label>
+    <textarea id="sIntro" rows="3"></textarea>
+
+    <label class="f">번역 엔진</label>
+    <select id="sEngine">
+      <option value="free">무료 번역기 (MyMemory)</option>
+      <option value="claude">Claude (키 필요)</option>
+      <option value="gemini">Gemini (키 필요)</option>
+    </select>
+    <div class="muted" style="margin-top:6px">AI 번역이 실패하면 자동으로 무료 번역기로 바뀝니다.</div>
+    <label class="f">Claude 키</label>
+    <input id="sClaude" type="password" placeholder="sk-ant-..." autocomplete="off">
+    <label class="f">Gemini 키</label>
+    <input id="sGemini" type="password" placeholder="AIza..." autocomplete="off">
+
+    <label class="f">소리로 읽기</label>
+    <select id="sSound"><option value="1">켜기</option><option value="0">끄기</option></select>
+    <label class="f">읽기 속도</label>
+    <select id="sRate"><option>0.8</option><option>0.9</option><option>1.0</option><option>1.1</option><option>1.2</option><option>1.3</option><option>1.5</option></select>
+
+    <label class="f">Firebase 설정값</label>
+    <textarea id="sFb" rows="6" placeholder="Firebase 콘솔의 firebaseConfig 내용을 통째로 붙여 넣으세요"></textarea>
+    <div id="sFbState" class="muted" style="margin-top:6px"></div>
+    <div class="muted" style="margin-top:4px">초대 받은 사람은 링크에 설정이 들어 있어서 따로 넣을 필요가 없어요.</div>
+
+    <button class="big b-main" onclick="saveSettings(true)">저장</button>
+    <div id="ver" onclick="verTap()"></div>
+  </div>
+</div>
+
+<!-- 관리자 메뉴 -->
+<div id="admin" class="sheet hide">
+  <div class="top"><h1>🔧 관리자 메뉴</h1><button onclick="hide('admin')">닫기</button></div>
+  <div class="body adm">
+    <button onclick="admTestDb()">🔌 Firebase 연결 확인</button>
+    <button onclick="admTestTr()">🌐 번역 시험 (지금 엔진으로)</button>
+    <button onclick="admTestVoice()">🔊 목소리 시험 (21개 언어 목록)</button>
+    <button onclick="admModels()">🤖 AI 모델 이름 바꾸기</button>
+    <button onclick="admClearRoom()">🧹 지금 방의 대화 기록 지우기</button>
+    <button onclick="admRefresh()">🔄 앱 새로 받기 (저장본 지우기)</button>
+    <button onclick="admReset()" style="color:var(--red)">⚠ 모든 설정 초기화</button>
+    <label class="f">상태 정보</label>
+    <pre id="admInfo"></pre>
+  </div>
+</div>
+
+<div id="toast" class="hide"></div>
+
+<script>
+'use strict';
+const VERSION = 'V1 · 2026.11.05';
+const FB_VER = '10.12.2';
+
+// ───── 언어 21개 (+한국어) ─────
+// c: 앱 코드, sr: 음성 인식·목소리, mm: 무료 번역기 코드
+const LANGS = [
+  {c:'ko',f:'🇰🇷',n:'한국어',k:'한국어',sr:'ko-KR',mm:'ko',en:'Korean'},
+  {c:'en',f:'🇺🇸',n:'English',k:'영어',sr:'en-US',mm:'en',en:'English'},
+  {c:'ja',f:'🇯🇵',n:'日本語',k:'일본어',sr:'ja-JP',mm:'ja',en:'Japanese'},
+  {c:'zh-CN',f:'🇨🇳',n:'中文(简体)',k:'중국어(간체)',sr:'zh-CN',mm:'zh-CN',en:'Simplified Chinese'},
+  {c:'zh-TW',f:'🇹🇼',n:'中文(繁體)',k:'중국어(번체)',sr:'zh-TW',mm:'zh-TW',en:'Traditional Chinese (Taiwan)'},
+  {c:'vi',f:'🇻🇳',n:'Tiếng Việt',k:'베트남어',sr:'vi-VN',mm:'vi',en:'Vietnamese'},
+  {c:'th',f:'🇹🇭',n:'ไทย',k:'태국어',sr:'th-TH',mm:'th',en:'Thai'},
+  {c:'id',f:'🇮🇩',n:'Bahasa Indonesia',k:'인도네시아어',sr:'id-ID',mm:'id',en:'Indonesian'},
+  {c:'ms',f:'🇲🇾',n:'Bahasa Melayu',k:'말레이어',sr:'ms-MY',mm:'ms',en:'Malay'},
+  {c:'tl',f:'🇵🇭',n:'Filipino',k:'필리핀어',sr:'fil-PH',mm:'tl',en:'Filipino (Tagalog)'},
+  {c:'hi',f:'🇮🇳',n:'हिन्दी',k:'힌디어',sr:'hi-IN',mm:'hi',en:'Hindi'},
+  {c:'mn',f:'🇲🇳',n:'Монгол',k:'몽골어',sr:'mn-MN',mm:'mn',en:'Mongolian'},
+  {c:'ru',f:'🇷🇺',n:'Русский',k:'러시아어',sr:'ru-RU',mm:'ru',en:'Russian'},
+  {c:'fr',f:'🇫🇷',n:'Français',k:'프랑스어',sr:'fr-FR',mm:'fr',en:'French'},
+  {c:'de',f:'🇩🇪',n:'Deutsch',k:'독일어',sr:'de-DE',mm:'de',en:'German'},
+  {c:'es',f:'🇪🇸',n:'Español',k:'스페인어',sr:'es-ES',mm:'es',en:'Spanish'},
+  {c:'it',f:'🇮🇹',n:'Italiano',k:'이탈리아어',sr:'it-IT',mm:'it',en:'Italian'},
+  {c:'pt',f:'🇵🇹',n:'Português',k:'포르투갈어',sr:'pt-PT',mm:'pt',en:'Portuguese'},
+  {c:'pl',f:'🇵🇱',n:'Polski',k:'폴란드어',sr:'pl-PL',mm:'pl',en:'Polish'},
+  {c:'cs',f:'🇨🇿',n:'Čeština',k:'체코어',sr:'cs-CZ',mm:'cs',en:'Czech'},
+  {c:'tr',f:'🇹🇷',n:'Türkçe',k:'튀르키예어',sr:'tr-TR',mm:'tr',en:'Turkish'},
+  {c:'ar',f:'🇸🇦',n:'العربية',k:'아랍어',sr:'ar-SA',mm:'ar',en:'Arabic'},
+];
+const L = c => LANGS.find(x => x.c === c) || LANGS[0];
+
+const DEFAULT_PHRASES = ['안녕하세요, 반갑습니다.','감사합니다.','잠시만 기다려 주세요.','다시 한 번 말씀해 주시겠어요?','천천히 말씀해 주세요.','네, 알겠습니다.'];
+const DEFAULTS = {
+  name:'', lang:'ko',
+  intro:'한국폴리텍대학 이승철 교수입니다. 통역 대화방에 초대합니다.',
+  engine:'free', claudeKey:'', geminiKey:'',
+  claudeModel:'claude-haiku-5-5', geminiModel:'gemini-flash-latest',
+  sound:true, rate:1.0, fb:null, inviteLang:'en', phrases:{}, recent:[]
+};
+
+// ───── 저장 ─────
+let S;
+try { S = Object.assign({}, DEFAULTS, JSON.parse(localStorage.getItem('talk.s') || '{}')); } catch(e){ S = Object.assign({}, DEFAULTS); }
+const save = () => { try { localStorage.setItem('talk.s', JSON.stringify(S)); } catch(e){} };
+let UID = localStorage.getItem('talk.uid');
+if (!UID) { UID = 'u' + Math.random().toString(36).slice(2, 10); localStorage.setItem('talk.uid', UID); }
+
+// ───── 작은 도구 ─────
+const $ = id => document.getElementById(id);
+const show = id => $(id).classList.remove('hide');
+const hide = id => $(id).classList.add('hide');
+function only(id){ ['home','join','room'].forEach(x => x === id ? show(x) : hide(x)); }
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let toastT;
+function toast(msg, ms = 2600){ const t = $('toast'); t.textContent = msg; show('toast'); clearTimeout(toastT); toastT = setTimeout(() => hide('toast'), ms); }
+const decodeEnt = s => { const t = document.createElement('textarea'); t.innerHTML = s; return t.value; };
+const b64e = s => btoa(unescape(encodeURIComponent(s))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+const b64d = s => decodeURIComponent(escape(atob(s.replace(/-/g,'+').replace(/_/g,'/'))));
+const newCode = () => { const a = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let r = ''; for (let i = 0; i < 6; i++) r += a[Math.floor(Math.random() * a.length)]; return r; };
+const hhmm = t => { const d = new Date(t || Date.now()); return d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0'); };
+
+// ───── Firebase ─────
+function parseFb(text){
+  text = (text || '').trim();
+  if (!text) return null;
+  if (/^https:\/\//.test(text) && !/\s/.test(text)) return { databaseURL: text.replace(/\/+$/,'') };
+  const o = {};
+  text.replace(/["']?(\w+)["']?\s*:\s*["']([^"']+)["']/g, (_, k, v) => { o[k] = v; });
+  if (!o.databaseURL) return null;
+  return { apiKey:o.apiKey, authDomain:o.authDomain, databaseURL:o.databaseURL.replace(/\/+$/,''), projectId:o.projectId, appId:o.appId };
+}
+function loadScript(src){
+  return new Promise((ok, no) => { const s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = () => no(new Error('불러오기 실패')); document.head.appendChild(s); });
+}
+let db = null, fbURL = null;
+async function getDb(cfg){
+  cfg = cfg || S.fb;
+  if (!cfg || !cfg.databaseURL) throw new Error('Firebase 설정이 없어요');
+  if (db && fbURL === cfg.databaseURL) return db;
+  if (!window.firebase) {
+    await loadScript(`https://www.gstatic.com/firebasejs/${FB_VER}/firebase-app-compat.js`);
+    await loadScript(`https://www.gstatic.com/firebasejs/${FB_VER}/firebase-database-compat.js`);
+  }
+  if (firebase.apps.length) await Promise.all(firebase.apps.map(a => a.delete()));
+  const clean = {}; Object.keys(cfg).forEach(k => cfg[k] && (clean[k] = cfg[k]));
+  firebase.initializeApp(clean);
+  db = firebase.database(); fbURL = cfg.databaseURL;
+  return db;
+}
+
+// ───── 번역 ─────
+const trCache = new Map();
+function splitChunks(text, max){
+  const parts = text.match(/[^.!?。！？\n]+[.!?。！？]*\s*|\n+/g) || [text];
+  const out = []; let cur = '';
+  for (const p of parts) {
+    if ((cur + p).length > max && cur) { out.push(cur); cur = ''; }
+    if (p.length > max) { for (let i = 0; i < p.length; i += max) out.push(p.slice(i, i + max)); }
+    else cur += p;
+  }
+  if (cur.trim()) out.push(cur);
+  return out.filter(x => x.trim());
+}
+async function trFree(text, from, to){
+  const out = [];
+  for (const ch of splitChunks(text, 450)) {
+    const u = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(ch)}&langpair=${L(from).mm}|${L(to).mm}`;
+    const r = await fetch(u); const j = await r.json();
+    const t = j && j.responseData && j.responseData.translatedText;
+    if (!t || /MYMEMORY WARNING|QUERY LENGTH LIMIT|INVALID LANGUAGE/i.test(t)) throw new Error('무료 번역기 사용 한도 또는 오류');
+    out.push(decodeEnt(t));
+  }
+  return out.join(' ').trim();
+}
+const sysPrompt = (from, to) => `You are a live interpreter in a spoken conversation. Translate the user's message from ${L(from).en} to ${L(to).en}. Use natural, polite spoken style. Output only the translation, with no quotes, notes or explanations.`;
+async function trClaude(text, from, to){
+  const r = await fetch('https://api.anthropic.com/v1/messages', {
+    method:'POST',
+    headers:{'content-type':'application/json','x-api-key':S.claudeKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body: JSON.stringify({ model:S.claudeModel, max_tokens:2048, system:sysPrompt(from,to), messages:[{role:'user',content:text}] })
+  });
+  const j = await r.json();
+  if (!r.ok) throw new Error((j.error && j.error.message) || ('Claude 오류 ' + r.status));
+  return j.content.map(c => c.text || '').join('').trim();
+}
+async function trGemini(text, from, to){
+  const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${S.geminiModel}:generateContent?key=${encodeURIComponent(S.geminiKey)}`, {
+    method:'POST', headers:{'content-type':'application/json'},
+    body: JSON.stringify({ systemInstruction:{parts:[{text:sysPrompt(from,to)}]}, contents:[{role:'user',parts:[{text}]}], generationConfig:{temperature:0.2} })
+  });
+  const j = await r.json();
+  if (!r.ok) throw new Error((j.error && j.error.message) || ('Gemini 오류 ' + r.status));
+  return j.candidates[0].content.parts.map(p => p.text || '').join('').trim();
+}
+function engineNow(){
+  if (S.engine === 'claude' && S.claudeKey) return 'claude';
+  if (S.engine === 'gemini' && S.geminiKey) return 'gemini';
+  return 'free';
+}
+let lastFallbackNote = 0;
+async function translate(text, from, to){
+  text = (text || '').trim();
+  if (!text || from === to) return text;
+  const key = from + '|' + to + '|' + text;
+  if (trCache.has(key)) return trCache.get(key);
+  const eng = engineNow();
+  let out;
+  try {
+    out = eng === 'claude' ? await trClaude(text, from, to) : eng === 'gemini' ? await trGemini(text, from, to) : await trFree(text, from, to);
+  } catch (e) {
+    if (eng === 'free') throw e;
+    if (Date.now() - lastFallbackNote > 15000) { toast('AI 번역 실패 → 무료 번역기로 번역합니다'); lastFallbackNote = Date.now(); }
+    out = await trFree(text, from, to);
+  }
+  trCache.set(key, out);
+  return out;
+}
+
+// ───── 목소리 ─────
+let voices = [];
+const loadVoices = () => { voices = speechSynthesis.getVoices(); };
+if ('speechSynthesis' in window) { loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }
+function pickVoice(lang){
+  const sr = L(lang).sr.toLowerCase().replace('_','-'), base = sr.split('-')[0];
+  const alt = lang === 'tl' ? ['fil','tl'] : [base];
+  return voices.find(v => v.lang.toLowerCase().replace('_','-') === sr)
+      || voices.find(v => alt.includes(v.lang.toLowerCase().split(/[-_]/)[0]));
+}
+let speakingCount = 0, speakSafety;
+function speak(text, lang){
+  if (!('speechSynthesis' in window) || !text) return;
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = L(lang).sr; const v = pickVoice(lang); if (v) u.voice = v;
+  u.rate = Number(S.rate) || 1;
+  speakingCount++; pauseRecForSpeech();
+  let done = false;
+  const end = () => { if (done) return; done = true; speakingCount = Math.max(0, speakingCount - 1); if (!speakingCount) resumeRecAfterSpeech(); };
+  u.onend = end; u.onerror = end;
+  clearTimeout(speakSafety);
+  speakSafety = setTimeout(() => { if (!speechSynthesis.speaking) { speakingCount = 0; resumeRecAfterSpeech(); } }, 1500 + text.length * 180);
+  speechSynthesis.speak(u);
+}
+
+// ───── 음성 인식 (한 문장씩) ─────
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let rec = null, micOn = false, recActive = false, finalText = '', lastVoiceAt = 0, micIdleTimer = null;
+function toggleMic(){
+  if (!SR) { toast('이 브라우저는 음성 인식이 안 돼요. 안드로이드 크롬을 사용하거나 글로 입력해 주세요.', 4000); return; }
+  micOn ? micStop() : micStart();
+}
+function micStart(){
+  micOn = true; lastVoiceAt = Date.now(); $('micBtn').classList.add('on'); $('micBtn').textContent = '■';
+  startRec();
+  clearInterval(micIdleTimer);
+  micIdleTimer = setInterval(() => { if (micOn && Date.now() - lastVoiceAt > 180000) { micStop(); toast('3분 동안 말이 없어 마이크를 껐어요'); } }, 10000);
+}
+function micStop(){
+  micOn = false; clearInterval(micIdleTimer); $('micBtn').classList.remove('on'); $('micBtn').textContent = '🎤';
+  $('interim').textContent = '';
+  try { rec && rec.abort(); } catch(e){}
+}
+function startRec(){
+  if (!micOn || recActive || speakingCount) return;
+  rec = new SR();
+  rec.lang = L(S.lang).sr; rec.interimResults = true; rec.continuous = false; rec.maxAlternatives = 1;
+  finalText = '';
+  rec.onresult = e => {
+    let interim = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      const r = e.results[i];
+      if (r.isFinal) finalText = r[0].transcript; else interim += r[0].transcript;
+    }
+    lastVoiceAt = Date.now();
+    $('interim').textContent = finalText || interim;
+  };
+  rec.onerror = e => {
+    if (e.error === 'not-allowed' || e.error === 'service-not-allowed') { micStop(); toast('마이크 권한을 허용해 주세요 (주소창 왼쪽 자물쇠 → 권한)', 4500); }
+    // no-speech(조용함)·aborted는 고장이 아니므로 그냥 다시 시작
+  };
+  rec.onend = () => {
+    recActive = false;
+    const t = finalText.trim(); finalText = '';
+    $('interim').textContent = '';
+    if (t) sendText(t);
+    if (micOn && !speakingCount) setTimeout(startRec, 250);
+  };
+  try { rec.start(); recActive = true; } catch(e){ recActive = false; }
+}
+function pauseRecForSpeech(){ if (recActive) { try { rec.abort(); } catch(e){} } }
+function resumeRecAfterSpeech(){ if (micOn) setTimeout(startRec, 400); }
+
+// ───── 대화방 ─────
+let msgQuery = null, roomId = null, roomRef = null, members = {}, msgs = {}, histKeys = new Set(), spoken = new Set(), selfTrTried = new Set(), wakeLock = null;
+
+async function createRoom(){
+  if (!S.fb) { toast('먼저 설정에서 Firebase 설정값을 넣어 주세요', 3500); openSettings(); return; }
+  if (!S.name) { const n = prompt('내 이름을 적어 주세요 (상대방에게 보입니다)', ''); if (n === null) return; S.name = n.trim(); save(); }
+  try {
+    const d = await getDb();
+    const code = newCode();
+    await d.ref('rooms/' + code + '/info').set({ c: firebase.database.ServerValue.TIMESTAMP, h: S.name || '', i: S.intro || '', l: S.lang });
+    await enterRoom(code);
+    sendInvite();
+  } catch (e) { toast('방을 만들지 못했어요: ' + e.message, 5000); }
+}
+function joinByCode(){
+  const c = $('codeIn').value.trim().toUpperCase();
+  if (!c) return;
+  if (!S.fb) { toast('Firebase 설정이 없어요. 초대 링크로 들어오거나 설정에 넣어 주세요', 4000); return; }
+  enterRoom(c);
+}
+async function enterRoom(code){
+  try {
+    const d = await getDb();
+    if (roomRef) exitRoomListeners();
+    roomId = code; roomRef = d.ref('rooms/' + code);
+    members = {}; msgs = {}; histKeys = new Set(); spoken = new Set(); selfTrTried = new Set();
+    $('msgs').innerHTML = ''; $('roomTitle').textContent = '방 ' + code;
+    location.hash = 'r=' + code;
+    only('room'); renderPhrases(); updateEngineLbl();
+
+    // 최근 방 기록
+    S.recent = [code].concat((S.recent || []).filter(x => x !== code)).slice(0, 5); save();
+
+    // 참여자 표시 (나가면 자동 삭제)
+    const me = roomRef.child('members/' + UID);
+    await me.set({ n: S.name || '', l: S.lang, t: firebase.database.ServerValue.TIMESTAMP });
+    me.onDisconnect().remove();
+    d.ref('.info/connected').on('value', s => { if (s.val() === true && roomId === code) { me.onDisconnect().remove(); me.update({ n: S.name || '', l: S.lang }); } });
+    roomRef.child('members').on('value', s => { members = s.val() || {}; renderMembers(); });
+
+    // 대화: 지금까지 기록은 소리 없이, 이후 새 말만 읽기
+    const q = msgQuery = roomRef.child('msgs').limitToLast(40);
+    const snap = await q.once('value');
+    snap.forEach(c => { histKeys.add(c.key); msgs[c.key] = c.val(); renderMsg(c.key); });
+    if (!snap.exists()) sysLine('대화방이 열렸어요. 🎤를 누르고 말하거나 글로 입력하세요.');
+    q.on('child_added', c => { if (histKeys.has(c.key)) return; msgs[c.key] = c.val(); renderMsg(c.key, true); });
+    roomRef.child('msgs').on('child_changed', c => { msgs[c.key] = c.val(); renderMsg(c.key, !histKeys.has(c.key)); });
+    keepAwake();
+  } catch (e) { toast('입장하지 못했어요: ' + e.message, 5000); only('home'); }
+}
+function exitRoomListeners(){
+  try {
+    roomRef.child('members').off(); roomRef.child('msgs').off(); msgQuery && msgQuery.off();
+    roomRef.child('members/' + UID).remove();
+    db.ref('.info/connected').off();
+  } catch(e){}
+}
+function leaveRoom(){
+  micStop();
+  if (roomRef) exitRoomListeners();
+  roomRef = null; roomId = null;
+  try { wakeLock && wakeLock.release(); } catch(e){} wakeLock = null;
+  history.replaceState(null, '', location.pathname);
+  renderHome(); only('home');
+}
+async function keepAwake(){
+  try { if ('wakeLock' in navigator && !wakeLock) { wakeLock = await navigator.wakeLock.request('screen'); wakeLock.addEventListener('release', () => { wakeLock = null; }); } } catch(e){}
+}
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && roomId) keepAwake(); });
+
+function renderMembers(){
+  const box = $('members'); const list = Object.entries(members);
+  box.innerHTML = list.map(([id, m]) => `<span class="chip ${id === UID ? 'me' : ''}">${L(m.l).f} ${esc(m.n || L(m.l).n)}${id === UID ? ' (나)' : ''}</span>`).join('')
+    + `<span class="chip">👥 ${list.length}명</span>`;
+}
+function sysLine(t){ const d = document.createElement('div'); d.className = 'sys'; d.textContent = t; $('msgs').appendChild(d); }
+
+// 보내기: 원문을 먼저 올리고, 참여자 언어별로 한 번씩 동시에 번역해서 붙임
+async function sendText(text){
+  text = (text || '').trim();
+  if (!text || !roomRef) return;
+  if (text.length > 1500) text = text.slice(0, 1500);
+  const ref = roomRef.child('msgs').push();
+  const m = { u: UID, n: S.name || '', l: S.lang, s: text, t: firebase.database.ServerValue.TIMESTAMP };
+  try { await ref.set(m); } catch (e) { toast('보내지 못했어요: ' + e.message, 4000); return; }
+  const targets = [...new Set(Object.values(members).map(x => x.l))].filter(lg => lg && lg !== S.lang);
+  await Promise.all(targets.map(async lg => {
+    try { const tx = await translate(text, S.lang, lg); await ref.child('tr/' + lg).set(tx); }
+    catch (e) { toast(L(lg).k + ' 번역 실패: ' + e.message, 3500); }
+  }));
+}
+function sendTyped(){ const t = $('txt').value; $('txt').value = ''; sendText(t); }
+$('txt').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); sendTyped(); } });
+
+function renderMsg(key, live){
+  const m = msgs[key]; if (!m) return;
+  const mine = m.u === UID;
+  let el = document.getElementById('m' + key);
+  const box = $('msgs');
+  const atBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 80;
+  if (!el) { el = document.createElement('div'); el.id = 'm' + key; box.appendChild(el); }
+  el.className = 'msg' + (mine ? ' mine' : '');
+  const tr = m.tr || {};
+  let main, mainLang, sub = '';
+  if (mine) {
+    main = esc(m.s); mainLang = m.l;
+    const others = Object.entries(tr).map(([lg, t]) => `${L(lg).f} ${esc(t)}`);
+    sub = others.length ? others.join('<br>') : '';
+  } else if (m.l === S.lang) {
+    main = esc(m.s); mainLang = m.l;
+  } else if (tr[S.lang]) {
+    main = esc(tr[S.lang]); mainLang = S.lang; sub = `${L(m.l).f} ${esc(m.s)}`;
+  } else {
+    main = '<span class="pending">번역 중…</span>'; mainLang = null; sub = `${L(m.l).f} ${esc(m.s)}`;
+    selfTranslateLater(key);
+  }
+  el.innerHTML = `<div class="who">${L(m.l).f} ${esc(mine ? '나' : (m.n || L(m.l).n))} · ${hhmm(m.t)}${mainLang ? `<button aria-label="다시 듣기" data-k="${key}">🔊</button>` : ''}</div>
+    <div class="main" dir="auto">${main}</div>${sub ? `<div class="orig" dir="auto">${sub}</div>` : ''}`;
+  const b = el.querySelector('button[data-k]'); if (b) b.onclick = () => replay(key);
+  if (atBottom || live) box.scrollTop = box.scrollHeight;
+
+  // 새로 온 남의 말은 내 언어로 한 번 읽기
+  if (live && !mine && mainLang && !spoken.has(key)) {
+    spoken.add(key);
+    if (S.sound) speak(mainLang === S.lang ? (m.l === S.lang ? m.s : tr[S.lang]) : m.s, S.lang);
+  }
+}
+function replay(key){
+  const m = msgs[key]; if (!m) return;
+  if (m.u === UID || m.l === S.lang) speak(m.s, m.l);
+  else if (m.tr && m.tr[S.lang]) speak(m.tr[S.lang], S.lang);
+}
+// 보낸 사람이 내 언어 번역을 안 붙였으면(늦게 들어온 경우 등) 내가 직접 번역해서 공유
+function selfTranslateLater(key){
+  if (selfTrTried.has(key)) return; selfTrTried.add(key);
+  setTimeout(async () => {
+    const m = msgs[key]; if (!m || (m.tr && m.tr[S.lang]) || !roomRef) return;
+    try {
+      const tx = await translate(m.s, m.l, S.lang);
+      roomRef.child('msgs/' + key + '/tr/' + S.lang).transaction(cur => cur || tx);
+    } catch (e) {}
+  }, 5000);
+}
+
+// ───── 자주 쓰는 문구 ─────
+function myPhrases(){
+  if (!S.phrases[S.lang]) {
+    S.phrases[S.lang] = DEFAULT_PHRASES.slice();
+    if (S.lang !== 'ko') {
+      Promise.all(DEFAULT_PHRASES.map(p => translate(p, 'ko', S.lang).catch(() => p)))
+        .then(arr => { S.phrases[S.lang] = arr; save(); renderPhrases(); });
+    }
+    save();
+  }
+  return S.phrases[S.lang];
+}
+function renderPhrases(){
+  const box = $('phrases'); const list = myPhrases();
+  box.innerHTML = '';
+  list.forEach((p, i) => box.appendChild(phraseBtn(p, i)));
+  const add = document.createElement('button'); add.textContent = '＋'; add.onclick = () => {
+    const t = prompt('추가할 문구', ''); if (t && t.trim()) { list.push(t.trim()); save(); renderPhrases(); }
+  };
+  box.appendChild(add);
+}
+function phraseBtn(p, i){
+  const b = document.createElement('button'); b.textContent = p;
+  let timer, long = false;
+  const startPress = () => { long = false; timer = setTimeout(() => { long = true; editPhrase(i); }, 650); };
+  const cancel = () => clearTimeout(timer);
+  b.addEventListener('pointerdown', startPress);
+  b.addEventListener('pointerup', cancel); b.addEventListener('pointerleave', cancel); b.addEventListener('pointercancel', cancel);
+  b.addEventListener('contextmenu', e => e.preventDefault());
+  b.addEventListener('click', () => { if (!long) sendText(p); });
+  return b;
+}
+function editPhrase(i){
+  const list = myPhrases();
+  const t = prompt('문구 수정 (모두 지우면 삭제됩니다)', list[i]);
+  if (t === null) return;
+  if (t.trim()) list[i] = t.trim(); else list.splice(i, 1);
+  save(); renderPhrases();
+}
+
+// ───── 초대 ─────
+const inviteLink = code => {
+  const cfg = S.fb || {};
+  const c = b64e(JSON.stringify({ u: cfg.databaseURL, k: cfg.apiKey || '', p: cfg.projectId || '' }));
+  return location.origin + location.pathname + '#r=' + code + '&c=' + c;
+};
+function sendInvite(){
+  if (!roomId) return;
+  $('invLang').innerHTML = LANGS.filter(x => x.c !== S.lang).map(x => `<option value="${x.c}">${x.f} ${x.k}</option>`).join('');
+  $('invLang').value = S.inviteLang && S.inviteLang !== S.lang ? S.inviteLang : 'en';
+  $('invCode').textContent = roomId;
+  show('inviteSheet'); buildInvite();
+}
+async function buildInvite(){
+  const lg = $('invLang').value; S.inviteLang = lg; save();
+  const intro = S.intro || '';
+  const link = inviteLink(roomId);
+  $('invText').value = intro + '\n\n' + link;
+  try {
+    const tx = await translate(intro, S.lang, lg);
+    const tip = await translate('링크를 누르고 언어를 고르면 바로 대화할 수 있습니다.', 'ko', lg).catch(() => '');
+    $('invText').value = intro + '\n' + tx + (tip ? '\n' + tip : '') + '\n\n' + link;
+  } catch (e) {}
+}
+async function shareInvite(){
+  const text = $('invText').value;
+  if (navigator.share) { try { await navigator.share({ title: '통역 대화방 초대', text }); return; } catch (e) { if (e.name === 'AbortError') return; } }
+  copyInvite();
+}
+async function copyInvite(){
+  try { await navigator.clipboard.writeText($('invText').value); toast('복사했어요. 문자·카톡에 붙여 넣으세요'); }
+  catch (e) { $('invText').select(); toast('글자를 길게 눌러 복사해 주세요'); }
+}
+
+// ───── 초대 받은 사람 입장 ─────
+let joinCode = null, joinCfg = null, joinLang = null, joinIntro = '', joinIntroLang = 'ko';
+async function showJoin(code, cfg){
+  joinCode = code; joinCfg = cfg; joinLang = S.fb && S.lang !== 'ko' ? S.lang : guessLang();
+  $('jName').value = S.name || '';
+  $('jLangs').innerHTML = LANGS.map(x => `<button data-c="${x.c}">${x.f} ${esc(x.n)}<small>${x.k}</small></button>`).join('');
+  $('jLangs').querySelectorAll('button').forEach(b => b.onclick = () => pickJoinLang(b.dataset.c));
+  only('join');
+  $('jIntro').textContent = '…';
+  try {
+    const d = await getDb(cfg);
+    const info = (await d.ref('rooms/' + code + '/info').once('value')).val();
+    if (!info) { $('jIntro').textContent = '방을 찾을 수 없어요 / Room not found'; return; }
+    joinIntro = info.i || ''; joinIntroLang = info.l || 'ko';
+    $('jIntro').textContent = (info.h ? '👤 ' + info.h + '\n' : '') + joinIntro;
+    $('jIntro').style.whiteSpace = 'pre-line';
+  } catch (e) { $('jIntro').textContent = '연결 실패 / Connection failed: ' + e.message; }
+  pickJoinLang(joinLang);
+}
+function guessLang(){
+  const n = (navigator.language || 'en').toLowerCase();
+  if (n.startsWith('zh')) return /tw|hk|hant/.test(n) ? 'zh-TW' : 'zh-CN';
+  if (n.startsWith('fil')) return 'tl';
+  const f = LANGS.find(x => x.c === n.split('-')[0]);
+  return f ? f.c : 'en';
+}
+async function pickJoinLang(c){
+  joinLang = c;
+  $('jLangs').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.c === c));
+  $('jIntroTr').textContent = '';
+  if (joinIntro && c !== joinIntroLang) {
+    const want = c;
+    try { const tx = await translate(joinIntro, joinIntroLang, c); if (joinLang === want) $('jIntroTr').textContent = L(c).f + ' ' + tx; } catch (e) {}
+  }
+}
+async function joinGo(){
+  if (!joinLang) { toast('언어를 골라 주세요 / Choose a language'); return; }
+  S.lang = joinLang; S.name = $('jName').value.trim(); S.fb = joinCfg; save();
+  await enterRoom(joinCode);
+}
+
+// ───── 설정 ─────
+function openSettings(){
+  $('sName').value = S.name; $('sIntro').value = S.intro;
+  $('sLang').innerHTML = LANGS.map(x => `<option value="${x.c}">${x.f} ${x.k} (${x.n})</option>`).join('');
+  $('sLang').value = S.lang; $('sEngine').value = S.engine;
+  $('sClaude').value = S.claudeKey; $('sGemini').value = S.geminiKey;
+  $('sSound').value = S.sound ? '1' : '0'; $('sRate').value = Number(S.rate).toFixed(1);
+  $('sFb').value = S.fb ? fbToText(S.fb) : '';
+  $('sFbState').textContent = S.fb ? '✅ 연결 주소: ' + S.fb.databaseURL : '❌ 아직 없음';
+  $('ver').textContent = '버전 ' + VERSION;
+  show('settings');
+}
+const fbToText = f => 'const firebaseConfig = {\n' + Object.entries(f).filter(([, v]) => v).map(([k, v]) => `  ${k}: "${v}"`).join(',\n') + '\n};';
+function saveSettings(close){
+  const oldLang = S.lang, oldUrl = S.fb && S.fb.databaseURL;
+  S.name = $('sName').value.trim(); S.intro = $('sIntro').value.trim();
+  S.lang = $('sLang').value; S.engine = $('sEngine').value;
+  S.claudeKey = $('sClaude').value.trim(); S.geminiKey = $('sGemini').value.trim();
+  S.sound = $('sSound').value === '1'; S.rate = Number($('sRate').value);
+  const fbText = $('sFb').value.trim();
+  if (fbText) {
+    const f = parseFb(fbText);
+    if (!f) { toast('Firebase 설정값에서 databaseURL을 찾지 못했어요', 4000); return; }
+    S.fb = f;
+  } else S.fb = null;
+  if ((S.engine === 'claude' && !S.claudeKey) || (S.engine === 'gemini' && !S.geminiKey)) toast('키가 없어서 무료 번역기를 씁니다', 3000);
+  save(); updateEngineLbl(); trCache.clear();
+  if (roomRef) {
+    if (oldLang !== S.lang) { micStop(); renderPhrases(); Object.keys(msgs).forEach(k => renderMsg(k)); }
+    roomRef.child('members/' + UID).update({ n: S.name, l: S.lang });
+  }
+  if (oldUrl && S.fb && oldUrl !== S.fb.databaseURL) { toast('Firebase가 바뀌어 앱을 다시 엽니다'); setTimeout(() => location.reload(), 900); }
+  if (close) { closeSettings(); toast('저장했어요'); }
+}
+function closeSettings(){ hide('settings'); renderHome(); }
+function updateEngineLbl(){
+  const e = engineNow();
+  $('engineLbl').textContent = (e === 'claude' ? 'Claude 번역기' : e === 'gemini' ? 'Gemini 번역기' : '무료 번역기') + ' · ' + L(S.lang).f + ' ' + L(S.lang).k + (SR ? '' : ' · 음성 인식 안 됨(글로 입력)');
+}
+
+// ───── 관리자 메뉴 (버전 글씨 5번) ─────
+let verTaps = 0, verTimer;
+function verTap(){
+  verTaps++; clearTimeout(verTimer); verTimer = setTimeout(() => verTaps = 0, 1500);
+  if (verTaps >= 5) { verTaps = 0; openAdmin(); }
+}
+function openAdmin(){
+  $('admInfo').textContent = [
+    '버전: ' + VERSION, '내 ID: ' + UID, '내 언어: ' + L(S.lang).k, '지금 방: ' + (roomId || '-'),
+    '번역 엔진: ' + engineNow(), 'Claude 모델: ' + S.claudeModel, 'Gemini 모델: ' + S.geminiModel,
+    'Firebase: ' + (S.fb ? S.fb.databaseURL : '-'), '음성 인식: ' + (SR ? '가능' : '안 됨'),
+    '목소리 수: ' + voices.length, '최근 방: ' + (S.recent || []).join(', ')
+  ].join('\n');
+  show('admin');
+}
+async function admTestDb(){
+  try {
+    const d = await getDb(); const r = d.ref('rooms/_test/' + UID);
+    const v = Date.now(); await r.set(v); const got = (await r.once('value')).val(); await r.remove();
+    toast(got === v ? '✅ Firebase 연결 정상' : '⚠ 쓰기는 되었지만 읽기 값이 달라요', 3500);
+  } catch (e) { toast('❌ 연결 실패: ' + e.message + ' (규칙·주소 확인)', 6000); }
+}
+async function admTestTr(){
+  const t = prompt('시험할 문장', '안녕하세요. 만나서 반갑습니다.'); if (!t) return;
+  const lg = prompt('번역할 언어 코드 (en, ja, zh-CN, vi …)', 'en'); if (!lg) return;
+  try { const s = Date.now(); const r = await translate(t, S.lang, lg.trim()); alert(`[${engineNow()}] ${((Date.now() - s) / 1000).toFixed(1)}초\n\n${r}`); }
+  catch (e) { alert('실패: ' + e.message); }
+}
+function admTestVoice(){
+  const have = LANGS.map(x => `${x.f} ${x.k}: ${pickVoice(x.c) ? '✅ ' + pickVoice(x.c).name : '❌ 없음'}`).join('\n');
+  alert('이 휴대폰의 목소리\n\n' + have);
+}
+function admModels(){
+  const c = prompt('Claude 모델 이름', S.claudeModel); if (c === null) return;
+  const g = prompt('Gemini 모델 이름', S.geminiModel); if (g === null) return;
+  S.claudeModel = c.trim() || DEFAULTS.claudeModel; S.geminiModel = g.trim() || DEFAULTS.geminiModel;
+  save(); trCache.clear(); openAdmin(); toast('저장했어요');
+}
+async function admClearRoom(){
+  if (!roomRef) { toast('대화방 안에서 쓸 수 있어요'); return; }
+  if (!confirm('이 방의 대화 기록을 모두 지울까요? (모든 사람 화면에서 지워집니다)')) return;
+  await roomRef.child('msgs').remove(); $('msgs').innerHTML = ''; msgs = {}; toast('지웠어요');
+}
+async function admRefresh(){
+  try {
+    const regs = await navigator.serviceWorker.getRegistrations(); await Promise.all(regs.map(r => r.unregister()));
+    const keys = await caches.keys(); await Promise.all(keys.map(k => caches.delete(k)));
+  } catch (e) {}
+  location.reload();
+}
+function admReset(){
+  if (!confirm('모든 설정(키, Firebase, 문구)을 지울까요?')) return;
+  localStorage.removeItem('talk.s'); location.href = location.pathname;
+}
+
+// ───── 첫 화면 ─────
+function renderHome(){
+  S.fb ? hide('needFb') : show('needFb');
+  const r = S.recent || [];
+  if (r.length && S.fb) {
+    show('recentBox');
+    $('recent').innerHTML = r.map(c => `<button class="big b-line" style="padding:14px;font-size:19px;margin:8px 0" data-c="${c}">방 ${c} 다시 들어가기</button>`).join('');
+    $('recent').querySelectorAll('button').forEach(b => b.onclick = () => enterRoom(b.dataset.c));
+  } else hide('recentBox');
+}
+
+// ───── 시작 ─────
+function start(){
+  const h = new URLSearchParams(location.hash.slice(1));
+  const code = (h.get('r') || '').toUpperCase(), c = h.get('c');
+  renderHome();
+  if (code && c) {
+    let cfg = null;
+    try { const o = JSON.parse(b64d(c)); cfg = { databaseURL: o.u, apiKey: o.k || undefined, projectId: o.p || undefined }; } catch (e) {}
+    if (cfg && cfg.databaseURL) { showJoin(code, cfg); return; }
+    toast('초대 링크가 잘못되었어요', 4000);
+  } else if (code && S.fb) { enterRoom(code); return; }
+  only('home');
+}
+start();
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+</script>
+</body>
+</html>
