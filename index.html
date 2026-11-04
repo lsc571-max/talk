@@ -142,7 +142,7 @@ pre{white-space:pre-wrap;word-break:break-all;font-size:13px;background:#fff;pad
 
 <!-- 설정 -->
 <div id="settings" class="sheet hide">
-  <div class="top"><h1>⚙ 설정</h1><button onclick="closeSettings()">닫기</button></div>
+  <div class="top"><h1>⚙ 설정</h1><button onclick="saveSettings(true)">닫기</button></div>
   <div class="body">
     <label class="f">내 이름</label>
     <input id="sName" placeholder="예: 이승철">
@@ -198,7 +198,9 @@ pre{white-space:pre-wrap;word-break:break-all;font-size:13px;background:#fff;pad
 
 <script>
 'use strict';
-const VERSION = 'V1 · 2026.11.05';
+const VERSION = 'V2 · 2026.11.05';
+// 기본 Firebase(talk-app-3fb0e). 설정에 따로 넣지 않으면 이 값을 씀
+const FB_DEFAULT = { databaseURL:'https://talk-app-3fb0e-default-rtdb.asia-southeast1.firebasedatabase.app', projectId:'talk-app-3fb0e', authDomain:'talk-app-3fb0e.firebaseapp.com' };
 const FB_VER = '10.12.2';
 
 // ───── 언어 21개 (+한국어) ─────
@@ -242,6 +244,7 @@ const DEFAULTS = {
 let S;
 try { S = Object.assign({}, DEFAULTS, JSON.parse(localStorage.getItem('talk.s') || '{}')); } catch(e){ S = Object.assign({}, DEFAULTS); }
 const save = () => { try { localStorage.setItem('talk.s', JSON.stringify(S)); } catch(e){} };
+if (!S.fb || !S.fb.databaseURL) S.fb = Object.assign({}, FB_DEFAULT);
 let UID = localStorage.getItem('talk.uid');
 if (!UID) { UID = 'u' + Math.random().toString(36).slice(2, 10); localStorage.setItem('talk.uid', UID); }
 
@@ -712,7 +715,7 @@ function saveSettings(close){
     const f = parseFb(fbText);
     if (!f) { toast('Firebase 설정값에서 databaseURL을 찾지 못했어요', 4000); return; }
     S.fb = f;
-  } else S.fb = null;
+  } else S.fb = Object.assign({}, FB_DEFAULT);
   if ((S.engine === 'claude' && !S.claudeKey) || (S.engine === 'gemini' && !S.geminiKey)) toast('키가 없어서 무료 번역기를 씁니다', 3000);
   save(); updateEngineLbl(); trCache.clear();
   if (roomRef) {
@@ -723,6 +726,11 @@ function saveSettings(close){
   if (close) { closeSettings(); toast('저장했어요'); }
 }
 function closeSettings(){ hide('settings'); renderHome(); }
+$('sFb').addEventListener('input', () => {
+  const t = $('sFb').value.trim(); const f = parseFb(t);
+  if (f) { const changed = !S.fb || S.fb.databaseURL !== f.databaseURL; S.fb = f; save(); $('sFbState').textContent = '✅ 저장됨: ' + f.databaseURL; if (changed && roomRef) { toast('Firebase가 바뀌어 앱을 다시 엽니다'); setTimeout(() => location.reload(), 900); } }
+  else $('sFbState').textContent = t ? '⚠ databaseURL을 찾지 못했어요. firebaseConfig 전체를 붙여 넣어 주세요' : '비우면 기본 Firebase를 씁니다';
+});
 function updateEngineLbl(){
   const e = engineNow();
   $('engineLbl').textContent = (e === 'claude' ? 'Claude 번역기' : e === 'gemini' ? 'Gemini 번역기' : '무료 번역기') + ' · ' + L(S.lang).f + ' ' + L(S.lang).k + (SR ? '' : ' · 음성 인식 안 됨(글로 입력)');
@@ -779,7 +787,7 @@ async function admRefresh(){
   location.reload();
 }
 function admReset(){
-  if (!confirm('모든 설정(키, Firebase, 문구)을 지울까요?')) return;
+  if (!confirm('모든 설정(키, 문구)을 지울까요? (Firebase는 기본값으로 돌아갑니다)')) return;
   localStorage.removeItem('talk.s'); location.href = location.pathname;
 }
 

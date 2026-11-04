@@ -1,6 +1,6 @@
 // 원격 통역 대화 - 서비스 워커
 // 앱 화면 파일만 저장해 두고, 번역·Firebase 통신은 저장하지 않음
-const CACHE = 'talk-v1';
+const CACHE = 'talk-v2';
 const FILES = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {
