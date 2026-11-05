@@ -2,821 +2,921 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#14305c">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#1E2F5C">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <title>원격 통역 대화</title>
-<link rel="manifest" href="manifest.webmanifest">
+<link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
-:root{--navy:#14305c;--teal:#20c9aa;--bg:#f2f5f9;--card:#fff;--line:#d9e0ea;--txt:#1b2533;--sub:#667489;--red:#e5484d}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;height:100%;background:var(--bg);color:var(--txt);font-family:system-ui,-apple-system,"Noto Sans KR","Malgun Gothic",sans-serif;font-size:18px}
-button{font:inherit;border:0;border-radius:14px;cursor:pointer;white-space:nowrap}
-input,textarea,select{font:inherit;width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--txt)}
-textarea{resize:vertical}
-.hide{display:none!important}
-.screen{position:fixed;inset:0;display:flex;flex-direction:column}
-.top{background:var(--navy);color:#fff;padding:12px 14px;padding-top:max(12px,env(safe-area-inset-top));display:flex;align-items:center;gap:8px}
-.top h1{font-size:20px;margin:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.top button{background:rgba(255,255,255,.15);color:#fff;padding:8px 12px;font-size:16px}
-.body{flex:1;overflow:auto;padding:16px}
-.big{display:block;width:100%;padding:20px;font-size:22px;font-weight:700;margin:12px 0}
-.b-main{background:var(--navy);color:#fff}
-.b-teal{background:var(--teal);color:#06322a}
-.b-line{background:#fff;color:var(--navy);border:2px solid var(--navy)}
-.b-red{background:var(--red);color:#fff}
-.card{background:var(--card);border-radius:16px;padding:16px;margin:12px 0;box-shadow:0 1px 3px rgba(0,0,0,.06)}
-.muted{color:var(--sub);font-size:15px}
-label.f{display:block;margin:16px 0 6px;font-weight:700}
-.row{display:flex;gap:8px;align-items:center}
-.langs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.langs button{background:#fff;border:2px solid var(--line);padding:12px 8px;text-align:left;font-size:17px}
-.langs button.on{border-color:var(--teal);background:#e6faf6;font-weight:700}
-.langs small{display:block;color:var(--sub);font-size:13px}
-/* 대화방 */
-#members{display:flex;gap:6px;overflow-x:auto;padding:8px 12px;background:#fff;border-bottom:1px solid var(--line)}
-.chip{flex:none;background:var(--bg);border-radius:20px;padding:4px 10px;font-size:15px;white-space:nowrap}
-.chip.me{background:#e6faf6}
-#msgs{flex:1;overflow:auto;padding:12px}
-.msg{max-width:88%;margin:10px 0;padding:10px 14px;border-radius:16px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.06)}
-.msg.mine{margin-left:auto;background:#dff3ff}
-.msg .who{font-size:13px;color:var(--sub);margin-bottom:4px;display:flex;gap:6px;align-items:center}
-.msg .who button{margin-left:auto;background:none;padding:0 4px;font-size:18px}
-.msg .main{font-size:21px;line-height:1.45;word-break:break-word}
-.msg .orig{font-size:14px;color:var(--sub);margin-top:6px;border-top:1px dashed var(--line);padding-top:6px}
-.msg .pending{color:var(--sub);font-style:italic}
-.sys{text-align:center;color:var(--sub);font-size:14px;margin:8px 0}
-#interim{min-height:0;padding:0 14px;color:var(--sub);font-size:17px}
-#interim:not(:empty){padding:6px 14px;background:#fffbe6}
-#phrases{display:flex;gap:8px;overflow-x:auto;padding:8px 12px;background:#fff;border-top:1px solid var(--line)}
-#phrases button{flex:none;background:var(--bg);border:1px solid var(--line);padding:8px 12px;font-size:16px;user-select:none;-webkit-user-select:none}
-.bar{background:#fff;padding:10px 12px;padding-bottom:max(10px,env(safe-area-inset-bottom));display:flex;gap:8px;align-items:flex-end;border-top:1px solid var(--line)}
-.bar textarea{flex:1;min-height:52px;max-height:120px;padding:12px;font-size:18px}
-#sendBtn{background:var(--navy);color:#fff;padding:0 16px;height:52px}
-#micBtn{width:76px;height:76px;border-radius:50%;background:var(--teal);font-size:34px;flex:none}
-#micBtn.on{background:var(--red);animation:pulse 1.2s infinite}
-@keyframes pulse{50%{box-shadow:0 0 0 10px rgba(229,72,77,.18)}}
-#engineLbl{text-align:center;font-size:13px;color:var(--sub);background:#fff;padding:0 0 4px}
-/* 덮개 화면 */
-.sheet{position:fixed;inset:0;background:var(--bg);z-index:20;display:flex;flex-direction:column}
-#toast{position:fixed;left:50%;bottom:120px;transform:translateX(-50%);background:rgba(20,30,50,.92);color:#fff;padding:12px 18px;border-radius:14px;font-size:16px;z-index:50;max-width:90%;text-align:center}
-#ver{text-align:center;color:var(--sub);font-size:14px;padding:24px 0 40px;user-select:none}
-.adm button{display:block;width:100%;margin:8px 0;padding:14px;background:#fff;border:1px solid var(--line);text-align:left}
-pre{white-space:pre-wrap;word-break:break-all;font-size:13px;background:#fff;padding:10px;border-radius:10px}
+:root{--bg:#F4F1EA;--card:#fff;--ink:#1A2238;--sub:#6B7280;--line:#E8E3D9;--navy:#1E2F5C;--navy2:#34508F;--coral:#F2724B;--coral2:#F7A072;--teal:#1FA38A;--mine:#1E2F5C;--mineInk:#fff;--theirs:#fff;--theirsInk:#1A2238;--soft:#EDE8DE;--fs:1}
+body[data-theme=night]{--bg:#0E1424;--card:#172038;--ink:#E8ECF5;--sub:#93A0BC;--line:#26314F;--navy:#4C6CC0;--navy2:#6A88D8;--mine:#2B437F;--theirs:#1D2846;--theirsInk:#E8ECF5;--soft:#1D2846}
+body[data-theme=sea]{--bg:#E9F3F2;--line:#D3E5E3;--navy:#0F5E6B;--navy2:#1C8796;--mine:#0F5E6B;--soft:#DCECEA}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0}
+html,body{height:100%;overflow:hidden;overscroll-behavior:none}
+body{font-family:"Pretendard Variable",Pretendard,-apple-system,"Noto Sans KR",sans-serif;background:var(--bg);color:var(--ink);letter-spacing:-.01em}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+input,textarea,select{font:inherit;color:var(--ink)}
+.hidden{display:none!important}
+.screen{position:fixed;inset:0;height:100dvh;display:flex;flex-direction:column;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+.ic{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.scroll{overflow-y:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.scroll::-webkit-scrollbar{display:none}
+
+/* ---------- 시작 화면 ---------- */
+#splash{background:radial-gradient(120% 80% at 80% 0%,#3B5BA9 0%,transparent 60%),radial-gradient(90% 70% at 0% 100%,#F2724B55 0%,transparent 60%),linear-gradient(160deg,#1E2F5C 0%,#16213F 100%);color:#fff;align-items:center;justify-content:space-between;cursor:pointer;overflow:hidden}
+#splash .ver{position:absolute;top:calc(env(safe-area-inset-top) + 14px);right:18px;font-size:13px;opacity:.55}
+#splash .art{flex:1;display:flex;align-items:center;justify-content:center;width:100%;min-height:0;padding:40px 20px 0}
+#splash .art svg{width:min(88vw,400px);height:auto;max-height:52vh}
+#splash h1{font-size:34px;font-weight:800;letter-spacing:-.03em;text-align:center}
+#splash p.sub{margin-top:10px;font-size:16px;opacity:.75;text-align:center}
+#splash .go{margin:34px 0 calc(48px + env(safe-area-inset-bottom));padding:15px 42px;border-radius:40px;background:#fff;color:#1E2F5C;font-weight:700;font-size:17px;box-shadow:0 10px 30px #0006;animation:breathe 2.4s ease-in-out infinite}
+@keyframes breathe{50%{transform:scale(1.05)}}
+.float{animation:fl 5s ease-in-out infinite}.float.d2{animation-delay:-2.5s}
+@keyframes fl{50%{transform:translateY(-8px)}}
+
+/* ---------- 홈 ---------- */
+#home{background:var(--bg)}
+.hhead{display:flex;align-items:center;gap:10px;padding:16px 18px 8px}
+.logo{width:34px;height:34px;border-radius:11px;background:linear-gradient(135deg,var(--navy),var(--navy2));display:grid;place-items:center;color:#fff}
+.hhead h2{font-size:19px;font-weight:800;flex:1}
+.hhead .ver{font-size:12px;color:var(--sub);padding:6px}
+.iconbtn{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:var(--ink)}
+.iconbtn:active{background:var(--soft)}
+.me{margin:8px 18px 0;background:var(--card);border-radius:20px;padding:16px;display:flex;align-items:center;gap:14px;box-shadow:0 1px 0 var(--line)}
+.ava{width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,var(--coral),var(--coral2));color:#fff;display:grid;place-items:center;font-size:21px;font-weight:700;flex:none}
+.me .info{flex:1;min-width:0}
+.me .lbl{font-size:12px;color:var(--sub)}
+.me input{width:100%;border:0;background:transparent;font-size:20px;font-weight:700;padding:2px 0;outline:none}
+.me input::placeholder{color:#B9B3A7;font-weight:600}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:9px 14px;border-radius:30px;background:var(--soft);font-weight:600;font-size:15px;white-space:nowrap}
+.acts{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;margin:14px 18px 0}
+.card-new{border-radius:22px;padding:18px 16px;min-height:132px;background:linear-gradient(145deg,var(--navy),var(--navy2));color:#fff;display:flex;flex-direction:column;justify-content:space-between;text-align:left;box-shadow:0 10px 24px #1E2F5C33}
+.card-new .pl{width:38px;height:38px;border-radius:12px;background:#ffffff26;display:grid;place-items:center}
+.card-new b{font-size:18px;font-weight:700;line-height:1.3}
+.card-join{border-radius:22px;padding:16px;min-height:132px;background:linear-gradient(145deg,var(--coral),var(--coral2));color:#fff;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 10px 24px #F2724B33}
+.card-join b{font-size:16px;font-weight:700}
+.joinrow{display:flex;gap:6px}
+.joinrow input{flex:1;min-width:0;width:100%;border:0;border-radius:12px;padding:10px;font-size:20px;font-weight:700;letter-spacing:.12em;text-align:center;background:#fff;color:#C2522F;outline:none}
+.joinrow input::placeholder{letter-spacing:0;font-size:14px;font-weight:600;color:#E3A58C}
+.joinrow button{width:44px;flex:none;border-radius:12px;background:#ffffff33;display:grid;place-items:center;color:#fff}
+.sect{display:flex;align-items:center;gap:8px;margin:22px 22px 10px;font-size:15px;font-weight:700;color:var(--navy)}
+.sect:before{content:"";width:4px;height:16px;border-radius:2px;background:var(--navy)}
+.sect span{color:var(--sub);font-weight:500;font-size:13px}
+#roomList{flex:1;min-height:0;padding:0 18px 18px}
+.ritem{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:16px;padding:12px 8px 12px 14px;margin-bottom:9px;border-left:4px solid var(--navy)}
+.ritem .rico{width:40px;height:40px;border-radius:12px;background:var(--soft);color:var(--navy);display:grid;place-items:center;flex:none}
+.ritem .rt{flex:1;min-width:0}
+.ritem .rt b{display:block;font-size:16px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ritem .rt small{font-size:13px;color:var(--sub)}
+.badge{font-size:11px;padding:2px 7px;border-radius:8px;background:var(--navy);color:#fff;margin-left:4px;vertical-align:1px;font-weight:600}
+.badge.g{background:var(--soft);color:var(--sub)}
+.ritem .del{width:42px;height:42px;border-radius:12px;color:#B5ADA0;display:grid;place-items:center}
+.ritem .del:active{background:#FDECE6;color:var(--coral)}
+.empty{text-align:center;color:var(--sub);padding:30px 10px;font-size:14px;line-height:1.6}
+
+/* ---------- 대화방 ---------- */
+#room{background:var(--bg)}
+.top{display:flex;align-items:center;gap:2px;padding:8px 8px 8px 6px;background:var(--card);border-bottom:1px solid var(--line)}
+.ttl{flex:1;min-width:0;padding:2px 6px;text-align:left;border-radius:10px}
+.ttl b{display:block;font-size:16px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ttl small{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--sub);white-space:nowrap;overflow:hidden}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--teal);flex:none}
+.dot.off{background:#E04848}.dot.free{background:#E3A008}
+.top .iconbtn{width:38px;height:38px}
+.top .iconbtn.on{color:var(--navy)}
+.top .iconbtn.muted{color:#B5ADA0}
+#chat{flex:1;min-height:0;padding:14px 14px 20px}
+.msg{display:flex;flex-direction:column;margin-bottom:14px;max-width:86%}
+.msg.mine{margin-left:auto;align-items:flex-end}
+.msg .who{font-size:12px;color:var(--sub);margin:0 6px 4px}
+.bub{position:relative;border-radius:20px;padding:12px 44px 12px 15px;background:var(--theirs);color:var(--theirsInk);box-shadow:0 1px 2px #0000000d;border-top-left-radius:6px}
+.mine .bub{background:var(--mine);color:var(--mineInk);border-top-left-radius:20px;border-top-right-radius:6px}
+.bub .main{font-size:calc(19px * var(--fs));font-weight:600;line-height:1.42;word-break:keep-all;overflow-wrap:anywhere}
+.bub .sub{font-size:calc(14px * var(--fs));line-height:1.45;margin-top:6px;opacity:.62;word-break:keep-all;overflow-wrap:anywhere}
+.bub .sub i{font-style:normal;font-size:11px;padding:1px 6px;border-radius:6px;background:#8881;margin-right:5px;opacity:.9}
+.bub .say{position:absolute;right:6px;top:7px;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;opacity:.55;color:inherit}
+.bub .say .ic{width:18px;height:18px}
+.bub .wait{opacity:.5;font-weight:500}
+.free-tag{font-size:10px;opacity:.5;margin-left:6px}
+.draft .bub{background:transparent;color:var(--ink);border:2px dashed var(--navy2);padding-right:15px}
+.dbar{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:12px;color:var(--sub);width:100%}
+.dbar .pg{flex:1;height:4px;border-radius:2px;background:var(--line);overflow:hidden;min-width:60px}
+.dbar .pg div{height:100%;background:var(--navy2);width:100%}
+.dbar button{padding:4px 10px;border-radius:10px;background:var(--soft);font-size:12px;font-weight:600}
+.dbar button.x{color:var(--coral)}
+.chat-empty{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:var(--sub);text-align:center;font-size:15px;line-height:1.6;padding:20px}
+.chat-empty .big{width:84px;height:84px;border-radius:28px;background:var(--card);display:grid;place-items:center;color:var(--navy)}
+.chat-empty .big .ic{width:40px;height:40px;stroke-width:1.4}
+.chat-empty button{margin-top:4px;padding:11px 20px;border-radius:24px;background:var(--navy);color:#fff;font-weight:600;display:inline-flex;gap:8px;align-items:center}
+#talking{font-size:12px;color:var(--sub);padding:0 18px 4px;min-height:18px}
+.live{min-height:24px;padding:0 20px 6px;text-align:center;font-size:calc(16px * var(--fs));color:var(--navy2);font-weight:500;line-height:1.4;max-height:66px;overflow:hidden}
+.bottom{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:6px 18px 14px;background:var(--bg)}
+.side{display:flex;gap:8px;align-items:center}
+.side.r{justify-content:flex-end}
+.tool{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;color:var(--sub);min-width:54px;padding:6px 4px;border-radius:14px}
+.tool:active{background:var(--soft)}
+.tool .tb{width:44px;height:44px;border-radius:15px;background:var(--card);display:grid;place-items:center;color:var(--ink);box-shadow:0 1px 0 var(--line)}
+.tool .tb .fsg{font-weight:800;line-height:1;transition:font-size .15s}
+.micwrap{display:flex;flex-direction:column;align-items:center;gap:6px}
+#mic{position:relative;width:82px;height:82px;border-radius:50%;background:linear-gradient(145deg,var(--navy),var(--navy2));color:#fff;display:grid;place-items:center;box-shadow:0 10px 26px #1E2F5C44;transition:transform .15s}
+#mic:active{transform:scale(.95)}
+#mic .ic{width:34px;height:34px;stroke-width:1.6}
+#mic.on{background:linear-gradient(145deg,var(--coral),#E85A33);box-shadow:0 10px 26px #F2724B55}
+#mic.on:before,#mic.on:after{content:"";position:absolute;inset:-6px;border-radius:50%;border:2px solid var(--coral);opacity:0;animation:ring 1.8s ease-out infinite}
+#mic.on:after{animation-delay:.9s}
+#mic.hold{opacity:.65}
+@keyframes ring{0%{transform:scale(.9);opacity:.7}100%{transform:scale(1.35);opacity:0}}
+.micl{font-size:12px;color:var(--sub);white-space:nowrap}
+
+/* 오른쪽 서랍 */
+#handle{position:absolute;right:0;top:42%;width:26px;height:64px;border-radius:14px 0 0 14px;background:var(--card);box-shadow:-2px 0 10px #0000001a;display:grid;place-items:center;color:var(--navy);z-index:5}
+#handle .ic{width:18px;height:18px}
+#drawer{position:fixed;top:0;right:0;bottom:0;width:min(86vw,360px);background:var(--card);z-index:40;transform:translateX(105%);transition:transform .25s ease;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top);box-shadow:-10px 0 30px #0002}
+#drawer.open{transform:none}
+.dhead{display:flex;align-items:center;justify-content:space-between;padding:14px 12px 8px 18px}
+.dhead b{font-size:17px}
+.compose{margin:4px 14px 10px;border-radius:16px;background:var(--soft);padding:10px;display:flex;gap:8px;align-items:flex-end}
+.compose textarea{flex:1;border:0;background:transparent;resize:none;outline:none;font-size:16px;line-height:1.4;max-height:120px}
+.compose button{width:42px;height:42px;border-radius:12px;background:var(--navy);color:#fff;display:grid;place-items:center;flex:none}
+.plist{flex:1;min-height:0;padding:4px 14px 20px;display:grid;grid-template-columns:1fr 1fr;gap:8px;align-content:start}
+.ph{padding:12px 10px;border-radius:14px;background:var(--bg);font-size:15px;font-weight:600;text-align:center;line-height:1.3;word-break:keep-all;min-height:50px;user-select:none;-webkit-user-select:none}
+.ph:active{background:var(--soft)}
+.ph.add{border:1.5px dashed var(--line);background:transparent;color:var(--sub)}
+.dhint{font-size:12px;color:var(--sub);padding:0 18px 8px}
+
+/* 시트·팝업 */
+#dim{position:fixed;inset:0;background:#0F172A73;z-index:30;opacity:0;pointer-events:none;transition:opacity .2s}
+#dim.on{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:0;right:0;bottom:0;max-height:88dvh;background:var(--card);border-radius:24px 24px 0 0;z-index:50;transform:translateY(105%);transition:transform .25s ease;display:flex;flex-direction:column;padding-bottom:env(safe-area-inset-bottom)}
+.sheet.open{transform:none}
+.sheet.tall{height:88dvh}
+.shead{display:flex;align-items:center;gap:8px;padding:16px 12px 10px 20px}
+.shead b{font-size:18px;flex:1}
+.shead .ver{font-size:13px;color:var(--sub);padding:8px}
+.sbody{padding:4px 20px 24px;flex:1;min-height:0}
+.tabs{display:flex;gap:6px;padding:0 16px 10px}
+.tabs button{flex:1;padding:10px 4px;border-radius:12px;font-weight:600;font-size:14px;color:var(--sub);background:var(--bg)}
+.tabs button.on{background:var(--navy);color:#fff}
+.row{padding:14px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.row>label,.row .rl{display:block;font-size:14px;font-weight:600;margin-bottom:9px}
+.row .hint{font-size:12px;color:var(--sub);margin-top:6px;line-height:1.5}
+.seg{display:flex;background:var(--bg);border-radius:12px;padding:3px}
+.seg button{flex:1;padding:9px 2px;border-radius:10px;font-size:14px;font-weight:600;color:var(--sub)}
+.seg button.on{background:var(--card);color:var(--navy);box-shadow:0 1px 3px #0002}
+.sw{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.sw span{font-size:14px;font-weight:600}
+.tg{width:48px;height:28px;border-radius:14px;background:var(--line);position:relative;flex:none;transition:background .2s}
+.tg:after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 3px #0003}
+.tg.on{background:var(--navy)}.tg.on:after{transform:translateX(20px)}
+.inp{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:11px 12px;background:var(--bg);font-size:15px;outline:none}
+.inp:focus{border-color:var(--navy2)}
+textarea.inp{resize:vertical;min-height:90px;line-height:1.5}
+.btn{white-space:nowrap;flex:none;display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:12px 16px;border-radius:13px;background:var(--soft);font-weight:600;font-size:15px}
+.btn.pri{background:var(--navy);color:#fff}
+.btn.warn{background:#FDECE6;color:#C2522F}
+.btn.full{width:100%}
+.btns{display:flex;gap:8px;flex-wrap:wrap}
+.btns .btn{flex:1 1 0}
+.lnk{font-size:13px;color:var(--navy2);font-weight:600;text-decoration:none;display:inline-block;margin-top:8px}
+.range{display:flex;align-items:center;gap:12px}
+.range input{flex:1;accent-color:var(--navy)}
+.range b{min-width:44px;text-align:right;color:var(--navy)}
+.lgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.lgrid button{padding:13px 10px;border-radius:14px;background:var(--bg);text-align:left}
+.lgrid button b{display:block;font-size:15px}
+.lgrid button small{font-size:12px;color:var(--sub)}
+.lgrid button.on{background:var(--navy);color:#fff}.lgrid button.on small{color:#fff9}
+.mem{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+.mem .ava{width:38px;height:38px;font-size:16px}
+.mem .mi{flex:1}.mem .mi b{font-size:15px}.mem .mi small{display:block;font-size:12px;color:var(--sub)}
+.code-big{font-size:40px;font-weight:800;letter-spacing:.14em;text-align:center;color:var(--navy);padding:6px 0 2px}
+.travel h4{font-size:14px;color:var(--navy);margin:16px 0 8px}
+.travel .tp{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:15px}
+.travel .tp span{flex:1}
+.travel .tp button{width:34px;height:34px;border-radius:10px;background:var(--soft);display:grid;place-items:center;color:var(--navy)}
+#modal{position:fixed;inset:0;z-index:70;display:grid;place-items:center;padding:24px;background:#0F172A80}
+#modal .box{width:100%;max-width:340px;background:var(--card);border-radius:22px;padding:22px 20px 16px;text-align:center}
+#modal .box h3{font-size:18px;margin-bottom:8px}
+#modal .box p{font-size:14px;color:var(--sub);line-height:1.55;margin-bottom:18px;white-space:pre-line}
+#modal .box .btns{flex-direction:column}
+#toast{position:fixed;left:50%;bottom:calc(130px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);background:#1A2238E8;color:#fff;padding:11px 18px;border-radius:22px;font-size:14px;z-index:90;opacity:0;transition:.2s;pointer-events:none;max-width:86vw;text-align:center}
+#toast.on{opacity:1;transform:translateX(-50%)}
 </style>
 </head>
-<body>
+<body data-theme="basic">
 
-<!-- 첫 화면 -->
-<div id="home" class="screen">
-  <div class="top"><h1>🗣️ 원격 통역 대화</h1><button onclick="openSettings()">⚙ 설정</button></div>
-  <div class="body">
-    <div class="card">
-      <b>휴대폰 여러 대를 연결해서 대화해요.</b>
-      <div class="muted" style="margin-top:6px">내가 말하면 번역되어 상대방 휴대폰에서 그 나라 말 목소리로 나옵니다. 상대방이 말하면 나에게 한국어로 나옵니다.</div>
-    </div>
-    <div id="needFb" class="card hide" style="border:2px solid var(--red)">
-      Firebase 설정이 아직 없어요.<br><span class="muted">설정 → "Firebase 설정값"에 붙여 넣어 주세요.</span>
-      <button class="big b-line" onclick="openSettings()">설정 열기</button>
-    </div>
-    <button class="big b-main" onclick="createRoom()">＋ 새 대화방 만들기</button>
-    <div id="recentBox" class="hide">
-      <label class="f">최근 대화방</label>
-      <div id="recent"></div>
-    </div>
-    <label class="f">방 번호로 들어가기</label>
-    <div class="row"><input id="codeIn" placeholder="예: K7M2QX" maxlength="8" style="text-transform:uppercase"><button class="b-teal" style="padding:12px 18px" onclick="joinByCode()">입장</button></div>
+<!-- 시작 화면 -->
+<div id="splash" class="screen">
+  <div class="ver" data-ver></div>
+  <div class="art">
+    <svg viewBox="0 0 400 330" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="gA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff" stop-opacity=".22"/><stop offset="1" stop-color="#ffffff" stop-opacity=".06"/></linearGradient>
+        <linearGradient id="gB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F7A072"/><stop offset="1" stop-color="#F2724B"/></linearGradient>
+        <linearGradient id="gC" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8FB0F5"/><stop offset="1" stop-color="#5B7FD6"/></linearGradient>
+      </defs>
+      <circle cx="200" cy="165" r="118" fill="none" stroke="#fff" stroke-opacity=".10" stroke-width="1.5"/>
+      <circle cx="200" cy="165" r="150" fill="none" stroke="#fff" stroke-opacity=".06" stroke-width="1.5"/>
+      <g stroke="#fff" stroke-opacity=".28" stroke-width="1.4" fill="none">
+        <circle cx="200" cy="165" r="44"/><path d="M156 165h88M200 121c14 13 20 27 20 44s-6 31-20 44c-14-13-20-27-20-44s6-31 20-44z"/>
+      </g>
+      <path d="M118 150 C 150 90, 250 90, 282 150" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width="2" stroke-dasharray="3 8" stroke-linecap="round"/>
+      <g class="float">
+        <rect x="40" y="110" width="92" height="170" rx="20" fill="url(#gA)" stroke="#fff" stroke-opacity=".5" stroke-width="2"/>
+        <rect x="74" y="122" width="24" height="5" rx="2.5" fill="#fff" fill-opacity=".5"/>
+        <rect x="52" y="146" width="66" height="30" rx="12" fill="url(#gB)"/>
+        <text x="85" y="166" text-anchor="middle" font-size="12" font-weight="700" fill="#fff" font-family="sans-serif">안녕하세요</text>
+        <rect x="56" y="186" width="58" height="26" rx="11" fill="#fff" fill-opacity=".85"/>
+        <text x="85" y="203" text-anchor="middle" font-size="11" font-weight="700" fill="#1E2F5C" font-family="sans-serif">Hello!</text>
+        <circle cx="86" cy="248" r="14" fill="#fff" fill-opacity=".9"/>
+        <rect x="83" y="239" width="6" height="10" rx="3" fill="none" stroke="#1E2F5C" stroke-width="1.8"/><path d="M80 246a6 6 0 0 0 12 0M86 252v3" stroke="#1E2F5C" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+      </g>
+      <g class="float d2">
+        <rect x="268" y="96" width="92" height="170" rx="20" fill="url(#gA)" stroke="#fff" stroke-opacity=".5" stroke-width="2"/>
+        <rect x="302" y="108" width="24" height="5" rx="2.5" fill="#fff" fill-opacity=".5"/>
+        <rect x="280" y="132" width="66" height="30" rx="12" fill="url(#gC)"/>
+        <text x="313" y="152" text-anchor="middle" font-size="13" font-weight="700" fill="#fff" font-family="sans-serif">你好</text>
+        <rect x="284" y="172" width="58" height="26" rx="11" fill="#fff" fill-opacity=".85"/>
+        <text x="313" y="189" text-anchor="middle" font-size="10.5" font-weight="700" fill="#1E2F5C" font-family="sans-serif">Xin chào</text>
+        <circle cx="314" cy="234" r="14" fill="#fff" fill-opacity=".9"/>
+        <path d="M308 230l-3 3h-2v4h2l3 3zM313 231a4 4 0 0 1 0 5" stroke="#1E2F5C" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+      <circle cx="160" cy="60" r="4" fill="#F7A072"/><circle cx="250" cy="52" r="3" fill="#8FB0F5"/><circle cx="205" cy="300" r="3.5" fill="#fff" fill-opacity=".5"/>
+    </svg>
   </div>
+  <div>
+    <h1 data-t="appName">원격 통역 대화</h1>
+    <p class="sub" data-t="tagline">멀리 있어도, 서로의 말로</p>
+  </div>
+  <button class="go" data-t="tapStart">눌러서 시작</button>
 </div>
 
-<!-- 초대 받은 사람 입장 화면 -->
-<div id="join" class="screen hide">
-  <div class="top"><h1>🗣️ 통역 대화방 / Interpreter Chat</h1></div>
-  <div class="body">
-    <div class="card">
-      <div id="jIntro" style="font-size:19px;line-height:1.5"></div>
-      <div id="jIntroTr" style="font-size:19px;line-height:1.5;margin-top:8px;color:var(--navy);font-weight:600"></div>
-    </div>
-    <label class="f">🌐 언어 선택 / Choose your language</label>
-    <div id="jLangs" class="langs"></div>
-    <label class="f">이름 / Name</label>
-    <input id="jName" placeholder="Name">
-    <button id="jGo" class="big b-teal" onclick="joinGo()">입장하기 / Enter ▶</button>
+<!-- 홈 -->
+<div id="home" class="screen hidden">
+  <div class="hhead">
+    <div class="logo"><svg class="ic" data-i="chat"></svg></div>
+    <h2 data-t="appName">원격 통역 대화</h2>
+    <button class="ver" data-ver data-five></button>
+    <button class="iconbtn" data-act="settings"><svg class="ic" data-i="gear"></svg></button>
   </div>
+  <div class="me">
+    <div class="ava" id="meAva">나</div>
+    <div class="info">
+      <div class="lbl" data-t="myName">내 이름</div>
+      <input id="meName" maxlength="20" autocomplete="off" data-tp="namePh" placeholder="이름을 입력하세요">
+    </div>
+    <button class="chip" data-act="pickLang"><svg class="ic" data-i="globe" style="width:17px;height:17px"></svg><span id="meLang">한국어</span></button>
+  </div>
+  <div class="acts">
+    <button class="card-new" data-act="create">
+      <div class="pl"><svg class="ic" data-i="plus"></svg></div>
+      <b data-t="newRoom">새 대화방<br>만들기</b>
+    </button>
+    <div class="card-join">
+      <b data-t="joinCode">방 번호로 들어가기</b>
+      <div class="joinrow">
+        <input id="joinCode" inputmode="numeric" maxlength="6" data-tp="codePh" placeholder="6자리 번호">
+        <button data-act="join"><svg class="ic" data-i="arrow"></svg></button>
+      </div>
+    </div>
+  </div>
+  <div class="sect"><b data-t="rooms">대화방</b> <span id="roomCount"></span></div>
+  <div id="roomList" class="scroll"></div>
 </div>
 
 <!-- 대화방 -->
-<div id="room" class="screen hide">
+<div id="room" class="screen hidden">
   <div class="top">
-    <button onclick="leaveRoom()">◀</button>
-    <h1 id="roomTitle">대화방</h1>
-    <button onclick="sendInvite()">📨 초대</button>
-    <button onclick="openSettings()">⚙</button>
+    <button class="iconbtn" data-act="home"><svg class="ic" data-i="home"></svg></button>
+    <button class="ttl" data-act="people"><b id="rTitle">대화방</b><small><i class="dot" id="rDot"></i><span id="rSub"></span></small></button>
+    <button class="iconbtn" data-act="invite"><svg class="ic" data-i="userplus"></svg></button>
+    <button class="iconbtn" data-act="share"><svg class="ic" data-i="share"></svg></button>
+    <button class="iconbtn on" id="sndBtn" data-act="sound"><svg class="ic" data-i="vol"></svg></button>
+    <button class="iconbtn" data-act="settings"><svg class="ic" data-i="gear"></svg></button>
   </div>
-  <div id="members"></div>
-  <div id="msgs"></div>
-  <div id="interim"></div>
-  <div id="phrases"></div>
-  <div class="bar">
-    <textarea id="txt" rows="1" placeholder="글로 입력"></textarea>
-    <button id="sendBtn" onclick="sendTyped()">보내기</button>
-    <button id="micBtn" onclick="toggleMic()">🎤</button>
+  <div id="chat" class="scroll"></div>
+  <div id="talking"></div>
+  <div class="live" id="live"></div>
+  <div class="bottom">
+    <div class="side">
+      <button class="tool" data-act="clear"><span class="tb"><svg class="ic" data-i="trash"></svg></span><span data-t="clearShort">기록 삭제</span></button>
+    </div>
+    <div class="micwrap">
+      <button id="mic" data-act="mic"><svg class="ic" data-i="mic"></svg></button>
+      <span class="micl" id="micl" data-t="tapSpeak">눌러서 말하기</span>
+    </div>
+    <div class="side r">
+      <button class="tool" data-act="font"><span class="tb"><span class="fsg" id="fsg">가</span></span><span data-t="fontSize">글씨 크기</span></button>
+    </div>
   </div>
-  <div id="engineLbl"></div>
+  <button id="handle" data-act="drawer"><svg class="ic" data-i="chevL"></svg></button>
 </div>
 
-<!-- 초대 보내기 -->
-<div id="inviteSheet" class="sheet hide">
-  <div class="top"><h1>📨 초대 보내기</h1><button onclick="hide('inviteSheet')">닫기</button></div>
-  <div class="body">
-    <label class="f">상대방 언어 (초대 문구에 함께 표시)</label>
-    <select id="invLang" onchange="buildInvite()"></select>
-    <label class="f">보낼 문구</label>
-    <textarea id="invText" rows="7"></textarea>
-    <button class="big b-teal" onclick="shareInvite()">📤 공유 창 열기 (문자·카카오톡·왓츠앱)</button>
-    <button class="big b-line" onclick="copyInvite()">📋 복사하기</button>
-    <div class="muted">방 번호: <b id="invCode"></b></div>
+<!-- 오른쪽 서랍: 글로 보내기 + 자주 쓰는 문구 -->
+<div id="drawer">
+  <div class="dhead"><b data-t="phrases">자주 쓰는 문구</b><button class="iconbtn" data-act="drawerClose"><svg class="ic" data-i="close"></svg></button></div>
+  <div class="compose">
+    <textarea id="composeTx" rows="1" data-tp="typePh" placeholder="글로 써서 보내기"></textarea>
+    <button data-act="sendText"><svg class="ic" data-i="send"></svg></button>
   </div>
+  <div class="dhint" data-t="phHint">짧게 누르면 보내기 · 길게 누르면 고치기</div>
+  <div class="plist scroll" id="plist"></div>
 </div>
+
+<div id="dim"></div>
 
 <!-- 설정 -->
-<div id="settings" class="sheet hide">
-  <div class="top"><h1>⚙ 설정</h1><button onclick="saveSettings(true)">닫기</button></div>
-  <div class="body">
-    <label class="f">내 이름</label>
-    <input id="sName" placeholder="예: 이승철">
-    <label class="f">내 언어</label>
-    <select id="sLang"></select>
-    <label class="f">초대 문구 (내 소개)</label>
-    <textarea id="sIntro" rows="3"></textarea>
-
-    <label class="f">번역 엔진</label>
-    <select id="sEngine">
-      <option value="free">무료 번역기 (MyMemory)</option>
-      <option value="claude">Claude (키 필요)</option>
-      <option value="gemini">Gemini (키 필요)</option>
-    </select>
-    <div class="muted" style="margin-top:6px">AI 번역이 실패하면 자동으로 무료 번역기로 바뀝니다.</div>
-    <label class="f">Claude 키</label>
-    <input id="sClaude" type="password" placeholder="sk-ant-..." autocomplete="off">
-    <label class="f">Gemini 키</label>
-    <input id="sGemini" type="password" placeholder="AIza..." autocomplete="off">
-
-    <label class="f">소리로 읽기</label>
-    <select id="sSound"><option value="1">켜기</option><option value="0">끄기</option></select>
-    <label class="f">읽기 속도</label>
-    <select id="sRate"><option>0.8</option><option>0.9</option><option>1.0</option><option>1.1</option><option>1.2</option><option>1.3</option><option>1.5</option></select>
-
-    <label class="f">Firebase 설정값</label>
-    <textarea id="sFb" rows="6" placeholder="Firebase 콘솔의 firebaseConfig 내용을 통째로 붙여 넣으세요"></textarea>
-    <div id="sFbState" class="muted" style="margin-top:6px"></div>
-    <div class="muted" style="margin-top:4px">초대 받은 사람은 링크에 설정이 들어 있어서 따로 넣을 필요가 없어요.</div>
-
-    <button class="big b-main" onclick="saveSettings(true)">저장</button>
-    <div id="ver" onclick="verTap()"></div>
+<div class="sheet tall" id="shSettings">
+  <div class="shead"><b data-t="settings">설정</b><button class="ver" data-ver data-five></button><button class="iconbtn" data-close><svg class="ic" data-i="close"></svg></button></div>
+  <div class="tabs" id="setTabs">
+    <button data-tab="basic" class="on" data-t="tBasic">기본</button>
+    <button data-tab="words" data-t="tWords">단어장</button>
+    <button data-tab="travel" data-t="tTravel">여행 문구</button>
+    <button data-tab="adv" id="tabAdv" data-t="tAdv">고급</button>
   </div>
+  <div class="sbody scroll" id="setBody"></div>
 </div>
 
-<!-- 관리자 메뉴 -->
-<div id="admin" class="sheet hide">
-  <div class="top"><h1>🔧 관리자 메뉴</h1><button onclick="hide('admin')">닫기</button></div>
-  <div class="body adm">
-    <button onclick="admTestDb()">🔌 Firebase 연결 확인</button>
-    <button onclick="admTestTr()">🌐 번역 시험 (지금 엔진으로)</button>
-    <button onclick="admTestVoice()">🔊 목소리 시험 (21개 언어 목록)</button>
-    <button onclick="admModels()">🤖 AI 모델 이름 바꾸기</button>
-    <button onclick="admClearRoom()">🧹 지금 방의 대화 기록 지우기</button>
-    <button onclick="admRefresh()">🔄 앱 새로 받기 (저장본 지우기)</button>
-    <button onclick="admReset()" style="color:var(--red)">⚠ 모든 설정 초기화</button>
-    <label class="f">상태 정보</label>
-    <pre id="admInfo"></pre>
-  </div>
+<!-- 공용 시트 -->
+<div class="sheet" id="shGen">
+  <div class="shead"><b id="genTitle"></b><button class="iconbtn" data-close><svg class="ic" data-i="close"></svg></button></div>
+  <div class="sbody scroll" id="genBody"></div>
 </div>
 
-<div id="toast" class="hide"></div>
+<div id="modal" class="hidden"><div class="box"><h3 id="mdT"></h3><p id="mdP"></p><div class="btns" id="mdB"></div></div></div>
+<div id="toast"></div>
 
-<script>
-'use strict';
-const VERSION = 'V2 · 2026.11.05';
-// 기본 Firebase(talk-app-3fb0e). 설정에 따로 넣지 않으면 이 값을 씀
-const FB_DEFAULT = { databaseURL:'https://talk-app-3fb0e-default-rtdb.asia-southeast1.firebasedatabase.app', projectId:'talk-app-3fb0e', authDomain:'talk-app-3fb0e.firebaseapp.com' };
-const FB_VER = '10.12.2';
+<script type="module">
+const VERSION='v1.0';
+const FB_VER='10.12.2';
+const DEFAULT_FB={authDomain:"talk-app-3fb0e.firebaseapp.com",databaseURL:"https://talk-app-3fb0e-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"talk-app-3fb0e"};
 
-// ───── 언어 21개 (+한국어) ─────
-// c: 앱 코드, sr: 음성 인식·목소리, mm: 무료 번역기 코드
-const LANGS = [
-  {c:'ko',f:'🇰🇷',n:'한국어',k:'한국어',sr:'ko-KR',mm:'ko',en:'Korean'},
-  {c:'en',f:'🇺🇸',n:'English',k:'영어',sr:'en-US',mm:'en',en:'English'},
-  {c:'ja',f:'🇯🇵',n:'日本語',k:'일본어',sr:'ja-JP',mm:'ja',en:'Japanese'},
-  {c:'zh-CN',f:'🇨🇳',n:'中文(简体)',k:'중국어(간체)',sr:'zh-CN',mm:'zh-CN',en:'Simplified Chinese'},
-  {c:'zh-TW',f:'🇹🇼',n:'中文(繁體)',k:'중국어(번체)',sr:'zh-TW',mm:'zh-TW',en:'Traditional Chinese (Taiwan)'},
-  {c:'vi',f:'🇻🇳',n:'Tiếng Việt',k:'베트남어',sr:'vi-VN',mm:'vi',en:'Vietnamese'},
-  {c:'th',f:'🇹🇭',n:'ไทย',k:'태국어',sr:'th-TH',mm:'th',en:'Thai'},
-  {c:'id',f:'🇮🇩',n:'Bahasa Indonesia',k:'인도네시아어',sr:'id-ID',mm:'id',en:'Indonesian'},
-  {c:'ms',f:'🇲🇾',n:'Bahasa Melayu',k:'말레이어',sr:'ms-MY',mm:'ms',en:'Malay'},
-  {c:'tl',f:'🇵🇭',n:'Filipino',k:'필리핀어',sr:'fil-PH',mm:'tl',en:'Filipino (Tagalog)'},
-  {c:'hi',f:'🇮🇳',n:'हिन्दी',k:'힌디어',sr:'hi-IN',mm:'hi',en:'Hindi'},
-  {c:'mn',f:'🇲🇳',n:'Монгол',k:'몽골어',sr:'mn-MN',mm:'mn',en:'Mongolian'},
-  {c:'ru',f:'🇷🇺',n:'Русский',k:'러시아어',sr:'ru-RU',mm:'ru',en:'Russian'},
-  {c:'fr',f:'🇫🇷',n:'Français',k:'프랑스어',sr:'fr-FR',mm:'fr',en:'French'},
-  {c:'de',f:'🇩🇪',n:'Deutsch',k:'독일어',sr:'de-DE',mm:'de',en:'German'},
-  {c:'es',f:'🇪🇸',n:'Español',k:'스페인어',sr:'es-ES',mm:'es',en:'Spanish'},
-  {c:'it',f:'🇮🇹',n:'Italiano',k:'이탈리아어',sr:'it-IT',mm:'it',en:'Italian'},
-  {c:'pt',f:'🇵🇹',n:'Português',k:'포르투갈어',sr:'pt-PT',mm:'pt',en:'Portuguese'},
-  {c:'pl',f:'🇵🇱',n:'Polski',k:'폴란드어',sr:'pl-PL',mm:'pl',en:'Polish'},
-  {c:'cs',f:'🇨🇿',n:'Čeština',k:'체코어',sr:'cs-CZ',mm:'cs',en:'Czech'},
-  {c:'tr',f:'🇹🇷',n:'Türkçe',k:'튀르키예어',sr:'tr-TR',mm:'tr',en:'Turkish'},
-  {c:'ar',f:'🇸🇦',n:'العربية',k:'아랍어',sr:'ar-SA',mm:'ar',en:'Arabic'},
-];
-const L = c => LANGS.find(x => x.c === c) || LANGS[0];
-
-const DEFAULT_PHRASES = ['안녕하세요, 반갑습니다.','감사합니다.','잠시만 기다려 주세요.','다시 한 번 말씀해 주시겠어요?','천천히 말씀해 주세요.','네, 알겠습니다.'];
-const DEFAULTS = {
-  name:'', lang:'ko',
-  intro:'한국폴리텍대학 이승철 교수입니다. 통역 대화방에 초대합니다.',
-  engine:'free', claudeKey:'', geminiKey:'',
-  claudeModel:'claude-haiku-5-5', geminiModel:'gemini-flash-latest',
-  sound:true, rate:1.0, fb:null, inviteLang:'en', phrases:{}, recent:[]
+/* ---------- 아이콘 ---------- */
+const IC={
+ mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M9 21h6"/>',
+ stop:'<rect x="7" y="7" width="10" height="10" rx="2.5"/>',
+ home:'<path d="M4 11l8-7 8 7"/><path d="M6.5 9.5V20h11V9.5"/><path d="M10 20v-5h4v5"/>',
+ gear:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>',
+ vol:'<path d="M11 5L6.5 9H3.5v6h3L11 19z"/><path d="M15.5 9a4.5 4.5 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/>',
+ volx:'<path d="M11 5L6.5 9H3.5v6h3L11 19z"/><path d="M16 9.5l5 5M21 9.5l-5 5"/>',
+ share:'<path d="M4.5 12.5V19a1 1 0 0 0 1 1h13a1 1 0 0 0 1-1v-6.5"/><path d="M12 3.5v11M7.5 8L12 3.5 16.5 8"/>',
+ userplus:'<circle cx="9.5" cy="8" r="3.5"/><path d="M3 20c.8-3.4 3.3-5.3 6.5-5.3s5.7 1.9 6.5 5.3"/><path d="M19 8v6M16 11h6"/>',
+ users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.4 3.3-5.3 6.5-5.3s5.7 1.9 6.5 5.3"/><path d="M15.5 4.6a3.5 3.5 0 0 1 0 6.8M18 14.9c1.9.8 3.1 2.6 3.5 5.1"/>',
+ trash:'<path d="M4.5 7h15M9.5 7V4.5h5V7M6.5 7l.9 12.5h9.2L17.5 7M10.2 11v5.5M13.8 11v5.5"/>',
+ plus:'<path d="M12 5v14M5 12h14"/>',
+ arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>',
+ close:'<path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/>',
+ send:'<path d="M4.5 12L20 4.5 15.5 20l-3.3-6.3z"/><path d="M12.2 13.7L20 4.5"/>',
+ chevL:'<path d="M14.5 5.5L8 12l6.5 6.5"/>',
+ copy:'<rect x="8.5" y="8.5" width="11" height="11" rx="2"/><path d="M15.5 8.5V5.5a1 1 0 0 0-1-1h-9a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h3"/>',
+ globe:'<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.3 2.4 3.5 5.2 3.5 8.5s-1.2 6.1-3.5 8.5c-2.3-2.4-3.5-5.2-3.5-8.5S9.7 5.9 12 3.5z"/>',
+ chat:'<path d="M20 11.5a7.5 7.5 0 0 1-10.9 6.7L4.5 19.5l1.2-4.1A7.5 7.5 0 1 1 20 11.5z"/>',
+ link:'<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
+ edit:'<path d="M4.5 19.5h4l10-10-4-4-10 10z"/><path d="M13 7l4 4"/>',
+ ext:'<path d="M14 4.5h5.5V10M19.5 4.5L11 13M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>'
 };
+function icon(n,cls='ic'){return `<svg class="${cls}" viewBox="0 0 24 24">${IC[n]||''}</svg>`}
+function paintIcons(root=document){root.querySelectorAll('svg[data-i]').forEach(s=>{s.setAttribute('viewBox','0 0 24 24');s.innerHTML=IC[s.dataset.i]||''})}
 
-// ───── 저장 ─────
-let S;
-try { S = Object.assign({}, DEFAULTS, JSON.parse(localStorage.getItem('talk.s') || '{}')); } catch(e){ S = Object.assign({}, DEFAULTS); }
-const save = () => { try { localStorage.setItem('talk.s', JSON.stringify(S)); } catch(e){} };
-if (!S.fb || !S.fb.databaseURL) S.fb = Object.assign({}, FB_DEFAULT);
-let UID = localStorage.getItem('talk.uid');
-if (!UID) { UID = 'u' + Math.random().toString(36).slice(2, 10); localStorage.setItem('talk.uid', UID); }
+/* ---------- 언어 ---------- */
+const LANGS=[
+ ['ko','한국어','한국어','Korean','ko-KR','ko'],['en','영어','English','English','en-US','en'],
+ ['zh','중국어','中文(简体)','Simplified Chinese','zh-CN','zh-CN'],['zt','대만 중국어','中文(繁體)','Traditional Chinese','zh-TW','zh-TW'],
+ ['ja','일본어','日本語','Japanese','ja-JP','ja'],['vi','베트남어','Tiếng Việt','Vietnamese','vi-VN','vi'],
+ ['th','태국어','ภาษาไทย','Thai','th-TH','th'],['id','인도네시아어','Bahasa Indonesia','Indonesian','id-ID','id'],
+ ['tl','필리핀어','Filipino','Filipino','fil-PH','tl'],['mn','몽골어','Монгол','Mongolian','mn-MN','mn'],
+ ['uz','우즈베크어','Oʻzbek','Uzbek','uz-UZ','uz'],['ne','네팔어','नेपाली','Nepali','ne-NP','ne'],
+ ['km','크메르어','ខ្មែរ','Khmer','km-KH','km'],['my','미얀마어','မြန်မာ','Burmese','my-MM','my'],
+ ['ru','러시아어','Русский','Russian','ru-RU','ru'],['es','스페인어','Español','Spanish','es-ES','es'],
+ ['fr','프랑스어','Français','French','fr-FR','fr'],['de','독일어','Deutsch','German','de-DE','de'],
+ ['pt','포르투갈어','Português','Portuguese','pt-BR','pt'],['ar','아랍어','العربية','Arabic','ar-SA','ar'],
+ ['hi','힌디어','हिन्दी','Hindi','hi-IN','hi']
+].map(a=>({c:a[0],ko:a[1],nat:a[2],en:a[3],sr:a[4],g:a[5]}));
+const L=c=>LANGS.find(x=>x.c===c)||LANGS[0];
+function guessLang(){const n=(navigator.language||'ko').toLowerCase();if(n.startsWith('zh'))return /tw|hk|hant/.test(n)?'zt':'zh';const b=n.slice(0,2);if(b==='fi'&&n.startsWith('fil'))return 'tl';return LANGS.find(x=>x.c===b)?b:(b==='ko'?'ko':'en')}
 
-// ───── 작은 도구 ─────
-const $ = id => document.getElementById(id);
-const show = id => $(id).classList.remove('hide');
-const hide = id => $(id).classList.add('hide');
-function only(id){ ['home','join','room'].forEach(x => x === id ? show(x) : hide(x)); }
-const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let toastT;
-function toast(msg, ms = 2600){ const t = $('toast'); t.textContent = msg; show('toast'); clearTimeout(toastT); toastT = setTimeout(() => hide('toast'), ms); }
-const decodeEnt = s => { const t = document.createElement('textarea'); t.innerHTML = s; return t.value; };
-const b64e = s => btoa(unescape(encodeURIComponent(s))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
-const b64d = s => decodeURIComponent(escape(atob(s.replace(/-/g,'+').replace(/_/g,'/'))));
-const newCode = () => { const a = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let r = ''; for (let i = 0; i < 6; i++) r += a[Math.floor(Math.random() * a.length)]; return r; };
-const hhmm = t => { const d = new Date(t || Date.now()); return d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0'); };
+/* ---------- 화면 글자(한국어 / 그 외 영어) ---------- */
+const T={
+ ko:{appName:'원격 통역 대화',tagline:'멀리 있어도, 서로의 말로',tapStart:'눌러서 시작',myName:'내 이름',namePh:'이름을 입력하세요',newRoom:'새 대화방<br>만들기',joinCode:'방 번호로 들어가기',codePh:'6자리 번호',rooms:'대화방',noRooms:'아직 대화방이 없어요.<br>새 대화방을 만들어 보세요.',host:'방장',guest:'참여',clearShort:'기록 삭제',tapSpeak:'눌러서 말하기',listening:'듣는 중 · 누르면 멈춤',fontSize:'글씨 크기',phrases:'자주 쓰는 문구',typePh:'글로 써서 보내기',phHint:'짧게 누르면 보내기 · 길게 누르면 고치기',settings:'설정',tBasic:'기본',tWords:'단어장',tTravel:'여행 문구',tAdv:'고급',people:'참여자',me:'나',online:'접속 중',offline:'나감',translating:'번역 중…',sendIn:'초 후 보냄',edit:'고치기',cancel:'취소',send:'보내기',del:'삭제',save:'저장',ok:'확인',close:'닫기',invite:'초대하기',inviteCopy:'초대 링크 복사',inviteShare:'초대 보내기',copied:'복사했어요',emptyChat:'마이크를 누르고 말해 보세요.<br>상대방 휴대폰에서 번역되어 들려요.',inviteBtn:'상대방 초대하기',clearQ:'대화 기록을 지울까요?',clearMine:'내 화면에서만 지우기',clearAll:'모두의 기록 지우기',delRoomQ:'이 대화방을 삭제할까요?',delRoomHost:'내가 만든 방이라 서버에서도 지워지고,\n참여자들도 더 이상 들어올 수 없어요.',delRoomGuest:'목록에서만 지워져요.',noRoom:'없는 방 번호예요',needName:'이름을 먼저 입력해 주세요',noSR:'이 브라우저는 음성 인식을 지원하지 않아요. 크롬을 써 주세요.',micDenied:'마이크 권한을 허용해 주세요',offlineFb:'서버에 연결되지 않았어요',serverMe:'내 폰이 번역 서버',hostTr:'방장 번역',freeTr:'무료 번역',disconnected:'연결 끊김',persons:'명',talkingNow:'님이 말하는 중…',myLang:'내 언어',roomName:'방 이름',changeName:'이름 바꾸기',pickLang:'언어 고르기',added:'추가했어요',newPhrase:'문구 추가',phTitle:'제목(버튼에 보이는 글)',phText:'보낼 내용',shareTitle:'대화 기록'},
+ en:{appName:'Remote Interpreter',tagline:'Far apart, each in your own language',tapStart:'Tap to start',myName:'My name',namePh:'Enter your name',newRoom:'Create<br>new room',joinCode:'Join with room number',codePh:'6 digits',rooms:'Rooms',noRooms:'No rooms yet.',host:'Host',guest:'Joined',clearShort:'Clear',tapSpeak:'Tap to speak',listening:'Listening · tap to stop',fontSize:'Text size',phrases:'Quick phrases',typePh:'Type a message',phHint:'Tap to send · hold to edit',settings:'Settings',tBasic:'Basic',tWords:'Glossary',tTravel:'Phrases',tAdv:'Advanced',people:'People',me:'Me',online:'online',offline:'left',translating:'Translating…',sendIn:'s to send',edit:'Edit',cancel:'Cancel',send:'Send',del:'Delete',save:'Save',ok:'OK',close:'Close',invite:'Invite',inviteCopy:'Copy invite link',inviteShare:'Send invite',copied:'Copied',emptyChat:'Tap the mic and speak.<br>The other person hears it translated.',inviteBtn:'Invite someone',clearQ:'Clear chat history?',clearMine:'Clear on my screen',clearAll:'Clear for everyone',delRoomQ:'Delete this room?',delRoomHost:'You created this room, so it will be removed for everyone.',delRoomGuest:'It will be removed from your list.',noRoom:'Room not found',needName:'Please enter your name first',noSR:'Speech recognition is not supported. Please use Chrome.',micDenied:'Please allow the microphone',offlineFb:'Not connected to server',serverMe:'My phone translates',hostTr:'Host translation',freeTr:'Free translation',disconnected:'Disconnected',persons:' on',talkingNow:' is speaking…',myLang:'My language',roomName:'Room name',changeName:'Change name',pickLang:'Choose language',added:'Added',newPhrase:'Add phrase',phTitle:'Title',phText:'Message',shareTitle:'Chat history'}
+};
+const t=k=>(T[ui()][k]??T.ko[k]??k);
+const ui=()=>me.lang==='ko'?'ko':'en';
+function applyTexts(){document.documentElement.lang=me.lang;document.querySelectorAll('[data-t]').forEach(e=>e.innerHTML=t(e.dataset.t));document.querySelectorAll('[data-tp]').forEach(e=>e.placeholder=t(e.dataset.tp));document.querySelectorAll('[data-ver]').forEach(e=>e.textContent=VERSION)}
 
-// ───── Firebase ─────
-function parseFb(text){
-  text = (text || '').trim();
-  if (!text) return null;
-  if (/^https:\/\//.test(text) && !/\s/.test(text)) return { databaseURL: text.replace(/\/+$/,'') };
-  const o = {};
-  text.replace(/["']?(\w+)["']?\s*:\s*["']([^"']+)["']/g, (_, k, v) => { o[k] = v; });
-  if (!o.databaseURL) return null;
-  return { apiKey:o.apiKey, authDomain:o.authDomain, databaseURL:o.databaseURL.replace(/\/+$/,''), projectId:o.projectId, appId:o.appId };
-}
-function loadScript(src){
-  return new Promise((ok, no) => { const s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = () => no(new Error('불러오기 실패')); document.head.appendChild(s); });
-}
-let db = null, fbURL = null;
-async function getDb(cfg){
-  cfg = cfg || S.fb;
-  if (!cfg || !cfg.databaseURL) throw new Error('Firebase 설정이 없어요');
-  if (db && fbURL === cfg.databaseURL) return db;
-  if (!window.firebase) {
-    await loadScript(`https://www.gstatic.com/firebasejs/${FB_VER}/firebase-app-compat.js`);
-    await loadScript(`https://www.gstatic.com/firebasejs/${FB_VER}/firebase-database-compat.js`);
-  }
-  if (firebase.apps.length) await Promise.all(firebase.apps.map(a => a.delete()));
-  const clean = {}; Object.keys(cfg).forEach(k => cfg[k] && (clean[k] = cfg[k]));
-  firebase.initializeApp(clean);
-  db = firebase.database(); fbURL = cfg.databaseURL;
-  return db;
-}
+/* ---------- 저장 ---------- */
+const S={get(k,d){try{const v=localStorage.getItem('rt_'+k);return v==null?d:JSON.parse(v)}catch{return d}},set(k,v){try{localStorage.setItem('rt_'+k,JSON.stringify(v))}catch{}}};
+const params=new URLSearchParams(location.search);
+const inviteCode=(params.get('room')||'').replace(/\D/g,'').slice(0,6);
+if(S.get('guestOnly',null)===null) S.set('guestOnly',!!inviteCode);
+const me={cid:S.get('cid',null),name:S.get('name',''),lang:S.get('lang',null)||guessLang()};
+if(!me.cid){me.cid='c'+Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);S.set('cid',me.cid)}
+const DEF_SET={confirm:2,rate:1.3,voices:{},prefetch:true,catchup:true,theme:'basic',fs:1,sound:true,engine:'free',gkey:'',gmodel:'gemini-2.5-flash',ckey:'',cmodel:'claude-haiku-4-5',okey:'',omodel:'gpt-4.1-mini',gloss:'',invite:''};
+const set={...DEF_SET,...S.get('set',{})};
+set.sound=true; /* 켤 때는 항상 소리 켬 */
+const saveSet=()=>S.set('set',set);
+const DEF_PH={ko:[['안녕하세요','안녕하세요, 반갑습니다.'],['잘 들려요?','제 말 잘 들리세요?'],['다시 한번','죄송하지만 다시 한번 말씀해 주시겠어요?'],['잠시만요','잠시만 기다려 주세요.'],['천천히','조금만 천천히 말씀해 주세요.'],['감사합니다','감사합니다.'],['좋아요','네, 좋습니다.'],['자기소개','저는 한국폴리텍대학 서울정수캠퍼스 교수입니다.'],['시작할게요','그럼 시작하겠습니다.'],['수고하셨어요','오늘 수고 많으셨습니다. 다음에 또 연락드리겠습니다.']],
+ en:[['Hello','Hello, nice to meet you.'],['Can you hear?','Can you hear me well?'],['Once more','Sorry, could you say that again?'],['Wait','Please wait a moment.'],['Slowly','Please speak a little more slowly.'],['Thanks','Thank you.'],['OK','Yes, that sounds good.'],['Bye','Thank you for today. Talk to you soon.']]};
+const defPhrases=()=>(DEF_PH[me.lang==='ko'?'ko':'en']).map(([t,x])=>({t,x}));
+let phrases=S.get('phrases',null)||defPhrases();
+let rooms=S.get('rooms',[]);
 
-// ───── 번역 ─────
-const trCache = new Map();
-function splitChunks(text, max){
-  const parts = text.match(/[^.!?。！？\n]+[.!?。！？]*\s*|\n+/g) || [text];
-  const out = []; let cur = '';
-  for (const p of parts) {
-    if ((cur + p).length > max && cur) { out.push(cur); cur = ''; }
-    if (p.length > max) { for (let i = 0; i < p.length; i += max) out.push(p.slice(i, i + max)); }
-    else cur += p;
-  }
-  if (cur.trim()) out.push(cur);
-  return out.filter(x => x.trim());
-}
-async function trFree(text, from, to){
-  const out = [];
-  for (const ch of splitChunks(text, 450)) {
-    const u = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(ch)}&langpair=${L(from).mm}|${L(to).mm}`;
-    const r = await fetch(u); const j = await r.json();
-    const t = j && j.responseData && j.responseData.translatedText;
-    if (!t || /MYMEMORY WARNING|QUERY LENGTH LIMIT|INVALID LANGUAGE/i.test(t)) throw new Error('무료 번역기 사용 한도 또는 오류');
-    out.push(decodeEnt(t));
-  }
-  return out.join(' ').trim();
-}
-const sysPrompt = (from, to) => `You are a live interpreter in a spoken conversation. Translate the user's message from ${L(from).en} to ${L(to).en}. Use natural, polite spoken style. Output only the translation, with no quotes, notes or explanations.`;
-async function trClaude(text, from, to){
-  const r = await fetch('https://api.anthropic.com/v1/messages', {
-    method:'POST',
-    headers:{'content-type':'application/json','x-api-key':S.claudeKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-    body: JSON.stringify({ model:S.claudeModel, max_tokens:2048, system:sysPrompt(from,to), messages:[{role:'user',content:text}] })
-  });
-  const j = await r.json();
-  if (!r.ok) throw new Error((j.error && j.error.message) || ('Claude 오류 ' + r.status));
-  return j.content.map(c => c.text || '').join('').trim();
-}
-async function trGemini(text, from, to){
-  const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${S.geminiModel}:generateContent?key=${encodeURIComponent(S.geminiKey)}`, {
-    method:'POST', headers:{'content-type':'application/json'},
-    body: JSON.stringify({ systemInstruction:{parts:[{text:sysPrompt(from,to)}]}, contents:[{role:'user',parts:[{text}]}], generationConfig:{temperature:0.2} })
-  });
-  const j = await r.json();
-  if (!r.ok) throw new Error((j.error && j.error.message) || ('Gemini 오류 ' + r.status));
-  return j.candidates[0].content.parts.map(p => p.text || '').join('').trim();
-}
-function engineNow(){
-  if (S.engine === 'claude' && S.claudeKey) return 'claude';
-  if (S.engine === 'gemini' && S.geminiKey) return 'gemini';
-  return 'free';
-}
-let lastFallbackNote = 0;
-async function translate(text, from, to){
-  text = (text || '').trim();
-  if (!text || from === to) return text;
-  const key = from + '|' + to + '|' + text;
-  if (trCache.has(key)) return trCache.get(key);
-  const eng = engineNow();
-  let out;
-  try {
-    out = eng === 'claude' ? await trClaude(text, from, to) : eng === 'gemini' ? await trGemini(text, from, to) : await trFree(text, from, to);
-  } catch (e) {
-    if (eng === 'free') throw e;
-    if (Date.now() - lastFallbackNote > 15000) { toast('AI 번역 실패 → 무료 번역기로 번역합니다'); lastFallbackNote = Date.now(); }
-    out = await trFree(text, from, to);
-  }
-  trCache.set(key, out);
-  return out;
-}
+/* ---------- 공용 UI ---------- */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let toastT;function toast(m){const e=$('#toast');e.textContent=m;e.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('on'),2200)}
+function modal(title,text,buttons){return new Promise(res=>{$('#mdT').textContent=title;$('#mdP').textContent=text||'';$('#mdP').style.display=text?'':'none';const b=$('#mdB');b.innerHTML='';buttons.forEach(([label,val,cls])=>{const x=document.createElement('button');x.className='btn full '+(cls||'');x.textContent=label;x.onclick=()=>{$('#modal').classList.add('hidden');res(val)};b.appendChild(x)});$('#modal').classList.remove('hidden')})}
+let openSheetEl=null,sheetOnClose=null;
+function openSheet(id,onClose){closeSheet(true);openSheetEl=$(id);sheetOnClose=onClose||null;openSheetEl.classList.add('open');$('#dim').classList.add('on')}
+function closeSheet(silent){if(openSheetEl){openSheetEl.classList.remove('open');openSheetEl=null}$('#drawer').classList.remove('open');$('#dim').classList.remove('on');const f=sheetOnClose;sheetOnClose=null;if(f&&!silent)f()}
+function genSheet(title,html,onClose){$('#genBody').onclick=null;$('#genTitle').textContent=title;$('#genBody').innerHTML=html;paintIcons($('#genBody'));openSheet('#shGen',onClose)}
+async function copyText(s){try{await navigator.clipboard.writeText(s)}catch{const a=document.createElement('textarea');a.value=s;document.body.appendChild(a);a.select();document.execCommand('copy');a.remove()}toast(t('copied'))}
+function applyTheme(){document.body.dataset.theme=set.theme;document.documentElement.style.setProperty('--fs',set.fs);const m=document.querySelector('meta[name=theme-color]');if(m)m.content=set.theme==='night'?'#0E1424':set.theme==='sea'?'#0F5E6B':'#1E2F5C'}
+function show(id){['#splash','#home','#room'].forEach(s=>$(s).classList.toggle('hidden',s!==id))}
 
-// ───── 목소리 ─────
-let voices = [];
-const loadVoices = () => { voices = speechSynthesis.getVoices(); };
-if ('speechSynthesis' in window) { loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }
-function pickVoice(lang){
-  const sr = L(lang).sr.toLowerCase().replace('_','-'), base = sr.split('-')[0];
-  const alt = lang === 'tl' ? ['fil','tl'] : [base];
-  return voices.find(v => v.lang.toLowerCase().replace('_','-') === sr)
-      || voices.find(v => alt.includes(v.lang.toLowerCase().split(/[-_]/)[0]));
+/* ---------- Firebase ---------- */
+let fb=null,connected=false;
+async function fbInit(){
+ try{
+  const cfg=S.get('fbcfg',null)||DEFAULT_FB;
+  const A=await import(`https://www.gstatic.com/firebasejs/${FB_VER}/firebase-app.js`);
+  const D=await import(`https://www.gstatic.com/firebasejs/${FB_VER}/firebase-database.js`);
+  const app=A.initializeApp(cfg);
+  fb={...D,db:D.getDatabase(app),cfg};
+  D.onValue(D.ref(fb.db,'.info/connected'),s=>{connected=!!s.val();updateStatus()});
+ }catch(e){console.warn('firebase',e);fb=null;updateStatus()}
 }
-let speakingCount = 0, speakSafety;
-function speak(text, lang){
-  if (!('speechSynthesis' in window) || !text) return;
-  const u = new SpeechSynthesisUtterance(text);
-  u.lang = L(lang).sr; const v = pickVoice(lang); if (v) u.voice = v;
-  u.rate = Number(S.rate) || 1;
-  speakingCount++; pauseRecForSpeech();
-  let done = false;
-  const end = () => { if (done) return; done = true; speakingCount = Math.max(0, speakingCount - 1); if (!speakingCount) resumeRecAfterSpeech(); };
-  u.onend = end; u.onerror = end;
-  clearTimeout(speakSafety);
-  speakSafety = setTimeout(() => { if (!speechSynthesis.speaking) { speakingCount = 0; resumeRecAfterSpeech(); } }, 1500 + text.length * 180);
-  speechSynthesis.speak(u);
-}
+const R=p=>fb.ref(fb.db,p);
 
-// ───── 음성 인식 (한 문장씩) ─────
-const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-let rec = null, micOn = false, recActive = false, finalText = '', lastVoiceAt = 0, micIdleTimer = null;
-function toggleMic(){
-  if (!SR) { toast('이 브라우저는 음성 인식이 안 돼요. 안드로이드 크롬을 사용하거나 글로 입력해 주세요.', 4000); return; }
-  micOn ? micStop() : micStart();
+/* ---------- 홈 ---------- */
+function renderMe(){$('#meName').value=me.name;$('#meAva').textContent=(me.name||t('me')).trim().slice(0,1).toUpperCase();$('#meLang').textContent=me.lang==='ko'?L(me.lang).ko:L(me.lang).nat}
+function renderRooms(){
+ const box=$('#roomList');$('#roomCount').textContent=rooms.length?rooms.length:'';
+ if(!rooms.length){box.innerHTML=`<div class="empty">${t('noRooms')}</div>`;return}
+ box.innerHTML=rooms.map(r=>{const d=new Date(r.ts);return `<div class="ritem" data-code="${r.code}">
+  <div class="rico">${icon('chat')}</div>
+  <button class="rt" data-act="openRoom" data-code="${r.code}" style="text-align:left"><b>${esc(r.title||r.code)}<span class="badge ${r.role==='host'?'':'g'}">${t(r.role==='host'?'host':'guest')}</span></b><small>${r.code} · ${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}</small></button>
+  <button class="del" data-act="delRoom" data-code="${r.code}">${icon('trash')}</button></div>`}).join('');
 }
-function micStart(){
-  micOn = true; lastVoiceAt = Date.now(); $('micBtn').classList.add('on'); $('micBtn').textContent = '■';
-  startRec();
-  clearInterval(micIdleTimer);
-  micIdleTimer = setInterval(() => { if (micOn && Date.now() - lastVoiceAt > 180000) { micStop(); toast('3분 동안 말이 없어 마이크를 껐어요'); } }, 10000);
+function saveRoomEntry(code,title,role){rooms=rooms.filter(r=>r.code!==code);rooms.unshift({code,title,role,ts:Date.now()});rooms=rooms.slice(0,40);S.set('rooms',rooms)}
+async function delRoom(code){
+ const r=rooms.find(x=>x.code===code);if(!r)return;
+ const ok=await modal(t('delRoomQ'),r.role==='host'?t('delRoomHost'):t('delRoomGuest'),[[t('del'),true,'warn'],[t('cancel'),false]]);
+ if(!ok)return;
+ rooms=rooms.filter(x=>x.code!==code);S.set('rooms',rooms);renderRooms();
+ if(r.role==='host'&&fb){try{await fb.remove(R('rooms/'+code))}catch{}}
 }
-function micStop(){
-  micOn = false; clearInterval(micIdleTimer); $('micBtn').classList.remove('on'); $('micBtn').textContent = '🎤';
-  $('interim').textContent = '';
-  try { rec && rec.abort(); } catch(e){}
+function langSheet(cb){
+ genSheet(t('pickLang'),`<div class="lgrid">${LANGS.map(l=>`<button data-lc="${l.c}" class="${l.c===me.lang?'on':''}"><b>${esc(l.nat)}</b><small>${esc(l.ko)}</small></button>`).join('')}</div>`);
+ $('#genBody').onclick=e=>{const b=e.target.closest('[data-lc]');if(!b)return;const was=ui();me.lang=b.dataset.lc;S.set('lang',me.lang);if(!S.get('phrases',null))phrases=defPhrases();if(was!==ui())applyTexts();renderMe();renderRooms();closeSheet();cb&&cb()}
 }
-function startRec(){
-  if (!micOn || recActive || speakingCount) return;
-  rec = new SR();
-  rec.lang = L(S.lang).sr; rec.interimResults = true; rec.continuous = false; rec.maxAlternatives = 1;
-  finalText = '';
-  rec.onresult = e => {
-    let interim = '';
-    for (let i = e.resultIndex; i < e.results.length; i++) {
-      const r = e.results[i];
-      if (r.isFinal) finalText = r[0].transcript; else interim += r[0].transcript;
-    }
-    lastVoiceAt = Date.now();
-    $('interim').textContent = finalText || interim;
-  };
-  rec.onerror = e => {
-    if (e.error === 'not-allowed' || e.error === 'service-not-allowed') { micStop(); toast('마이크 권한을 허용해 주세요 (주소창 왼쪽 자물쇠 → 권한)', 4500); }
-    // no-speech(조용함)·aborted는 고장이 아니므로 그냥 다시 시작
-  };
-  rec.onend = () => {
-    recActive = false;
-    const t = finalText.trim(); finalText = '';
-    $('interim').textContent = '';
-    if (t) sendText(t);
-    if (micOn && !speakingCount) setTimeout(startRec, 250);
-  };
-  try { rec.start(); recActive = true; } catch(e){ recActive = false; }
-}
-function pauseRecForSpeech(){ if (recActive) { try { rec.abort(); } catch(e){} } }
-function resumeRecAfterSpeech(){ if (micOn) setTimeout(startRec, 400); }
+function needName(){if(me.name.trim())return false;toast(t('needName'));$('#meName').focus();return true}
 
-// ───── 대화방 ─────
-let msgQuery = null, roomId = null, roomRef = null, members = {}, msgs = {}, histKeys = new Set(), spoken = new Set(), selfTrTried = new Set(), wakeLock = null;
-
+/* ---------- 대화방 ---------- */
+let room=null;
+const pending=new Map();let tickT=null;
+const spoken=new Set();const localTr=new Map();
 async function createRoom(){
-  if (!S.fb) { toast('먼저 설정에서 Firebase 설정값을 넣어 주세요', 3500); openSettings(); return; }
-  if (!S.name) { const n = prompt('내 이름을 적어 주세요 (상대방에게 보입니다)', ''); if (n === null) return; S.name = n.trim(); save(); }
-  try {
-    const d = await getDb();
-    const code = newCode();
-    await d.ref('rooms/' + code + '/info').set({ c: firebase.database.ServerValue.TIMESTAMP, h: S.name || '', i: S.intro || '', l: S.lang });
-    await enterRoom(code);
-    sendInvite();
-  } catch (e) { toast('방을 만들지 못했어요: ' + e.message, 5000); }
-}
-function joinByCode(){
-  const c = $('codeIn').value.trim().toUpperCase();
-  if (!c) return;
-  if (!S.fb) { toast('Firebase 설정이 없어요. 초대 링크로 들어오거나 설정에 넣어 주세요', 4000); return; }
-  enterRoom(c);
+ if(needName())return;
+ if(!fb||!connected){toast(t('offlineFb'));return}
+ let code;for(let i=0;i<8;i++){code=String(Math.floor(100000+Math.random()*900000));const s=await fb.get(R(`rooms/${code}/meta`));if(!s.exists())break}
+ const d=new Date();const title=(ui()==='ko'?`${d.getMonth()+1}월 ${d.getDate()}일 ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')} 대화방`:`Room ${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`);
+ await fb.set(R(`rooms/${code}/meta`),{host:me.cid,hostName:me.name,title,created:fb.serverTimestamp()});
+ await enterRoom(code);
 }
 async function enterRoom(code){
-  try {
-    const d = await getDb();
-    if (roomRef) exitRoomListeners();
-    roomId = code; roomRef = d.ref('rooms/' + code);
-    members = {}; msgs = {}; histKeys = new Set(); spoken = new Set(); selfTrTried = new Set();
-    $('msgs').innerHTML = ''; $('roomTitle').textContent = '방 ' + code;
-    location.hash = 'r=' + code;
-    only('room'); renderPhrases(); updateEngineLbl();
-
-    // 최근 방 기록
-    S.recent = [code].concat((S.recent || []).filter(x => x !== code)).slice(0, 5); save();
-
-    // 참여자 표시 (나가면 자동 삭제)
-    const me = roomRef.child('members/' + UID);
-    await me.set({ n: S.name || '', l: S.lang, t: firebase.database.ServerValue.TIMESTAMP });
-    me.onDisconnect().remove();
-    d.ref('.info/connected').on('value', s => { if (s.val() === true && roomId === code) { me.onDisconnect().remove(); me.update({ n: S.name || '', l: S.lang }); } });
-    roomRef.child('members').on('value', s => { members = s.val() || {}; renderMembers(); });
-
-    // 대화: 지금까지 기록은 소리 없이, 이후 새 말만 읽기
-    const q = msgQuery = roomRef.child('msgs').limitToLast(40);
-    const snap = await q.once('value');
-    snap.forEach(c => { histKeys.add(c.key); msgs[c.key] = c.val(); renderMsg(c.key); });
-    if (!snap.exists()) sysLine('대화방이 열렸어요. 🎤를 누르고 말하거나 글로 입력하세요.');
-    q.on('child_added', c => { if (histKeys.has(c.key)) return; msgs[c.key] = c.val(); renderMsg(c.key, true); });
-    roomRef.child('msgs').on('child_changed', c => { msgs[c.key] = c.val(); renderMsg(c.key, !histKeys.has(c.key)); });
-    keepAwake();
-  } catch (e) { toast('입장하지 못했어요: ' + e.message, 5000); only('home'); }
-}
-function exitRoomListeners(){
-  try {
-    roomRef.child('members').off(); roomRef.child('msgs').off(); msgQuery && msgQuery.off();
-    roomRef.child('members/' + UID).remove();
-    db.ref('.info/connected').off();
-  } catch(e){}
+ if(needName())return;
+ if(!fb){toast(t('offlineFb'));return}
+ let ms;try{ms=await fb.get(R(`rooms/${code}/meta`))}catch{toast(t('offlineFb'));return}
+ if(!ms.exists()){toast(t('noRoom'));rooms=rooms.filter(r=>r.code!==code);S.set('rooms',rooms);renderRooms();return}
+ const meta=ms.val();
+ room={code,meta,isHost:meta.host===me.cid,members:{},msgs:new Map(),unsub:[],joinKey:fb.push(R('x')).key,clearKey:S.get('clr_'+code,'')};
+ saveRoomEntry(code,meta.title,room.isHost?'host':'guest');
+ const mref=R(`rooms/${code}/members/${me.cid}`);
+ await fb.update(mref,{name:me.name,lang:me.lang,online:true,talk:false,ts:fb.serverTimestamp()});
+ fb.onDisconnect(mref).update({online:false,talk:false});
+ room.unsub.push(fb.onValue(R(`rooms/${code}/meta`),s=>{if(!room)return;if(!s.exists()){leaveRoom();toast(t('noRoom'));return}room.meta=s.val();updateStatus()}));
+ room.unsub.push(fb.onValue(R(`rooms/${code}/members`),s=>{if(!room)return;room.members=s.val()||{};updateStatus();updateTalking();if(room.isHost)room.msgs.forEach((m,id)=>{if(id>room.joinKey)hostProcess(id)})}));
+ const q=fb.query(R(`rooms/${code}/msgs`),fb.limitToLast(150));
+ room.unsub.push(fb.onChildAdded(q,s=>onMsg(s.key,s.val())));
+ room.unsub.push(fb.onChildChanged(q,s=>onMsg(s.key,s.val())));
+ room.unsub.push(fb.onChildRemoved(q,s=>{if(!room)return;room.msgs.delete(s.key);document.getElementById('m-'+s.key)?.remove();checkEmpty()}));
+ $('#chat').innerHTML='';checkEmpty();
+ history.replaceState(null,'',location.pathname+'?room='+code);
+ show('#room');updateStatus();updateMicUI();wake(true);
 }
 function leaveRoom(){
-  micStop();
-  if (roomRef) exitRoomListeners();
-  roomRef = null; roomId = null;
-  try { wakeLock && wakeLock.release(); } catch(e){} wakeLock = null;
-  history.replaceState(null, '', location.pathname);
-  renderHome(); only('home');
+ if(!room)return;stopListen();speechSynthesis.cancel();ttsQ.length=0;speaking=false;
+ pending.forEach((p,id)=>{if(p.written)fb.remove(R(`rooms/${room.code}/msgs/${id}`)).catch(()=>{})});pending.clear();
+ try{fb.update(R(`rooms/${room.code}/members/${me.cid}`),{online:false,talk:false})}catch{}
+ room.unsub.forEach(f=>{try{f()}catch{}});room=null;wake(false);
+ history.replaceState(null,'',location.pathname);
+ renderRooms();show('#home');
 }
-async function keepAwake(){
-  try { if ('wakeLock' in navigator && !wakeLock) { wakeLock = await navigator.wakeLock.request('screen'); wakeLock.addEventListener('release', () => { wakeLock = null; }); } } catch(e){}
+function membersOnline(){return Object.entries(room?.members||{}).filter(([,m])=>m.online)}
+function targetLangs(src){const s=new Set();membersOnline().forEach(([,m])=>{if(m.lang&&m.lang!==src)s.add(m.lang)});return [...s]}
+function hostOnline(){return !!(room&&room.members[room.meta.host]?.online)}
+function engineName(e){return {gemini:'Gemini',claude:'Claude',openai:'ChatGPT',free:t('freeTr')}[e]||e}
+function updateStatus(){
+ if(!room)return;
+ $('#rTitle').textContent=room.meta.title||room.code;
+ const n=membersOnline().length;const dot=$('#rDot');let txt;
+ if(!connected){dot.className='dot off';txt=t('disconnected')}
+ else if(room.isHost){const e=activeEngine();dot.className='dot'+(e==='free'?' free':'');txt=engineName(e)}
+ else if(hostOnline()){dot.className='dot';txt=t('hostTr')}
+ else{dot.className='dot free';txt=t('freeTr')}
+ $('#rSub').textContent=`${room.code} · ${n}${t('persons')} · ${txt}`;
 }
-document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && roomId) keepAwake(); });
-
-function renderMembers(){
-  const box = $('members'); const list = Object.entries(members);
-  box.innerHTML = list.map(([id, m]) => `<span class="chip ${id === UID ? 'me' : ''}">${L(m.l).f} ${esc(m.n || L(m.l).n)}${id === UID ? ' (나)' : ''}</span>`).join('')
-    + `<span class="chip">👥 ${list.length}명</span>`;
-}
-function sysLine(t){ const d = document.createElement('div'); d.className = 'sys'; d.textContent = t; $('msgs').appendChild(d); }
-
-// 보내기: 원문을 먼저 올리고, 참여자 언어별로 한 번씩 동시에 번역해서 붙임
-async function sendText(text){
-  text = (text || '').trim();
-  if (!text || !roomRef) return;
-  if (text.length > 1500) text = text.slice(0, 1500);
-  const ref = roomRef.child('msgs').push();
-  const m = { u: UID, n: S.name || '', l: S.lang, s: text, t: firebase.database.ServerValue.TIMESTAMP };
-  try { await ref.set(m); } catch (e) { toast('보내지 못했어요: ' + e.message, 4000); return; }
-  const targets = [...new Set(Object.values(members).map(x => x.l))].filter(lg => lg && lg !== S.lang);
-  await Promise.all(targets.map(async lg => {
-    try { const tx = await translate(text, S.lang, lg); await ref.child('tr/' + lg).set(tx); }
-    catch (e) { toast(L(lg).k + ' 번역 실패: ' + e.message, 3500); }
-  }));
-}
-function sendTyped(){ const t = $('txt').value; $('txt').value = ''; sendText(t); }
-$('txt').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); sendTyped(); } });
-
-function renderMsg(key, live){
-  const m = msgs[key]; if (!m) return;
-  const mine = m.u === UID;
-  let el = document.getElementById('m' + key);
-  const box = $('msgs');
-  const atBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 80;
-  if (!el) { el = document.createElement('div'); el.id = 'm' + key; box.appendChild(el); }
-  el.className = 'msg' + (mine ? ' mine' : '');
-  const tr = m.tr || {};
-  let main, mainLang, sub = '';
-  if (mine) {
-    main = esc(m.s); mainLang = m.l;
-    const others = Object.entries(tr).map(([lg, t]) => `${L(lg).f} ${esc(t)}`);
-    sub = others.length ? others.join('<br>') : '';
-  } else if (m.l === S.lang) {
-    main = esc(m.s); mainLang = m.l;
-  } else if (tr[S.lang]) {
-    main = esc(tr[S.lang]); mainLang = S.lang; sub = `${L(m.l).f} ${esc(m.s)}`;
-  } else {
-    main = '<span class="pending">번역 중…</span>'; mainLang = null; sub = `${L(m.l).f} ${esc(m.s)}`;
-    selfTranslateLater(key);
-  }
-  el.innerHTML = `<div class="who">${L(m.l).f} ${esc(mine ? '나' : (m.n || L(m.l).n))} · ${hhmm(m.t)}${mainLang ? `<button aria-label="다시 듣기" data-k="${key}">🔊</button>` : ''}</div>
-    <div class="main" dir="auto">${main}</div>${sub ? `<div class="orig" dir="auto">${sub}</div>` : ''}`;
-  const b = el.querySelector('button[data-k]'); if (b) b.onclick = () => replay(key);
-  if (atBottom || live) box.scrollTop = box.scrollHeight;
-
-  // 새로 온 남의 말은 내 언어로 한 번 읽기
-  if (live && !mine && mainLang && !spoken.has(key)) {
-    spoken.add(key);
-    if (S.sound) speak(mainLang === S.lang ? (m.l === S.lang ? m.s : tr[S.lang]) : m.s, S.lang);
-  }
-}
-function replay(key){
-  const m = msgs[key]; if (!m) return;
-  if (m.u === UID || m.l === S.lang) speak(m.s, m.l);
-  else if (m.tr && m.tr[S.lang]) speak(m.tr[S.lang], S.lang);
-}
-// 보낸 사람이 내 언어 번역을 안 붙였으면(늦게 들어온 경우 등) 내가 직접 번역해서 공유
-function selfTranslateLater(key){
-  if (selfTrTried.has(key)) return; selfTrTried.add(key);
-  setTimeout(async () => {
-    const m = msgs[key]; if (!m || (m.tr && m.tr[S.lang]) || !roomRef) return;
-    try {
-      const tx = await translate(m.s, m.l, S.lang);
-      roomRef.child('msgs/' + key + '/tr/' + S.lang).transaction(cur => cur || tx);
-    } catch (e) {}
-  }, 5000);
+function updateTalking(){const ns=Object.entries(room?.members||{}).filter(([id,m])=>id!==me.cid&&m.online&&m.talk).map(([,m])=>m.name);$('#talking').textContent=ns.length?ns.join(', ')+t('talkingNow'):''}
+function checkEmpty(){
+ const chat=$('#chat');const has=chat.querySelector('.msg');let e=chat.querySelector('.chat-empty');
+ if(has){e&&e.remove();return}
+ if(!e){chat.innerHTML=`<div class="chat-empty"><div class="big">${icon('chat')}</div><div>${t('emptyChat')}</div><button data-act="invite">${icon('userplus')}<span>${t('inviteBtn')}</span></button></div>`}
 }
 
-// ───── 자주 쓰는 문구 ─────
-function myPhrases(){
-  if (!S.phrases[S.lang]) {
-    S.phrases[S.lang] = DEFAULT_PHRASES.slice();
-    if (S.lang !== 'ko') {
-      Promise.all(DEFAULT_PHRASES.map(p => translate(p, 'ko', S.lang).catch(() => p)))
-        .then(arr => { S.phrases[S.lang] = arr; save(); renderPhrases(); });
-    }
-    save();
-  }
-  return S.phrases[S.lang];
+/* ---------- 메시지 ---------- */
+function onMsg(id,v){
+ if(!room||!v)return;
+ room.msgs.set(id,{id,...v});
+ if(room.isHost)hostProcess(id);
+ renderMsg(id);maybeSpeak(id);
 }
-function renderPhrases(){
-  const box = $('phrases'); const list = myPhrases();
-  box.innerHTML = '';
-  list.forEach((p, i) => box.appendChild(phraseBtn(p, i)));
-  const add = document.createElement('button'); add.textContent = '＋'; add.onclick = () => {
-    const t = prompt('추가할 문구', ''); if (t && t.trim()) { list.push(t.trim()); save(); renderPhrases(); }
-  };
-  box.appendChild(add);
+function trFor(m,lang){if(m.lang===lang)return m.text;if(m.tr&&m.tr[lang]&&m.trSrc===m.text)return m.tr[lang];return localTr.get(id2(m,lang))}
+const id2=(m,lang)=>m.id+'|'+lang+'|'+m.text;
+function renderMsg(id){
+ const m=room.msgs.get(id);if(!m)return;
+ const mine=m.from===me.cid;const p=pending.get(id);
+ const visible=m.state==='sent'||(mine&&p)&&m.state!=='cancel';
+ let el=document.getElementById('m-'+id);
+ if(!visible||(room.clearKey&&id<=room.clearKey)){el&&el.remove();checkEmpty();return}
+ const chat=$('#chat');const atBottom=chat.scrollHeight-chat.scrollTop-chat.clientHeight<80;
+ if(!el){el=document.createElement('div');el.id='m-'+id;el.className='msg';chat.appendChild(el);checkEmpty()}
+ el.className='msg '+(mine?'mine':'theirs')+(p?' draft':'');
+ let main,sub='';
+ if(mine){
+  main=esc(m.text);
+  if(!p){const tl=targetLangs(m.lang);const tx=(tl.length?tl:Object.keys(m.tr||{})).slice(0,3).map(l=>{const x=trFor(m,l);return x?`<div class="sub"><i>${esc(L(l).nat)}</i>${esc(x)}</div>`:''}).join('');sub=tx||(tl.length?`<div class="sub wait">${t('translating')}</div>`:'')}
+ }else{
+  const x=trFor(m,me.lang);
+  main=x?esc(x):`<span class="wait">${t('translating')}</span>`;
+  if(m.lang!==me.lang)sub=`<div class="sub">${esc(m.text)}</div>`;
+  if(!x)scheduleLocalTr(m);
+ }
+ const free=m.eng==='free'&&!mine?`<span class="free-tag">${t('freeTr')}</span>`:'';
+ el.innerHTML=`<div class="who">${esc(mine?t('me'):m.name)} · ${esc(L(m.lang).nat)}${free}</div><div class="bub"${p?' data-act="editDraft" data-id="'+id+'"':''}><div class="main">${main}</div>${sub}${p?'':`<button class="say" data-act="say" data-id="${id}">${icon('vol')}</button>`}</div>${p?`<div class="dbar"><div class="pg"><div id="pg-${id}"></div></div><button data-act="editDraft" data-id="${id}">${t('edit')}</button><button class="x" data-act="cancelDraft" data-id="${id}">${t('cancel')}</button></div>`:''}`;
+ if(atBottom||mine)chat.scrollTop=chat.scrollHeight;
 }
-function phraseBtn(p, i){
-  const b = document.createElement('button'); b.textContent = p;
-  let timer, long = false;
-  const startPress = () => { long = false; timer = setTimeout(() => { long = true; editPhrase(i); }, 650); };
-  const cancel = () => clearTimeout(timer);
-  b.addEventListener('pointerdown', startPress);
-  b.addEventListener('pointerup', cancel); b.addEventListener('pointerleave', cancel); b.addEventListener('pointercancel', cancel);
-  b.addEventListener('contextmenu', e => e.preventDefault());
-  b.addEventListener('click', () => { if (!long) sendText(p); });
-  return b;
-}
-function editPhrase(i){
-  const list = myPhrases();
-  const t = prompt('문구 수정 (모두 지우면 삭제됩니다)', list[i]);
-  if (t === null) return;
-  if (t.trim()) list[i] = t.trim(); else list.splice(i, 1);
-  save(); renderPhrases();
-}
-
-// ───── 초대 ─────
-const inviteLink = code => {
-  const cfg = S.fb || {};
-  const c = b64e(JSON.stringify({ u: cfg.databaseURL, k: cfg.apiKey || '', p: cfg.projectId || '' }));
-  return location.origin + location.pathname + '#r=' + code + '&c=' + c;
-};
-function sendInvite(){
-  if (!roomId) return;
-  $('invLang').innerHTML = LANGS.filter(x => x.c !== S.lang).map(x => `<option value="${x.c}">${x.f} ${x.k}</option>`).join('');
-  $('invLang').value = S.inviteLang && S.inviteLang !== S.lang ? S.inviteLang : 'en';
-  $('invCode').textContent = roomId;
-  show('inviteSheet'); buildInvite();
-}
-async function buildInvite(){
-  const lg = $('invLang').value; S.inviteLang = lg; save();
-  const intro = S.intro || '';
-  const link = inviteLink(roomId);
-  $('invText').value = intro + '\n\n' + link;
-  try {
-    const tx = await translate(intro, S.lang, lg);
-    const tip = await translate('링크를 누르고 언어를 고르면 바로 대화할 수 있습니다.', 'ko', lg).catch(() => '');
-    $('invText').value = intro + '\n' + tx + (tip ? '\n' + tip : '') + '\n\n' + link;
-  } catch (e) {}
-}
-async function shareInvite(){
-  const text = $('invText').value;
-  if (navigator.share) { try { await navigator.share({ title: '통역 대화방 초대', text }); return; } catch (e) { if (e.name === 'AbortError') return; } }
-  copyInvite();
-}
-async function copyInvite(){
-  try { await navigator.clipboard.writeText($('invText').value); toast('복사했어요. 문자·카톡에 붙여 넣으세요'); }
-  catch (e) { $('invText').select(); toast('글자를 길게 눌러 복사해 주세요'); }
+const localTrPending=new Set();
+function scheduleLocalTr(m){
+ const k=id2(m,me.lang);if(localTrPending.has(k))return;localTrPending.add(k);
+ setTimeout(async()=>{
+  const cur=room?.msgs.get(m.id);if(!cur||cur.text!==m.text||trFor(cur,me.lang))return;
+  try{const out=await freeTranslate(m.text,m.lang,me.lang);localTr.set(k,out);renderMsg(m.id);maybeSpeak(m.id)}catch{}
+ },hostOnline()?6000:1200);
 }
 
-// ───── 초대 받은 사람 입장 ─────
-let joinCode = null, joinCfg = null, joinLang = null, joinIntro = '', joinIntroLang = 'ko';
-async function showJoin(code, cfg){
-  joinCode = code; joinCfg = cfg; joinLang = S.fb && S.lang !== 'ko' ? S.lang : guessLang();
-  $('jName').value = S.name || '';
-  $('jLangs').innerHTML = LANGS.map(x => `<button data-c="${x.c}">${x.f} ${esc(x.n)}<small>${x.k}</small></button>`).join('');
-  $('jLangs').querySelectorAll('button').forEach(b => b.onclick = () => pickJoinLang(b.dataset.c));
-  only('join');
-  $('jIntro').textContent = '…';
-  try {
-    const d = await getDb(cfg);
-    const info = (await d.ref('rooms/' + code + '/info').once('value')).val();
-    if (!info) { $('jIntro').textContent = '방을 찾을 수 없어요 / Room not found'; return; }
-    joinIntro = info.i || ''; joinIntroLang = info.l || 'ko';
-    $('jIntro').textContent = (info.h ? '👤 ' + info.h + '\n' : '') + joinIntro;
-    $('jIntro').style.whiteSpace = 'pre-line';
-  } catch (e) { $('jIntro').textContent = '연결 실패 / Connection failed: ' + e.message; }
-  pickJoinLang(joinLang);
+/* 내 말 → 초안(확인 시간) → 보내기 */
+function newDraft(text){
+ if(!room||!text)return;
+ const r=fb.push(R(`rooms/${room.code}/msgs`));const id=r.key;
+ const base={from:me.cid,name:me.name,lang:me.lang,text,state:'draft',ts:fb.serverTimestamp()};
+ if(!set.confirm){fb.set(r,{...base,state:'sent'});afterSent(id);return}
+ const written=!!set.prefetch;
+ pending.set(id,{left:set.confirm*1000,total:set.confirm*1000,paused:false,written,base});
+ if(written)fb.set(r,base);else{room.msgs.set(id,{id,...base});renderMsg(id)}
+ if(!tickT)tickT=setInterval(tick,100);
 }
-function guessLang(){
-  const n = (navigator.language || 'en').toLowerCase();
-  if (n.startsWith('zh')) return /tw|hk|hant/.test(n) ? 'zh-TW' : 'zh-CN';
-  if (n.startsWith('fil')) return 'tl';
-  const f = LANGS.find(x => x.c === n.split('-')[0]);
-  return f ? f.c : 'en';
+function tick(){
+ if(!pending.size){clearInterval(tickT);tickT=null;return}
+ pending.forEach((p,id)=>{if(p.paused)return;p.left-=100;const b=document.getElementById('pg-'+id);if(b)b.style.width=Math.max(0,p.left/p.total*100)+'%';if(p.left<=0)sendDraft(id)});
 }
-async function pickJoinLang(c){
-  joinLang = c;
-  $('jLangs').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.c === c));
-  $('jIntroTr').textContent = '';
-  if (joinIntro && c !== joinIntroLang) {
-    const want = c;
-    try { const tx = await translate(joinIntro, joinIntroLang, c); if (joinLang === want) $('jIntroTr').textContent = L(c).f + ' ' + tx; } catch (e) {}
-  }
+function sendDraft(id,newText){
+ const p=pending.get(id);if(!p||!room)return;pending.delete(id);
+ const m=room.msgs.get(id)||{};const text=(newText??m.text??p.base.text).trim();
+ if(!text){cancelDraft(id);return}
+ const r=R(`rooms/${room.code}/msgs/${id}`);
+ if(p.written)fb.update(r,{text,state:'sent',ts:fb.serverTimestamp()});else fb.set(r,{...p.base,text,state:'sent'});
+ const cur=room.msgs.get(id);if(cur){cur.text=text;cur.state='sent'}
+ renderMsg(id);afterSent(id);
 }
-async function joinGo(){
-  if (!joinLang) { toast('언어를 골라 주세요 / Choose a language'); return; }
-  S.lang = joinLang; S.name = $('jName').value.trim(); S.fb = joinCfg; save();
-  await enterRoom(joinCode);
+function cancelDraft(id){
+ const p=pending.get(id);pending.delete(id);if(!room)return;
+ if(p&&p.written)fb.remove(R(`rooms/${room.code}/msgs/${id}`));
+ room.msgs.delete(id);document.getElementById('m-'+id)?.remove();checkEmpty();
+}
+let editing=false;
+function editDraft(id){
+ const p=pending.get(id);const m=room.msgs.get(id);if(!p||!m)return;
+ p.paused=true;editing=true;abortRec();
+ genSheet(t('edit'),`<textarea class="inp" id="edTx" style="font-size:18px;min-height:120px">${esc(m.text)}</textarea><div class="btns" style="margin-top:12px"><button class="btn warn" id="edDel">${t('del')}</button><button class="btn pri" id="edOk">${t('send')}</button></div>`,()=>{editing=false;if(pending.has(id)){p.paused=false}resumeRec()});
+ const tx=$('#edTx');tx.focus();tx.setSelectionRange(tx.value.length,tx.value.length);
+ if(p.written)tx.oninput=()=>{clearTimeout(tx._t);tx._t=setTimeout(()=>{const v=tx.value.trim();if(v&&pending.has(id)){fb.update(R(`rooms/${room.code}/msgs/${id}`),{text:v})}},500)};
+ $('#edOk').onclick=()=>{const v=tx.value;closeSheet(true);editing=false;sendDraft(id,v);resumeRec()};
+ $('#edDel').onclick=()=>{closeSheet(true);editing=false;cancelDraft(id);resumeRec()};
+}
+function sendNow(text){
+ if(!room||!(text=text.trim()))return;
+ const r=fb.push(R(`rooms/${room.code}/msgs`));
+ fb.set(r,{from:me.cid,name:me.name,lang:me.lang,text,state:'sent',ts:fb.serverTimestamp()});
+ afterSent(r.key);
+}
+/* 방장 폰이 없거나 느리면 보낸 사람 폰이 무료 번역으로 채움 */
+function afterSent(id){
+ if(!room||room.isHost)return;
+ setTimeout(async()=>{
+  const m=room?.msgs.get(id);if(!m)return;
+  const need=targetLangs(m.lang).filter(l=>!(m.tr&&m.tr[l]&&m.trSrc===m.text));
+  if(!need.length)return;
+  try{const out={};for(const l of need)out[l]=await freeTranslate(m.text,m.lang,l);
+   const cur=room?.msgs.get(id);if(!cur||cur.text!==m.text)return;
+   const still=need.filter(l=>!(cur.tr&&cur.tr[l]&&cur.trSrc===cur.text));if(!still.length)return;
+   const upd={trSrc:m.text,eng:'free'};if(cur.trSrc===m.text)still.forEach(l=>upd['tr/'+l]=out[l]);else upd.tr=out;
+   fb.update(R(`rooms/${room.code}/msgs/${id}`),upd);
+  }catch{}
+ },hostOnline()?4500:30);
 }
 
-// ───── 설정 ─────
-function openSettings(){
-  $('sName').value = S.name; $('sIntro').value = S.intro;
-  $('sLang').innerHTML = LANGS.map(x => `<option value="${x.c}">${x.f} ${x.k} (${x.n})</option>`).join('');
-  $('sLang').value = S.lang; $('sEngine').value = S.engine;
-  $('sClaude').value = S.claudeKey; $('sGemini').value = S.geminiKey;
-  $('sSound').value = S.sound ? '1' : '0'; $('sRate').value = Number(S.rate).toFixed(1);
-  $('sFb').value = S.fb ? fbToText(S.fb) : '';
-  $('sFbState').textContent = S.fb ? '✅ 연결 주소: ' + S.fb.databaseURL : '❌ 아직 없음';
-  $('ver').textContent = '버전 ' + VERSION;
-  show('settings');
+/* ---------- 방장 폰 = 번역 서버 ---------- */
+const inflight=new Set();
+async function hostProcess(id){
+ const m=room?.msgs.get(id);if(!m||!m.text||m.state==='cancel')return;
+ const targets=targetLangs(m.lang);if(!targets.length)return;
+ const fresh=m.trSrc!==m.text;
+ const need=fresh?targets:targets.filter(l=>!(m.tr||{})[l]);if(!need.length)return;
+ const key=id+'|'+m.text+'|'+need.join(',');if(inflight.has(key))return;inflight.add(key);
+ try{
+  const r=await translateMulti(m.text,m.lang,need);
+  const cur=room?.msgs.get(id);if(!cur||cur.text!==m.text)return;
+  const upd={trSrc:m.text,eng:r.eng};
+  if(cur.trSrc===m.text){need.forEach(l=>{if(r.out[l])upd['tr/'+l]=r.out[l]})}else upd.tr=r.out;
+  await fb.update(R(`rooms/${room.code}/msgs/${id}`),upd);
+ }catch(e){console.warn(e)}finally{inflight.delete(key)}
 }
-const fbToText = f => 'const firebaseConfig = {\n' + Object.entries(f).filter(([, v]) => v).map(([k, v]) => `  ${k}: "${v}"`).join(',\n') + '\n};';
-function saveSettings(close){
-  const oldLang = S.lang, oldUrl = S.fb && S.fb.databaseURL;
-  S.name = $('sName').value.trim(); S.intro = $('sIntro').value.trim();
-  S.lang = $('sLang').value; S.engine = $('sEngine').value;
-  S.claudeKey = $('sClaude').value.trim(); S.geminiKey = $('sGemini').value.trim();
-  S.sound = $('sSound').value === '1'; S.rate = Number($('sRate').value);
-  const fbText = $('sFb').value.trim();
-  if (fbText) {
-    const f = parseFb(fbText);
-    if (!f) { toast('Firebase 설정값에서 databaseURL을 찾지 못했어요', 4000); return; }
-    S.fb = f;
-  } else S.fb = Object.assign({}, FB_DEFAULT);
-  if ((S.engine === 'claude' && !S.claudeKey) || (S.engine === 'gemini' && !S.geminiKey)) toast('키가 없어서 무료 번역기를 씁니다', 3000);
-  save(); updateEngineLbl(); trCache.clear();
-  if (roomRef) {
-    if (oldLang !== S.lang) { micStop(); renderPhrases(); Object.keys(msgs).forEach(k => renderMsg(k)); }
-    roomRef.child('members/' + UID).update({ n: S.name, l: S.lang });
-  }
-  if (oldUrl && S.fb && oldUrl !== S.fb.databaseURL) { toast('Firebase가 바뀌어 앱을 다시 엽니다'); setTimeout(() => location.reload(), 900); }
-  if (close) { closeSettings(); toast('저장했어요'); }
+function activeEngine(){const e=set.engine;if(e==='gemini'&&set.gkey)return e;if(e==='claude'&&set.ckey)return e;if(e==='openai'&&set.okey)return e;return 'free'}
+function glossary(){return set.gloss.split('\n').map(s=>s.trim()).filter(s=>s.includes('=')).slice(0,80).join('\n')}
+function aiPrompt(text,src,targets){
+ const g=glossary();
+ return `You are a live interpreter in a voice call. Translate the ${L(src).en} sentence into each target language. Keep it natural and spoken, same tone and politeness, no explanations.${g?`\nGlossary (use these exact terms):\n${g}`:''}\nTargets (JSON keys): ${targets.map(c=>`"${c}" = ${L(c).en}`).join(', ')}\nReply ONLY with a JSON object like {${targets.map(c=>`"${c}":"..."`).join(',')}}.\nSentence: ${text}`;
 }
-function closeSettings(){ hide('settings'); renderHome(); }
-$('sFb').addEventListener('input', () => {
-  const t = $('sFb').value.trim(); const f = parseFb(t);
-  if (f) { const changed = !S.fb || S.fb.databaseURL !== f.databaseURL; S.fb = f; save(); $('sFbState').textContent = '✅ 저장됨: ' + f.databaseURL; if (changed && roomRef) { toast('Firebase가 바뀌어 앱을 다시 엽니다'); setTimeout(() => location.reload(), 900); } }
-  else $('sFbState').textContent = t ? '⚠ databaseURL을 찾지 못했어요. firebaseConfig 전체를 붙여 넣어 주세요' : '비우면 기본 Firebase를 씁니다';
+function parseJSON(s){s=String(s||'').replace(/^```(json)?/i,'').replace(/```\s*$/,'').trim();const a=s.indexOf('{'),b=s.lastIndexOf('}');return JSON.parse(s.slice(a,b+1))}
+async function translateMulti(text,src,targets,engine=activeEngine()){
+ if(engine!=='free'){
+  try{const out=await aiTranslate(engine,text,src,targets);if(targets.every(l=>out[l]))return{out,eng:engine}}catch(e){console.warn('AI 번역 실패, 무료로 대체',e)}
+ }
+ const out={};await Promise.all(targets.map(async l=>{out[l]=await freeTranslate(text,src,l)}));
+ return{out,eng:'free'};
+}
+async function aiTranslate(engine,text,src,targets){
+ const prompt=aiPrompt(text,src,targets);
+ if(engine==='gemini'){
+  const url=`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(set.gmodel||'gemini-2.5-flash')}:generateContent?key=${encodeURIComponent(set.gkey)}`;
+  const body=th=>({contents:[{role:'user',parts:[{text:prompt}]}],generationConfig:{temperature:.2,responseMimeType:'application/json',...(th?{thinkingConfig:{thinkingBudget:0}}:{})}});
+  let r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body(true))});
+  if(r.status===400)r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body(false))});
+  if(!r.ok)throw new Error('Gemini '+r.status);
+  const j=await r.json();return parseJSON(j.candidates?.[0]?.content?.parts?.map(p=>p.text).join(''));
+ }
+ if(engine==='claude'){
+  const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'content-type':'application/json','x-api-key':set.ckey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:set.cmodel||'claude-haiku-4-5',max_tokens:1024,temperature:.2,messages:[{role:'user',content:prompt}]})});
+  if(!r.ok)throw new Error('Claude '+r.status);
+  const j=await r.json();return parseJSON(j.content?.map(c=>c.text).join(''));
+ }
+ if(engine==='openai'){
+  const r=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+set.okey},body:JSON.stringify({model:set.omodel||'gpt-4.1-mini',response_format:{type:'json_object'},messages:[{role:'user',content:prompt}]})});
+  if(!r.ok)throw new Error('ChatGPT '+r.status);
+  const j=await r.json();return parseJSON(j.choices?.[0]?.message?.content);
+ }
+ throw new Error('engine');
+}
+async function freeTranslate(text,src,tgt){
+ const u=`https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&sl=${L(src).g}&tl=${L(tgt).g}&q=${encodeURIComponent(text)}`;
+ const r=await fetch(u);if(!r.ok)throw new Error('free '+r.status);const j=await r.json();
+ return (j[0]||[]).map(x=>x[0]).join('');
+}
+
+/* ---------- 소리(휴대폰 기본 목소리) ---------- */
+const ttsQ=[];let speaking=false,ttsGuard;
+function voicesFor(lang){const sr=L(lang).sr.toLowerCase().replace('_','-');const b=sr.split('-')[0];const vs=speechSynthesis.getVoices();return vs.filter(v=>v.lang.toLowerCase().replace('_','-')===sr).concat(vs.filter(v=>{const l=v.lang.toLowerCase().replace('_','-');return l!==sr&&l.split('-')[0]===b&&(b!=='zh'||l.includes(sr.split('-')[1]))}))}
+function speak(text,lang,front){if(!text)return;const it={text,lang};front?ttsQ.unshift(it):ttsQ.push(it);if(!speaking)nextTTS()}
+function nextTTS(){
+ clearTimeout(ttsGuard);const it=ttsQ.shift();
+ if(!it){speaking=false;updateMicUI();resumeRec();return}
+ speaking=true;abortRec();updateMicUI();
+ const u=new SpeechSynthesisUtterance(it.text);u.lang=L(it.lang).sr;
+ const pick=set.voices[it.lang];const vs=voicesFor(it.lang);const v=vs.find(x=>x.voiceURI===pick)||vs[0];if(v)u.voice=v;
+ u.rate=set.catchup?Math.min(2,set.rate+0.25*ttsQ.length):set.rate;
+ let done=false;const fin=()=>{if(done)return;done=true;nextTTS()};
+ u.onend=fin;u.onerror=fin;
+ ttsGuard=setTimeout(fin,4000+it.text.length*260/u.rate);
+ speechSynthesis.speak(u);
+}
+function maybeSpeak(id){
+ if(!room||!set.sound)return;const m=room.msgs.get(id);
+ if(!m||m.from===me.cid||m.state!=='sent'||spoken.has(id)||id<=room.joinKey)return;
+ const x=trFor(m,me.lang);if(!x)return;
+ spoken.add(id);speak(x,me.lang);
+}
+function sayMsg(id){
+ const m=room.msgs.get(id);if(!m)return;
+ if(m.from===me.cid){const l=targetLangs(m.lang)[0]||Object.keys(m.tr||{})[0];if(l){const x=trFor(m,l);if(x)return speak(x,l,true)}return speak(m.text,m.lang,true)}
+ speak(trFor(m,me.lang)||m.text,trFor(m,me.lang)?me.lang:m.lang,true);
+}
+
+/* ---------- 음성 인식 ---------- */
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+let rec=null,listening=false,restartT;
+function startListen(){if(!SR){toast(t('noSR'));return}listening=true;updateMicUI();runRec()}
+function stopListen(){listening=false;clearTimeout(restartT);abortRec();setTalk(false);updateMicUI();$('#live').textContent=''}
+function abortRec(){if(rec){try{rec.abort()}catch{}}}
+function resumeRec(){if(listening&&!speaking&&!editing&&!rec){clearTimeout(restartT);restartT=setTimeout(runRec,200)}}
+function runRec(){
+ if(!listening||speaking||editing||rec||!room)return;
+ const r=new SR();rec=r;r.lang=L(me.lang).sr;r.interimResults=true;r.continuous=false;r.maxAlternatives=1;
+ let fin='',lastSent='';
+ r.onresult=e=>{let inter='';fin='';for(let i=0;i<e.results.length;i++){const x=e.results[i];if(x.isFinal)fin+=x[0].transcript;else inter+=x[0].transcript}$('#live').textContent=fin+inter;setTalk(true)};
+ r.onerror=e=>{if(e.error==='not-allowed'||e.error==='service-not-allowed'){listening=false;toast(t('micDenied'));updateMicUI()}};
+ r.onend=()=>{rec=null;$('#live').textContent='';setTalk(false);const s=fin.trim();if(s&&s!==lastSent){lastSent=s;newDraft(s)}if(listening&&!speaking&&!editing){restartT=setTimeout(runRec,120)}updateMicUI()};
+ try{r.start()}catch{rec=null}
+}
+let talkState=false;function setTalk(v){if(!room||talkState===v)return;talkState=v;fb.update(R(`rooms/${room.code}/members/${me.cid}`),{talk:v}).catch(()=>{})}
+function updateMicUI(){const b=$('#mic');if(!b)return;b.classList.toggle('on',listening);b.classList.toggle('hold',listening&&speaking);b.innerHTML=icon(listening?'stop':'mic');$('#micl').textContent=t(listening?'listening':'tapSpeak')}
+
+/* ---------- 화면 꺼짐 방지 ---------- */
+let wl=null;async function wake(on){try{if(on&&'wakeLock'in navigator){wl=await navigator.wakeLock.request('screen')}else if(!on&&wl){await wl.release();wl=null}}catch{}}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&room){wake(true);if(fb)fb.update(R(`rooms/${room.code}/members/${me.cid}`),{online:true}).catch(()=>{})}});
+
+/* ---------- 글씨 크기 ---------- */
+const FS=[.85,1,1.2,1.45];
+function updateFs(){document.documentElement.style.setProperty('--fs',set.fs);$('#fsg').style.fontSize=(14+FS.indexOf(set.fs)*4)+'px'}
+
+/* ---------- 서랍(자주 쓰는 문구) ---------- */
+function renderPhrases(){$('#plist').innerHTML=phrases.map((p,i)=>`<button class="ph" data-ph="${i}">${esc(p.t||p.x)}</button>`).join('')+`<button class="ph add" data-act="addPhrase">+ ${t('newPhrase')}</button>`}
+function savePhrases(){S.set('phrases',phrases);renderPhrases()}
+function phraseEdit(i){
+ const p=i==null?{t:'',x:''}:phrases[i];
+ genSheet(t(i==null?'newPhrase':'edit'),`<div class="row"><label>${t('phTitle')}</label><input class="inp" id="pT" value="${esc(p.t)}" maxlength="24"></div><div class="row"><label>${t('phText')}</label><textarea class="inp" id="pX">${esc(p.x)}</textarea></div><div class="btns" style="margin-top:8px">${i==null?'':`<button class="btn warn" id="pDel">${t('del')}</button>`}<button class="btn pri" id="pOk">${t('save')}</button></div>`);
+ $('#pOk').onclick=()=>{const x=$('#pX').value.trim();if(!x)return;const tt=$('#pT').value.trim()||x.slice(0,14);if(i==null)phrases.push({t:tt,x});else phrases[i]={t:tt,x};savePhrases();closeSheet()};
+ if(i!=null)$('#pDel').onclick=()=>{phrases.splice(i,1);savePhrases();closeSheet()};
+}
+(function(){let lt,long=false;const pl=$('#plist');
+ pl.addEventListener('pointerdown',e=>{const b=e.target.closest('[data-ph]');if(!b)return;long=false;lt=setTimeout(()=>{long=true;phraseEdit(+b.dataset.ph)},550)});
+ ['pointerup','pointerleave','pointercancel'].forEach(ev=>pl.addEventListener(ev,()=>clearTimeout(lt)));
+ pl.addEventListener('contextmenu',e=>e.preventDefault());
+ pl.addEventListener('click',e=>{const b=e.target.closest('[data-ph]');if(!b||long)return;sendNow(phrases[+b.dataset.ph].x);$('#drawer').classList.remove('open');$('#dim').classList.remove('on')});
+})();
+
+/* ---------- 초대 / 참여자 / 공유 ---------- */
+const inviteUrl=()=>location.origin+location.pathname+'?room='+room.code;
+function inviteMsg(){const base=set.invite||(ui()==='ko'?'원격 통역 대화방에 초대합니다. 아래 링크를 누르고 이름과 언어를 고르면 바로 대화할 수 있어요.\nYou are invited to a live interpreted chat. Open the link, choose your language, and start talking.':'Join my interpreted chat room:');return `${base}\n${inviteUrl()}\n(${room.code})`}
+function inviteSheet(){
+ genSheet(t('invite'),`<div class="code-big">${room.code}</div><div class="hint" style="text-align:center;color:var(--sub);font-size:13px;margin-bottom:16px;word-break:break-all">${esc(inviteUrl())}</div><div class="btns"><button class="btn" id="ivCopy">${icon('copy')}${t('inviteCopy')}</button><button class="btn pri" id="ivShare">${icon('share')}${t('inviteShare')}</button></div>`);
+ $('#ivCopy').onclick=()=>copyText(inviteMsg());
+ $('#ivShare').onclick=async()=>{if(navigator.share){try{await navigator.share({title:t('appName'),text:inviteMsg()})}catch{}}else copyText(inviteMsg())};
+}
+function peopleSheet(){
+ const ms=Object.entries(room.members).sort((a,b)=>(b[1].online-a[1].online));
+ genSheet(t('people'),`<div class="row"><label>${t('changeName')}</label><div style="display:flex;gap:8px"><input class="inp" id="pnName" value="${esc(me.name)}" maxlength="20"><button class="btn pri" id="pnOk">${t('save')}</button></div></div>
+ <div class="row sw"><span>${t('myLang')}</span><button class="chip" id="pnLang">${esc(L(me.lang).nat)}</button></div>
+ ${room.isHost?`<div class="row"><label>${t('roomName')}</label><div style="display:flex;gap:8px"><input class="inp" id="rnName" value="${esc(room.meta.title||'')}" maxlength="30"><button class="btn" id="rnOk">${t('save')}</button></div></div>`:''}
+ <div style="margin-top:6px">${ms.map(([id,m])=>`<div class="mem"><div class="ava" style="${m.online?'':'filter:grayscale(1);opacity:.5'}">${esc((m.name||'?').slice(0,1))}</div><div class="mi"><b>${esc(m.name)}${id===me.cid?` (${t('me')})`:''}${id===room.meta.host?`<span class="badge">${t('host')}</span>`:''}</b><small>${esc(L(m.lang).nat)} · ${t(m.online?'online':'offline')}</small></div></div>`).join('')}</div>`);
+ $('#pnOk').onclick=()=>{const v=$('#pnName').value.trim();if(!v)return;me.name=v;S.set('name',v);fb.update(R(`rooms/${room.code}/members/${me.cid}`),{name:v});renderMe();toast('✓');closeSheet()};
+ $('#pnLang').onclick=()=>langSheet(()=>{fb.update(R(`rooms/${room.code}/members/${me.cid}`),{lang:me.lang});if(listening){abortRec()}});
+ if(room.isHost)$('#rnOk').onclick=()=>{const v=$('#rnName').value.trim();if(!v)return;fb.update(R(`rooms/${room.code}/meta`),{title:v});saveRoomEntry(room.code,v,'host');closeSheet()};
+}
+async function shareLog(){
+ const lines=[...room.msgs.values()].filter(m=>m.state==='sent'&&!(room.clearKey&&m.id<=room.clearKey)).map(m=>{const x=m.lang===me.lang?'':trFor(m,me.lang);return `[${m.name}] ${m.text}${x?`\n  → ${x}`:''}`});
+ const text=`${room.meta.title}\n\n${lines.join('\n')}`;
+ if(navigator.share){try{await navigator.share({title:t('shareTitle'),text})}catch{}}else copyText(text);
+}
+async function clearChat(){
+ const btns=[[t('clearMine'),'mine','pri']];if(room.isHost)btns.push([t('clearAll'),'all','warn']);btns.push([t('cancel'),null]);
+ const v=await modal(t('clearQ'),'',btns);if(!v)return;
+ const last=[...room.msgs.keys()].pop()||room.joinKey;room.clearKey=last;S.set('clr_'+room.code,last);
+ if(v==='all'){try{await fb.remove(R(`rooms/${room.code}/msgs`))}catch{}}
+ $('#chat').innerHTML='';checkEmpty();
+}
+
+/* ---------- 설정 ---------- */
+const TRAVEL={ko:{'인사·소개':['처음 뵙겠습니다.','만나서 반갑습니다.','저는 한국에서 왔습니다.','오늘 시간 내 주셔서 감사합니다.'],'통화·회의':['제 목소리 잘 들리세요?','화면이 잘 보이세요?','잠깐 연결이 끊겼어요. 다시 말씀해 주세요.','오늘 회의 내용을 정리해서 보내 드리겠습니다.'],'일정·약속':['몇 시에 만날까요?','내일 다시 연락드리겠습니다.','일정 확인 후 알려 드릴게요.','편하신 시간을 알려 주세요.'],'식사·이동':['같이 식사하실래요?','어디서 만날까요?','주소를 보내 주시겠어요?','조금 늦을 것 같아요. 죄송합니다.']},
+ en:{'Greetings':['Nice to meet you.','Thank you for your time today.'],'Calls':['Can you hear me?','Can you see my screen?','The connection dropped. Please say that again.'],'Plans':['What time shall we meet?','I will contact you tomorrow.','Please tell me a convenient time.']}};
+let setTab='basic';
+function openSettings(tab){
+ if(tab)setTab=tab;$('#tabAdv').classList.toggle('hidden',!!S.get('guestOnly',false)&&!rooms.some(r=>r.role==='host'));
+ document.querySelectorAll('#setTabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===setTab));
+ renderSetTab();openSheet('#shSettings',()=>{if(room)updateStatus()});
+}
+const seg=(key,opts)=>`<div class="seg" data-seg="${key}">${opts.map(([v,l])=>`<button data-v="${v}" class="${String(set[key])===String(v)?'on':''}">${l}</button>`).join('')}</div>`;
+const tog=(key,label)=>`<div class="row sw"><span>${label}</span><button class="tg ${set[key]?'on':''}" data-tog="${key}"></button></div>`;
+function renderSetTab(){
+ const B=$('#setBody');const ko=ui()==='ko';let h='';
+ if(setTab==='basic'){
+  const vs=voicesFor(me.lang);
+  h=`<div class="row"><span class="rl">${ko?'말이 끝난 뒤 확인 시간':'Time to check before sending'}</span>${seg('confirm',[[0,ko?'바로 번역':'Instant'],[1,ko?'1초':'1s'],[2,ko?'2초':'2s'],[3,ko?'3초':'3s']])}<div class="hint">${ko?'말이 끝나면 이 시간 동안 문장을 보여 줘요. 눌러서 고치거나 취소할 수 있어요.':'You can tap to edit or cancel during this time.'}</div></div>
+  <div class="row"><span class="rl">${ko?'읽기 속도':'Reading speed'}</span><div class="range"><input type="range" min="0.8" max="2" step="0.1" value="${set.rate}" id="sRate"><b id="sRateV">${set.rate.toFixed(1)}×</b></div></div>
+  <div class="row"><span class="rl">${ko?'목소리 (휴대폰 기본 목소리)':'Voice (phone voice)'}</span><select class="inp" id="sVoice"><option value="">${ko?'기본':'Default'}</option>${vs.map(v=>`<option value="${esc(v.voiceURI)}" ${set.voices[me.lang]===v.voiceURI?'selected':''}>${esc(v.name)}</option>`).join('')}</select></div>
+  ${tog('prefetch',ko?'중간 번역 미리 시작':'Start translating early')}
+  ${tog('catchup',ko?'밀리면 최대 2배 빠르게 따라잡기':'Catch up up to 2× when behind')}
+  <div class="row"><span class="rl">${ko?'테마':'Theme'}</span>${seg('theme',[['basic',ko?'기본':'Basic'],['sea',ko?'바다':'Sea'],['night',ko?'밤':'Night']])}</div>
+  <div class="row"><label>${ko?'초대 문구':'Invite message'}</label><textarea class="inp" id="sInvite" placeholder="${ko?'비워 두면 기본 문구를 써요':'Leave empty for default'}">${esc(set.invite)}</textarea></div>
+  <div class="row"><div class="btns"><button class="btn" id="sUrl">${icon('link')}${ko?'웹 주소 보내기':'Share app link'}</button><button class="btn" id="sPhDef">${ko?'자주 쓰는 문구 기본값':'Reset phrases'}</button></div></div>`;
+ }else if(setTab==='words'){
+  h=`<div class="row"><label>${ko?'내 단어장':'Glossary'}</label><textarea class="inp" id="sGloss" style="min-height:220px" placeholder="${ko?'한 줄에 하나씩\n금형 = mold\n선반 = lathe\n폴리텍 = Korea Polytechnics':'one per line\nmold = 金型'}">${esc(set.gloss)}</textarea><div class="hint">${ko?'"원래 말 = 번역" 형식으로 적으면 AI 번역(Gemini·Claude·ChatGPT) 때 이 단어로 번역해요. 방장 폰의 단어장이 쓰여요.':'Used by AI translation on the host phone.'}</div></div>`;
+ }else if(setTab==='travel'){
+  const tv=TRAVEL[ko?'ko':'en'];
+  h=`<div class="travel"><div class="hint" style="color:var(--sub);font-size:13px">${ko?'+ 를 누르면 자주 쓰는 문구에 들어가요.':'Tap + to add to quick phrases.'}</div>${Object.entries(tv).map(([k,arr])=>`<h4>${esc(k)}</h4>${arr.map(s=>`<div class="tp"><span>${esc(s)}</span><button data-addtp="${esc(s)}">${icon('plus')}</button></div>`).join('')}`).join('')}</div>`;
+ }else{
+  h=`<div class="row"><span class="rl">번역 엔진</span>${seg('engine',[['free','무료'],['gemini','Gemini'],['claude','Claude'],['openai','ChatGPT']])}<div class="hint">내가 만든 방에서는 <b>이 휴대폰이 번역 서버</b>가 돼서, 초대한 사람들 말도 모두 이 키로 번역돼요. 키는 이 휴대폰에만 저장되고 다른 사람에게는 보이지 않아요. 대화하는 동안 이 폰에서 앱을 켜 두세요.</div></div>
+  <div class="row"><label>Gemini 키</label><input class="inp" type="password" id="k_gkey" value="${esc(set.gkey)}" placeholder="AIza…" autocomplete="off"><a class="lnk" href="https://aistudio.google.com/apikey" target="_blank">키 받으러 가기 ›</a><label style="margin-top:12px">모델 이름</label><input class="inp" id="k_gmodel" value="${esc(set.gmodel)}"></div>
+  <div class="row"><label>Claude 키</label><input class="inp" type="password" id="k_ckey" value="${esc(set.ckey)}" placeholder="sk-ant-…" autocomplete="off"><a class="lnk" href="https://console.anthropic.com/settings/keys" target="_blank">키 받으러 가기 ›</a><label style="margin-top:12px">모델 이름</label><input class="inp" id="k_cmodel" value="${esc(set.cmodel)}"></div>
+  <div class="row"><label>ChatGPT 키</label><input class="inp" type="password" id="k_okey" value="${esc(set.okey)}" placeholder="sk-…" autocomplete="off"><a class="lnk" href="https://platform.openai.com/api-keys" target="_blank">키 받으러 가기 ›</a><label style="margin-top:12px">모델 이름</label><input class="inp" id="k_omodel" value="${esc(set.omodel)}"></div>
+  <div class="row"><button class="btn pri full" id="sTest">번역 시험</button><div class="hint" id="sTestR"></div></div>`;
+ }
+ B.innerHTML=h;B.scrollTop=0;bindSet();
+}
+function bindSet(){
+ const B=$('#setBody');
+ B.querySelectorAll('[data-seg]').forEach(s=>s.onclick=e=>{const b=e.target.closest('button');if(!b)return;const k=s.dataset.seg;let v=b.dataset.v;if(k==='confirm')v=+v;set[k]=v;saveSet();s.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));if(k==='theme')applyTheme();if(k==='engine'&&room)updateStatus()});
+ B.querySelectorAll('[data-tog]').forEach(b=>b.onclick=()=>{const k=b.dataset.tog;set[k]=!set[k];saveSet();b.classList.toggle('on',set[k])});
+ const rate=$('#sRate');if(rate)rate.oninput=()=>{set.rate=+rate.value;$('#sRateV').textContent=set.rate.toFixed(1)+'×';saveSet()};
+ const vo=$('#sVoice');if(vo)vo.onchange=()=>{set.voices[me.lang]=vo.value;saveSet();speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(me.lang==='ko'?'이 목소리로 읽어 드려요.':'I will read with this voice.');u.lang=L(me.lang).sr;const v=voicesFor(me.lang).find(x=>x.voiceURI===vo.value);if(v)u.voice=v;u.rate=set.rate;speechSynthesis.speak(u)};
+ const inv=$('#sInvite');if(inv)inv.oninput=()=>{set.invite=inv.value;saveSet()};
+ const g=$('#sGloss');if(g)g.oninput=()=>{set.gloss=g.value;saveSet()};
+ const u=$('#sUrl');if(u)u.onclick=async()=>{const url=location.origin+location.pathname;if(navigator.share){try{await navigator.share({title:t('appName'),url})}catch{}}else copyText(url)};
+ const pd=$('#sPhDef');if(pd)pd.onclick=async()=>{if(await modal(ui()==='ko'?'자주 쓰는 문구를 기본값으로 되돌릴까요?':'Reset quick phrases?','',[[t('ok'),true,'pri'],[t('cancel'),false]])){phrases=defPhrases();savePhrases();toast('✓')}};
+ B.querySelectorAll('[data-addtp]').forEach(b=>b.onclick=()=>{const s=b.dataset.addtp;phrases.push({t:s.slice(0,12),x:s});savePhrases();toast(t('added'))});
+ ['gkey','gmodel','ckey','cmodel','okey','omodel'].forEach(k=>{const i=$('#k_'+k);if(i)i.oninput=()=>{set[k]=i.value.trim();saveSet()}});
+ const ts=$('#sTest');if(ts)ts.onclick=async()=>{const e=set.engine;const out=$('#sTestR');out.textContent='번역하는 중…';const t0=performance.now();try{if(e==='free'){out.textContent=`무료 번역: ${await freeTranslate('안녕하세요, 만나서 반갑습니다.','ko','en')} (${Math.round(performance.now()-t0)}ms)`}else{const o=await aiTranslate(e,'안녕하세요, 만나서 반갑습니다.','ko',['en','zh']);out.textContent=`${engineName(e)} 성공 · ${Math.round(performance.now()-t0)}ms\nEN: ${o.en}\n中文: ${o.zh}`}}catch(err){out.textContent='실패: '+err.message+' — 키와 모델 이름을 확인해 주세요.'}out.style.whiteSpace='pre-line'};
+}
+
+/* ---------- 숨은 메뉴(버전 다섯 번) ---------- */
+let fiveN=0,fiveT;
+function fiveTap(){fiveN++;clearTimeout(fiveT);fiveT=setTimeout(()=>fiveN=0,1500);if(fiveN>=5){fiveN=0;adminSheet()}}
+function parseFbConfig(s){const o={};s.replace(/["']?(\w+)["']?\s*:\s*["']([^"']+)["']/g,(_,k,v)=>{o[k]=v});if(!o.databaseURL){const m=s.match(/https:\/\/[\w.-]+(firebaseio\.com|firebasedatabase\.app)/);if(m)o.databaseURL=m[0]}if(!o.databaseURL)return null;if(!o.projectId){const m=o.databaseURL.match(/https:\/\/([\w-]+?)(-default-rtdb)?\./);if(m)o.projectId=m[1]}return o}
+function adminSheet(){
+ const cfg=fb?.cfg||S.get('fbcfg',null)||DEFAULT_FB;
+ genSheet('관리자',`<div class="row"><label>Firebase 설정</label><textarea class="inp" id="aCfg" style="min-height:140px;font-size:13px;font-family:monospace" placeholder="Firebase 콘솔에서 복사한 firebaseConfig 를 통째로 붙여 넣으세요">${esc('const firebaseConfig = '+JSON.stringify(cfg,null,2)+';')}</textarea><div class="hint">Firebase 콘솔 › 프로젝트 설정 › 내 앱 › 구성에서 <b>통째로 복사해 붙여 넣으면</b> 필요한 값만 알아서 골라 저장해요.</div><div class="btns" style="margin-top:10px"><button class="btn" id="aPaste">붙여넣기</button><button class="btn pri" id="aSave">저장하고 다시 연결</button></div><button class="lnk" id="aDef" style="background:none">기본값으로 되돌리기</button></div>
+ <div class="row sw"><span id="aStat">${connected?'● Firebase 연결됨':'● 연결 안 됨'}</span><button class="btn" id="aTest">연결 확인</button></div>
+ <div class="row"><a class="btn full" style="text-decoration:none" target="_blank" href="https://console.firebase.google.com/project/${esc(cfg.projectId||'')}/database">${icon('ext')}Firebase 콘솔 바로가기</a></div>
+ <div class="row"><button class="btn full" id="aFresh">최신 버전 받기 (앱 새로 받기)</button><div class="hint">GitHub에 새 파일을 올렸는데 화면이 그대로일 때 눌러요.</div></div>`);
+ $('#aStat').style.color=connected?'var(--teal)':'#E04848';
+ $('#aPaste').onclick=async()=>{try{$('#aCfg').value=await navigator.clipboard.readText()}catch{toast('직접 길게 눌러 붙여 넣어 주세요')}};
+ $('#aSave').onclick=()=>{const o=parseFbConfig($('#aCfg').value);if(!o){toast('databaseURL 을 찾지 못했어요');return}S.set('fbcfg',o);toast('저장했어요. 다시 연결합니다');setTimeout(()=>location.reload(),700)};
+ $('#aDef').onclick=()=>{localStorage.removeItem('rt_fbcfg');toast('기본값으로 되돌렸어요');setTimeout(()=>location.reload(),700)};
+ $('#aTest').onclick=async()=>{const st=$('#aStat');st.textContent='확인 중…';try{if(!fb)throw 0;const k=Date.now();await Promise.race([fb.set(R('ping/'+me.cid),k),new Promise((_,j)=>setTimeout(j,5000))]);const s=await fb.get(R('ping/'+me.cid));if(s.val()!==k)throw 0;st.textContent='● 읽기·쓰기 정상';st.style.color='var(--teal)'}catch{st.textContent='● 연결 실패 — 설정과 규칙을 확인하세요';st.style.color='#E04848'}};
+ $('#aFresh').onclick=async()=>{try{const ks=await caches.keys();await Promise.all(ks.map(k=>caches.delete(k)));const rs=await navigator.serviceWorker?.getRegistrations();await Promise.all((rs||[]).map(r=>r.update().catch(()=>{})))}catch{}location.replace(location.pathname+'?v='+Date.now()+(room?'&room='+room.code:''))};
+}
+
+/* ---------- 버튼 연결 ---------- */
+document.addEventListener('click',e=>{
+ const five=e.target.closest('[data-five]');if(five){fiveTap();return}
+ if(e.target.closest('[data-close]')){closeSheet();return}
+ if(e.target.closest('#setTabs button')){setTab=e.target.closest('button').dataset.tab;document.querySelectorAll('#setTabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===setTab));renderSetTab();return}
+ const a=e.target.closest('[data-act]');if(!a)return;const act=a.dataset.act,id=a.dataset.id;
+ switch(act){
+  case 'settings':openSettings();break;
+  case 'pickLang':langSheet();break;
+  case 'create':createRoom();break;
+  case 'join':{const c=$('#joinCode').value.replace(/\D/g,'');if(c.length!==6){toast(t('codePh'));return}enterRoom(c);break}
+  case 'openRoom':enterRoom(a.dataset.code);break;
+  case 'delRoom':delRoom(a.dataset.code);break;
+  case 'home':leaveRoom();break;
+  case 'people':peopleSheet();break;
+  case 'invite':inviteSheet();break;
+  case 'share':shareLog();break;
+  case 'sound':set.sound=!set.sound;if(!set.sound){speechSynthesis.cancel();ttsQ.length=0}a.classList.toggle('on',set.sound);a.classList.toggle('muted',!set.sound);a.innerHTML=icon(set.sound?'vol':'volx');break;
+  case 'clear':clearChat();break;
+  case 'mic':listening?stopListen():startListen();break;
+  case 'font':{const i=(FS.indexOf(set.fs)+1)%FS.length;set.fs=FS[i];saveSet();updateFs();break}
+  case 'drawer':$('#drawer').classList.add('open');$('#dim').classList.add('on');break;
+  case 'drawerClose':closeSheet();break;
+  case 'sendText':{const x=$('#composeTx');sendNow(x.value);x.value='';x.style.height='';closeSheet();break}
+  case 'addPhrase':phraseEdit(null);break;
+  case 'say':sayMsg(id);break;
+  case 'editDraft':editDraft(id);break;
+  case 'cancelDraft':cancelDraft(id);break;
+ }
 });
-function updateEngineLbl(){
-  const e = engineNow();
-  $('engineLbl').textContent = (e === 'claude' ? 'Claude 번역기' : e === 'gemini' ? 'Gemini 번역기' : '무료 번역기') + ' · ' + L(S.lang).f + ' ' + L(S.lang).k + (SR ? '' : ' · 음성 인식 안 됨(글로 입력)');
-}
+$('#dim').onclick=()=>closeSheet();
+$('#meName').addEventListener('input',e=>{me.name=e.target.value.trim();S.set('name',me.name);$('#meAva').textContent=(me.name||t('me')).slice(0,1).toUpperCase()});
+$('#joinCode').addEventListener('keydown',e=>{if(e.key==='Enter')$('[data-act=join]').click()});
+$('#composeTx').addEventListener('input',e=>{const x=e.target;x.style.height='auto';x.style.height=Math.min(120,x.scrollHeight)+'px'});
+$('#splash').addEventListener('click',()=>{
+ try{speechSynthesis.speak(Object.assign(new SpeechSynthesisUtterance(' '),{volume:0}))}catch{}
+ show('#home');
+ if(inviteCode){$('#joinCode').value=inviteCode;if(me.name.trim()){waitFb().then(()=>enterRoom(inviteCode))}else{setTimeout(()=>{toast(t('needName'));$('#meName').focus()},300)}}
+});
+$('#meName').addEventListener('change',()=>{if(inviteCode&&me.name.trim()&&!room&&$('#joinCode').value===inviteCode)waitFb().then(()=>enterRoom(inviteCode))});
+function waitFb(){return new Promise(r=>{let n=0;const c=()=>{if((fb&&connected)||n++>40)r();else setTimeout(c,150)};c()})}
+speechSynthesis.onvoiceschanged=()=>{};
+if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 
-// ───── 관리자 메뉴 (버전 글씨 5번) ─────
-let verTaps = 0, verTimer;
-function verTap(){
-  verTaps++; clearTimeout(verTimer); verTimer = setTimeout(() => verTaps = 0, 1500);
-  if (verTaps >= 5) { verTaps = 0; openAdmin(); }
-}
-function openAdmin(){
-  $('admInfo').textContent = [
-    '버전: ' + VERSION, '내 ID: ' + UID, '내 언어: ' + L(S.lang).k, '지금 방: ' + (roomId || '-'),
-    '번역 엔진: ' + engineNow(), 'Claude 모델: ' + S.claudeModel, 'Gemini 모델: ' + S.geminiModel,
-    'Firebase: ' + (S.fb ? S.fb.databaseURL : '-'), '음성 인식: ' + (SR ? '가능' : '안 됨'),
-    '목소리 수: ' + voices.length, '최근 방: ' + (S.recent || []).join(', ')
-  ].join('\n');
-  show('admin');
-}
-async function admTestDb(){
-  try {
-    const d = await getDb(); const r = d.ref('rooms/_test/' + UID);
-    const v = Date.now(); await r.set(v); const got = (await r.once('value')).val(); await r.remove();
-    toast(got === v ? '✅ Firebase 연결 정상' : '⚠ 쓰기는 되었지만 읽기 값이 달라요', 3500);
-  } catch (e) { toast('❌ 연결 실패: ' + e.message + ' (규칙·주소 확인)', 6000); }
-}
-async function admTestTr(){
-  const t = prompt('시험할 문장', '안녕하세요. 만나서 반갑습니다.'); if (!t) return;
-  const lg = prompt('번역할 언어 코드 (en, ja, zh-CN, vi …)', 'en'); if (!lg) return;
-  try { const s = Date.now(); const r = await translate(t, S.lang, lg.trim()); alert(`[${engineNow()}] ${((Date.now() - s) / 1000).toFixed(1)}초\n\n${r}`); }
-  catch (e) { alert('실패: ' + e.message); }
-}
-function admTestVoice(){
-  const have = LANGS.map(x => `${x.f} ${x.k}: ${pickVoice(x.c) ? '✅ ' + pickVoice(x.c).name : '❌ 없음'}`).join('\n');
-  alert('이 휴대폰의 목소리\n\n' + have);
-}
-function admModels(){
-  const c = prompt('Claude 모델 이름', S.claudeModel); if (c === null) return;
-  const g = prompt('Gemini 모델 이름', S.geminiModel); if (g === null) return;
-  S.claudeModel = c.trim() || DEFAULTS.claudeModel; S.geminiModel = g.trim() || DEFAULTS.geminiModel;
-  save(); trCache.clear(); openAdmin(); toast('저장했어요');
-}
-async function admClearRoom(){
-  if (!roomRef) { toast('대화방 안에서 쓸 수 있어요'); return; }
-  if (!confirm('이 방의 대화 기록을 모두 지울까요? (모든 사람 화면에서 지워집니다)')) return;
-  await roomRef.child('msgs').remove(); $('msgs').innerHTML = ''; msgs = {}; toast('지웠어요');
-}
-async function admRefresh(){
-  try {
-    const regs = await navigator.serviceWorker.getRegistrations(); await Promise.all(regs.map(r => r.unregister()));
-    const keys = await caches.keys(); await Promise.all(keys.map(k => caches.delete(k)));
-  } catch (e) {}
-  location.reload();
-}
-function admReset(){
-  if (!confirm('모든 설정(키, 문구)을 지울까요? (Firebase는 기본값으로 돌아갑니다)')) return;
-  localStorage.removeItem('talk.s'); location.href = location.pathname;
-}
-
-// ───── 첫 화면 ─────
-function renderHome(){
-  S.fb ? hide('needFb') : show('needFb');
-  const r = S.recent || [];
-  if (r.length && S.fb) {
-    show('recentBox');
-    $('recent').innerHTML = r.map(c => `<button class="big b-line" style="padding:14px;font-size:19px;margin:8px 0" data-c="${c}">방 ${c} 다시 들어가기</button>`).join('');
-    $('recent').querySelectorAll('button').forEach(b => b.onclick = () => enterRoom(b.dataset.c));
-  } else hide('recentBox');
-}
-
-// ───── 시작 ─────
-function start(){
-  const h = new URLSearchParams(location.hash.slice(1));
-  const code = (h.get('r') || '').toUpperCase(), c = h.get('c');
-  renderHome();
-  if (code && c) {
-    let cfg = null;
-    try { const o = JSON.parse(b64d(c)); cfg = { databaseURL: o.u, apiKey: o.k || undefined, projectId: o.p || undefined }; } catch (e) {}
-    if (cfg && cfg.databaseURL) { showJoin(code, cfg); return; }
-    toast('초대 링크가 잘못되었어요', 4000);
-  } else if (code && S.fb) { enterRoom(code); return; }
-  only('home');
-}
-start();
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+/* ---------- 시작 ---------- */
+paintIcons();applyTexts();applyTheme();updateFs();renderMe();renderRooms();renderPhrases();
+fbInit();
 </script>
 </body>
 </html>
