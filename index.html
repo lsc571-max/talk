@@ -284,6 +284,7 @@ button:disabled{opacity:.45;cursor:default}
 .tg.on{background:#45956B;box-shadow:inset 0 0 0 1px #2F7951}
 .admin-connection{margin-bottom:16px;border:1px solid #DFE7E4;border-radius:14px;padding:12px}.admin-connection summary{cursor:pointer;color:var(--sub);font-size:14px;font-weight:600}.admin-connection[open] summary{margin-bottom:12px}
 </style>
+<meta name="app-build" content="20261107-auto1">
 </head>
 <body data-theme="basic">
 
@@ -415,7 +416,7 @@ button:disabled{opacity:.45;cursor:default}
 <div id="toast"></div>
 
 <script type="module">
-const VERSION='v1.1';
+const VERSION='v1.2 · ChatGPT';
 const FAST='gemini-3.5-flash-lite',ACC='gemini-3.8-flash';
 const FB_VER='10.12.2';
 const DEFAULT_FB={authDomain:"talk-app-3fb0e.firebaseapp.com",databaseURL:"https://talk-app-3fb0e-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"talk-app-3fb0e"};
@@ -1078,7 +1079,48 @@ $('#splash').addEventListener('click',e=>{
 $('#meName').addEventListener('change',()=>{if(inviteCode&&me.name.trim()&&!room&&$('#joinCode').value===inviteCode)waitFb().then(()=>enterRoom(inviteCode))});
 function waitFb(){return new Promise(r=>{let n=0;const c=()=>{if((fb&&connected)||n++>40)r();else setTimeout(c,150)};c()})}
 speechSynthesis.onvoiceschanged=()=>{};
-if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+
+/* 새 버전은 확인하되 대화와 입력 중에는 적용하지 않습니다. */
+const APP_BUILD='20261107-auto1';
+let updateAvailable=false,updateChecking=false,updateReloading=false;
+function canApplyAppUpdate(){
+ return !document.hidden&&!room&&!listening&&!speaking&&!editing&&!pending.size&&!openSheetEl
+  &&!document.activeElement?.matches('input,textarea,select,[contenteditable="true"]')
+  &&document.querySelector('#modal')?.classList.contains('hidden');
+}
+function applyAppUpdate(){
+ if(!updateAvailable||updateReloading||!canApplyAppUpdate())return;
+ updateReloading=true;
+ const url=new URL(location.href);url.searchParams.set('v',Date.now());
+ location.replace(url.href);
+}
+async function checkAppUpdate(){
+ if(document.hidden||!navigator.onLine||updateChecking||updateReloading)return;
+ updateChecking=true;const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),10000);
+ try{
+  const url=new URL('index.html',location.href);url.searchParams.set('_update',Date.now());
+  const response=await fetch(url,{cache:'no-store',signal:controller.signal});
+  if(!response.ok)return;
+  const doc=new DOMParser().parseFromString(await response.text(),'text/html');
+  const build=doc.querySelector('meta[name="app-build"]')?.content;
+  if(build&&build!==APP_BUILD){updateAvailable=true;applyAppUpdate()}
+ }catch{}finally{clearTimeout(timer);updateChecking=false}
+}
+if('serviceWorker'in navigator){
+ navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(reg=>{
+  const refresh=()=>{if(!document.hidden&&navigator.onLine)reg.update().catch(()=>{})};
+  refresh();setInterval(refresh,60000);
+  document.addEventListener('visibilitychange',refresh);
+  window.addEventListener('online',refresh);
+ }).catch(()=>{});
+ navigator.serviceWorker.addEventListener('controllerchange',()=>checkAppUpdate());
+}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkAppUpdate()});
+window.addEventListener('online',()=>checkAppUpdate());
+setInterval(checkAppUpdate,60000);
+setInterval(applyAppUpdate,1500);
+setTimeout(checkAppUpdate,0);
+
 
 /* ---------- 설명 모드 ---------- */
 const koOnly=()=>!!(room&&room.meta.mode==='lec'&&room.meta.lko);
