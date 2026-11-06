@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<meta name="theme-color" content="#1E2F5C">
+<meta name="theme-color" content="#EEEDF8">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>원격 통역 대화</title>
 <link rel="manifest" href="manifest.json">
@@ -11,9 +11,9 @@
 <link rel="apple-touch-icon" href="icon-192.png">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
-:root{--bg:#F4F1EA;--card:#fff;--ink:#1A2238;--sub:#6B7280;--line:#E8E3D9;--navy:#1E2F5C;--navy2:#34508F;--coral:#F2724B;--coral2:#F7A072;--teal:#1FA38A;--mine:#1E2F5C;--mineInk:#fff;--theirs:#fff;--theirsInk:#1A2238;--soft:#EDE8DE;--fs:1}
-body[data-theme=night]{--bg:#0E1424;--card:#172038;--ink:#E8ECF5;--sub:#93A0BC;--line:#26314F;--navy:#4C6CC0;--navy2:#6A88D8;--mine:#2B437F;--theirs:#1D2846;--theirsInk:#E8ECF5;--soft:#1D2846}
-body[data-theme=sea]{--bg:#E9F3F2;--line:#D3E5E3;--navy:#0F5E6B;--navy2:#1C8796;--mine:#0F5E6B;--soft:#DCECEA}
+:root{--bg:#F5F4FA;--bgg:linear-gradient(175deg,#F1F1FB 0%,#F6F3FA 55%,#FAF1F4 100%);--card:#fff;--ink:#2B2E4C;--sub:#7B7F98;--line:#E7E4F1;--navy:#6672CC;--navy2:#9C8BDD;--coral:#EE9C8A;--coral2:#F4BBA0;--teal:#4FB59A;--mine:linear-gradient(135deg,#7584DE,#A592E2);--mineInk:#fff;--theirs:#fff;--theirsInk:#2B2E4C;--soft:#EFECF8;--fs:1}
+body[data-theme=night]{--bg:#0E1424;--bgg:#0E1424;--card:#172038;--ink:#E8ECF5;--sub:#93A0BC;--line:#26314F;--navy:#4C6CC0;--navy2:#6A88D8;--mine:#2B437F;--theirs:#1D2846;--theirsInk:#E8ECF5;--soft:#1D2846}
+body[data-theme=sea]{--bg:#E9F3F2;--bgg:#E9F3F2;--line:#D3E5E3;--navy:#0F5E6B;--navy2:#1C8796;--mine:#0F5E6B;--soft:#DCECEA}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0}
 html,body{height:100%;overflow:hidden;overscroll-behavior:none}
 body{font-family:"Pretendard Variable",Pretendard,-apple-system,"Noto Sans KR",sans-serif;background:var(--bg);color:var(--ink);letter-spacing:-.01em}
@@ -26,19 +26,19 @@ input,textarea,select{font:inherit;color:var(--ink)}
 .scroll::-webkit-scrollbar{display:none}
 
 /* ---------- 시작 화면 ---------- */
-#splash{background:radial-gradient(120% 80% at 80% 0%,#3B5BA9 0%,transparent 60%),radial-gradient(90% 70% at 0% 100%,#F2724B55 0%,transparent 60%),linear-gradient(160deg,#1E2F5C 0%,#16213F 100%);color:#fff;align-items:center;justify-content:space-between;cursor:pointer;overflow:hidden}
+#splash{background:radial-gradient(90% 60% at 85% 5%,#ffffffaa 0%,transparent 60%),radial-gradient(80% 60% at 0% 100%,#F6C9D6 0%,transparent 65%),linear-gradient(165deg,#B8CBF3 0%,#C9BCEF 50%,#EFC6D8 100%);color:#2F3263;align-items:center;justify-content:space-between;cursor:pointer;overflow:hidden}
 #splash .ver{position:absolute;top:calc(env(safe-area-inset-top) + 14px);right:18px;font-size:13px;opacity:.55}
 #splash .art{flex:1;display:flex;align-items:center;justify-content:center;width:100%;min-height:0;padding:40px 20px 0}
 #splash .art svg{width:min(88vw,400px);height:auto;max-height:52vh}
 #splash h1{font-size:34px;font-weight:800;letter-spacing:-.03em;text-align:center}
 #splash p.sub{margin-top:10px;font-size:16px;opacity:.75;text-align:center}
-#splash .go{margin:34px 0 calc(48px + env(safe-area-inset-bottom));padding:15px 42px;border-radius:40px;background:#fff;color:#1E2F5C;font-weight:700;font-size:17px;box-shadow:0 10px 30px #0006;animation:breathe 2.4s ease-in-out infinite}
+#splash .go{margin:34px 0 calc(48px + env(safe-area-inset-bottom));padding:15px 42px;border-radius:40px;background:#ffffffe0;color:#5F63BF;font-weight:700;font-size:17px;box-shadow:0 10px 30px #8C7FD855;animation:breathe 2.4s ease-in-out infinite}
 @keyframes breathe{50%{transform:scale(1.05)}}
 .float{animation:fl 5s ease-in-out infinite}.float.d2{animation-delay:-2.5s}
 @keyframes fl{50%{transform:translateY(-8px)}}
 
 /* ---------- 홈 ---------- */
-#home{background:var(--bg)}
+#home{background:var(--bgg)}
 .hhead{display:flex;align-items:center;gap:10px;padding:16px 18px 8px}
 .logo{width:34px;height:34px;border-radius:11px;background:linear-gradient(135deg,var(--navy),var(--navy2));display:grid;place-items:center;color:#fff}
 .hhead h2{font-size:19px;font-weight:800;flex:1}
@@ -53,14 +53,14 @@ input,textarea,select{font:inherit;color:var(--ink)}
 .me input::placeholder{color:#B9B3A7;font-weight:600}
 .chip{display:inline-flex;align-items:center;gap:6px;padding:9px 14px;border-radius:30px;background:var(--soft);font-weight:600;font-size:15px;white-space:nowrap}
 .acts{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;margin:14px 18px 0}
-.card-new{border-radius:22px;padding:18px 16px;min-height:132px;background:linear-gradient(145deg,var(--navy),var(--navy2));color:#fff;display:flex;flex-direction:column;justify-content:space-between;text-align:left;box-shadow:0 10px 24px #1E2F5C33}
+.card-new{border-radius:22px;padding:18px 16px;min-height:132px;background:linear-gradient(145deg,var(--navy),var(--navy2));color:#fff;display:flex;flex-direction:column;justify-content:space-between;text-align:left;box-shadow:0 10px 24px #6672CC33}
 .card-new .pl{width:38px;height:38px;border-radius:12px;background:#ffffff26;display:grid;place-items:center}
 .card-new b{font-size:18px;font-weight:700;line-height:1.3}
-.card-join{border-radius:22px;padding:16px;min-height:132px;background:linear-gradient(145deg,var(--coral),var(--coral2));color:#fff;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 10px 24px #F2724B33}
+.card-join{border-radius:22px;padding:16px;min-height:132px;background:linear-gradient(145deg,#F2A99A,#EC9DB6);color:#fff;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 10px 24px #EC9DB633}
 .card-join b{font-size:16px;font-weight:700}
 .joinrow{display:flex;gap:6px}
-.joinrow input{flex:1;min-width:0;width:100%;border:0;border-radius:12px;padding:10px;font-size:20px;font-weight:700;letter-spacing:.12em;text-align:center;background:#fff;color:#C2522F;outline:none}
-.joinrow input::placeholder{letter-spacing:0;font-size:14px;font-weight:600;color:#E3A58C}
+.joinrow input{flex:1;min-width:0;width:100%;border:0;border-radius:12px;padding:10px;font-size:20px;font-weight:700;letter-spacing:.12em;text-align:center;background:#fff;color:#C0667A;outline:none}
+.joinrow input::placeholder{letter-spacing:0;font-size:14px;font-weight:600;color:#E6A9B5}
 .joinrow button{width:44px;flex:none;border-radius:12px;background:#ffffff33;display:grid;place-items:center;color:#fff}
 .sect{display:flex;align-items:center;gap:8px;margin:22px 22px 10px;font-size:15px;font-weight:700;color:var(--navy)}
 .sect:before{content:"";width:4px;height:16px;border-radius:2px;background:var(--navy)}
@@ -78,7 +78,7 @@ input,textarea,select{font:inherit;color:var(--ink)}
 .empty{text-align:center;color:var(--sub);padding:30px 10px;font-size:14px;line-height:1.6}
 
 /* ---------- 대화방 ---------- */
-#room{background:var(--bg)}
+#room{background:var(--bgg)}
 .top{display:flex;align-items:center;gap:2px;padding:8px 8px 8px 6px;background:var(--card);border-bottom:1px solid var(--line)}
 .ttl{flex:1;min-width:0;padding:2px 6px;text-align:left;border-radius:10px}
 .ttl b{display:block;font-size:16px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -92,7 +92,7 @@ input,textarea,select{font:inherit;color:var(--ink)}
 .msg{display:flex;flex-direction:column;margin-bottom:14px;max-width:86%}
 .msg.mine{margin-left:auto;align-items:flex-end}
 .msg .who{font-size:12px;color:var(--sub);margin:0 6px 4px}
-.bub{position:relative;border-radius:20px;padding:12px 44px 12px 15px;background:var(--theirs);color:var(--theirsInk);box-shadow:0 1px 2px #0000000d;border-top-left-radius:6px}
+.bub{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;position:relative;border-radius:20px;padding:12px 44px 12px 15px;background:var(--theirs);color:var(--theirsInk);box-shadow:0 1px 2px #0000000d;border-top-left-radius:6px}
 .mine .bub{background:var(--mine);color:var(--mineInk);border-top-left-radius:20px;border-top-right-radius:6px}
 .bub .main{font-size:calc(19px * var(--fs));font-weight:600;line-height:1.42;word-break:keep-all;overflow-wrap:anywhere}
 .bub .sub{font-size:calc(14px * var(--fs));line-height:1.45;margin-top:6px;opacity:.62;word-break:keep-all;overflow-wrap:anywhere}
@@ -111,21 +111,32 @@ input,textarea,select{font:inherit;color:var(--ink)}
 .chat-empty .big{width:84px;height:84px;border-radius:28px;background:var(--card);display:grid;place-items:center;color:var(--navy)}
 .chat-empty .big .ic{width:40px;height:40px;stroke-width:1.4}
 .chat-empty button{margin-top:4px;padding:11px 20px;border-radius:24px;background:var(--navy);color:#fff;font-weight:600;display:inline-flex;gap:8px;align-items:center}
-#talking{font-size:12px;color:var(--sub);padding:0 18px 4px;min-height:18px}
+#talking{position:absolute;left:50%;bottom:calc(150px + env(safe-area-inset-bottom));transform:translate(-50%,10px);z-index:6;display:flex;align-items:center;gap:10px;padding:10px 18px 10px 14px;border-radius:26px;background:linear-gradient(135deg,#fffffff2,#F3EEFCf2);box-shadow:0 6px 22px #8C7FD844,0 0 0 1px #E3DDF6;font-size:16px;font-weight:700;color:#5C5AA8;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;white-space:nowrap;max-width:90vw;overflow:hidden}
+#talking.on{opacity:1;transform:translate(-50%,0);animation:glow 1.6s ease-in-out infinite}
+.wv{display:flex;gap:3px;align-items:center;height:20px;flex:none}
+.wv i{width:4px;height:6px;border-radius:2px;background:linear-gradient(#A592E2,#7584DE);animation:wv 1s ease-in-out infinite}
+.wv i:nth-child(2){animation-delay:-.25s}.wv i:nth-child(3){animation-delay:-.5s}.wv i:nth-child(4){animation-delay:-.75s}
+@keyframes wv{0%,100%{height:5px}50%{height:19px}}
+@keyframes glow{50%{box-shadow:0 6px 30px #A592E277,0 0 0 5px #E9E3F8}}
 .live{min-height:24px;padding:0 20px 6px;text-align:center;font-size:calc(16px * var(--fs));color:var(--navy2);font-weight:500;line-height:1.4;max-height:66px;overflow:hidden}
-.bottom{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:6px 18px 14px;background:var(--bg)}
-.side{display:flex;gap:8px;align-items:center}
+.bottom{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:6px 14px 14px;background:transparent}
+.side{display:flex;gap:4px;align-items:center}
 .side.r{justify-content:flex-end}
-.tool{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;color:var(--sub);min-width:54px;padding:6px 4px;border-radius:14px}
+.tool{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;color:var(--sub);min-width:48px;padding:6px 4px;border-radius:14px}
 .tool:active{background:var(--soft)}
 .tool .tb{width:44px;height:44px;border-radius:15px;background:var(--card);display:grid;place-items:center;color:var(--ink);box-shadow:0 1px 0 var(--line)}
 .tool .tb .fsg{font-weight:800;line-height:1;transition:font-size .15s}
 .micwrap{display:flex;flex-direction:column;align-items:center;gap:6px}
-#mic{position:relative;width:82px;height:82px;border-radius:50%;background:linear-gradient(145deg,var(--navy),var(--navy2));color:#fff;display:grid;place-items:center;box-shadow:0 10px 26px #1E2F5C44;transition:transform .15s}
+#mic,#handBtn{position:relative;width:82px;height:82px;border-radius:50%;background:linear-gradient(145deg,#7584DE,#A592E2);color:#fff;display:grid;place-items:center;box-shadow:0 10px 26px #7584DE55;transition:transform .15s}
+#handBtn{background:linear-gradient(145deg,#F2A99A,#EC9DB6);box-shadow:0 10px 26px #EC9DB655}
+#handBtn .ic{width:36px;height:36px;stroke-width:1.6}
+#handBtn.up{background:linear-gradient(145deg,#7584DE,#A592E2)}
+#handBtn.up:before{content:"";position:absolute;inset:-6px;border-radius:50%;border:2px solid #A592E2;animation:ring 1.8s ease-out infinite}
+.center{display:flex;justify-content:center}
 #mic:active{transform:scale(.95)}
 #mic .ic{width:34px;height:34px;stroke-width:1.6}
-#mic.on{background:linear-gradient(145deg,var(--coral),#E85A33);box-shadow:0 10px 26px #F2724B55}
-#mic.on:before,#mic.on:after{content:"";position:absolute;inset:-6px;border-radius:50%;border:2px solid var(--coral);opacity:0;animation:ring 1.8s ease-out infinite}
+#mic.on{background:linear-gradient(145deg,#F2A595,#E98DAA);box-shadow:0 10px 26px #E98DAA66}
+#mic.on:before,#mic.on:after{content:"";position:absolute;inset:-6px;border-radius:50%;border:2px solid #EFA2B4;opacity:0;animation:ring 1.8s ease-out infinite}
 #mic.on:after{animation-delay:.9s}
 #mic.hold{opacity:.65}
 @keyframes ring{0%{transform:scale(.9);opacity:.7}100%{transform:scale(1.35);opacity:0}}
@@ -176,7 +187,7 @@ input,textarea,select{font:inherit;color:var(--ink)}
 .inp:focus{border-color:var(--navy2)}
 textarea.inp{resize:vertical;min-height:90px;line-height:1.5}
 .btn{white-space:nowrap;flex:none;display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:12px 16px;border-radius:13px;background:var(--soft);font-weight:600;font-size:15px}
-.btn.pri{background:var(--navy);color:#fff}
+.btn.pri{background:var(--mine);color:#fff}
 .btn.warn{background:#FDECE6;color:#C2522F}
 .btn.full{width:100%}
 .btns{display:flex;gap:8px;flex-wrap:wrap}
@@ -203,8 +214,46 @@ textarea.inp{resize:vertical;min-height:90px;line-height:1.5}
 #modal .box h3{font-size:18px;margin-bottom:8px}
 #modal .box p{font-size:14px;color:var(--sub);line-height:1.55;margin-bottom:18px;white-space:pre-line}
 #modal .box .btns{flex-direction:column}
-#toast{position:fixed;left:50%;bottom:calc(130px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);background:#1A2238E8;color:#fff;padding:11px 18px;border-radius:22px;font-size:14px;z-index:90;opacity:0;transition:.2s;pointer-events:none;max-width:86vw;text-align:center}
+#toast{position:fixed;left:50%;bottom:calc(130px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);background:#3D4070EB;color:#fff;padding:11px 18px;border-radius:22px;font-size:14px;z-index:90;opacity:0;transition:.2s;pointer-events:none;max-width:86vw;text-align:center}
 #toast.on{opacity:1;transform:translateX(-50%)}
+/* 설명 모드·질문 */
+.modebar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:8px 12px;background:#ffffff99;border-bottom:1px solid var(--line)}
+.modebar .mseg{flex:1 1 120px}
+.modebar .mseg2{flex:1 1 100%}
+.modebar .seg button{padding:7px 2px;font-size:13px}
+.mb-btn{position:relative;display:inline-flex;align-items:center;gap:5px;padding:8px 11px;border-radius:12px;background:var(--soft);font-size:13px;font-weight:700;color:var(--navy);white-space:nowrap}
+.mb-btn .ic{width:17px;height:17px}
+.bdg{position:absolute;top:-7px;right:-7px;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:linear-gradient(135deg,#EE9C8A,#E98AA6);color:#fff;font-size:11px;font-weight:800;display:grid;place-items:center;box-shadow:0 2px 6px #E98AA655}
+.tool .tb{position:relative}
+.note{flex:1 1 100%;display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:16px;background:linear-gradient(135deg,#FFF5F1,#F5EEFC);box-shadow:0 4px 16px #A08EE033;font-size:14px;font-weight:600;color:#5C5AA8;animation:pop .3s ease}
+.note b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.note button{padding:7px 11px;border-radius:11px;font-size:13px;font-weight:700;background:var(--mine);color:#fff;flex:none}
+.note button.g{background:#fff;color:var(--sub)}
+@keyframes pop{from{transform:scale(.96);opacity:0}}
+.lecpill{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;font-size:14px;font-weight:700;color:var(--navy);padding:2px 0}
+.lecpill .ic{width:19px;height:19px}
+.qi{padding:12px 0;border-bottom:1px solid var(--line)}
+.qi .qn{font-size:12px;color:var(--sub)}
+.qi .qt{font-size:17px;font-weight:600;margin-top:4px;line-height:1.45;word-break:keep-all}
+.qi .qo{font-size:13px;color:var(--sub);margin-top:4px}
+.qi.new .qn:after{content:"NEW";margin-left:6px;font-size:10px;font-weight:800;color:#E98AA6}
+.mtx{font-size:17px;line-height:1.5;word-break:keep-all;overflow-wrap:anywhere}
+.qr{width:220px;height:220px;margin:4px auto 6px;background:#fff;border-radius:18px;padding:10px;box-shadow:0 4px 18px #6672CC22;display:grid;place-items:center}
+.qr svg,.qr img{width:100%;height:100%;display:block}
+.qr.big{position:fixed;inset:0;margin:0;width:auto;height:auto;border-radius:0;z-index:100;padding:6vw}
+.qr.big svg,.qr.big img{width:min(88vw,80vh);height:auto}
+.qrh{text-align:center;font-size:12px;color:var(--sub);margin-bottom:10px}
+.instpill{display:inline-flex;align-items:center;gap:5px;padding:7px 11px;border-radius:20px;background:var(--soft);color:var(--navy);font-size:13px;font-weight:700}
+.instpill .ic{width:16px;height:16px}
+.inapp{position:absolute;left:16px;right:16px;top:calc(env(safe-area-inset-top) + 44px);z-index:3;background:#fffffff2;color:#3A3D66;border-radius:18px;padding:14px;font-size:14px;line-height:1.55;box-shadow:0 8px 24px #8C7FD844;cursor:default}
+.inapp .btns{margin-top:10px}
+.ios li{margin:10px 0;font-size:15px;line-height:1.5}
+.ios .ic{width:18px;height:18px;vertical-align:-3px;color:var(--navy)}
+#dimOv{position:fixed;inset:0;z-index:95;background:#000;touch-action:manipulation}
+#dimOv .dbox{position:absolute;color:#666;animation:drift 40s ease-in-out infinite alternate}
+#dimOv .dt{font-size:15px}#dimOv .ds{font-size:12px;color:#4a4a4a;margin-top:4px}
+#dimOv .db{margin-top:12px;border:1px solid #333;background:#111;color:#8a8a8a;border-radius:16px;padding:8px 14px;font-size:13px}
+@keyframes drift{to{transform:translate(30px,70px)}}
 </style>
 </head>
 <body data-theme="basic">
@@ -215,37 +264,37 @@ textarea.inp{resize:vertical;min-height:90px;line-height:1.5}
   <div class="art">
     <svg viewBox="0 0 400 330" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <linearGradient id="gA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff" stop-opacity=".22"/><stop offset="1" stop-color="#ffffff" stop-opacity=".06"/></linearGradient>
-        <linearGradient id="gB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F7A072"/><stop offset="1" stop-color="#F2724B"/></linearGradient>
-        <linearGradient id="gC" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8FB0F5"/><stop offset="1" stop-color="#5B7FD6"/></linearGradient>
+        <linearGradient id="gA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff" stop-opacity=".6"/><stop offset="1" stop-color="#ffffff" stop-opacity=".28"/></linearGradient>
+        <linearGradient id="gB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F6B7A6"/><stop offset="1" stop-color="#EC9AB4"/></linearGradient>
+        <linearGradient id="gC" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9EB6F3"/><stop offset="1" stop-color="#8E87DE"/></linearGradient>
       </defs>
-      <circle cx="200" cy="165" r="118" fill="none" stroke="#fff" stroke-opacity=".10" stroke-width="1.5"/>
-      <circle cx="200" cy="165" r="150" fill="none" stroke="#fff" stroke-opacity=".06" stroke-width="1.5"/>
-      <g stroke="#fff" stroke-opacity=".28" stroke-width="1.4" fill="none">
+      <circle cx="200" cy="165" r="118" fill="none" stroke="#fff" stroke-opacity=".4" stroke-width="1.5"/>
+      <circle cx="200" cy="165" r="150" fill="none" stroke="#fff" stroke-opacity=".25" stroke-width="1.5"/>
+      <g stroke="#fff" stroke-opacity=".6" stroke-width="1.4" fill="none">
         <circle cx="200" cy="165" r="44"/><path d="M156 165h88M200 121c14 13 20 27 20 44s-6 31-20 44c-14-13-20-27-20-44s6-31 20-44z"/>
       </g>
-      <path d="M118 150 C 150 90, 250 90, 282 150" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width="2" stroke-dasharray="3 8" stroke-linecap="round"/>
+      <path d="M118 150 C 150 90, 250 90, 282 150" fill="none" stroke="#fff" stroke-opacity=".85" stroke-width="2" stroke-dasharray="3 8" stroke-linecap="round"/>
       <g class="float">
-        <rect x="40" y="110" width="92" height="170" rx="20" fill="url(#gA)" stroke="#fff" stroke-opacity=".5" stroke-width="2"/>
+        <rect x="40" y="110" width="92" height="170" rx="20" fill="url(#gA)" stroke="#fff" stroke-opacity=".9" stroke-width="2"/>
         <rect x="74" y="122" width="24" height="5" rx="2.5" fill="#fff" fill-opacity=".5"/>
         <rect x="52" y="146" width="66" height="30" rx="12" fill="url(#gB)"/>
         <text x="85" y="166" text-anchor="middle" font-size="12" font-weight="700" fill="#fff" font-family="sans-serif">안녕하세요</text>
         <rect x="56" y="186" width="58" height="26" rx="11" fill="#fff" fill-opacity=".85"/>
-        <text x="85" y="203" text-anchor="middle" font-size="11" font-weight="700" fill="#1E2F5C" font-family="sans-serif">Hello!</text>
+        <text x="85" y="203" text-anchor="middle" font-size="10" font-weight="700" fill="#5A5EA6" font-family="sans-serif">こんにちは</text>
         <circle cx="86" cy="248" r="14" fill="#fff" fill-opacity=".9"/>
-        <rect x="83" y="239" width="6" height="10" rx="3" fill="none" stroke="#1E2F5C" stroke-width="1.8"/><path d="M80 246a6 6 0 0 0 12 0M86 252v3" stroke="#1E2F5C" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        <rect x="83" y="239" width="6" height="10" rx="3" fill="none" stroke="#5A5EA6" stroke-width="1.8"/><path d="M80 246a6 6 0 0 0 12 0M86 252v3" stroke="#5A5EA6" stroke-width="1.8" fill="none" stroke-linecap="round"/>
       </g>
       <g class="float d2">
-        <rect x="268" y="96" width="92" height="170" rx="20" fill="url(#gA)" stroke="#fff" stroke-opacity=".5" stroke-width="2"/>
+        <rect x="268" y="96" width="92" height="170" rx="20" fill="url(#gA)" stroke="#fff" stroke-opacity=".9" stroke-width="2"/>
         <rect x="302" y="108" width="24" height="5" rx="2.5" fill="#fff" fill-opacity=".5"/>
         <rect x="280" y="132" width="66" height="30" rx="12" fill="url(#gC)"/>
-        <text x="313" y="152" text-anchor="middle" font-size="13" font-weight="700" fill="#fff" font-family="sans-serif">你好</text>
+        <text x="313" y="152" text-anchor="middle" font-size="10.5" font-weight="700" fill="#fff" font-family="sans-serif">ありがとう</text>
         <rect x="284" y="172" width="58" height="26" rx="11" fill="#fff" fill-opacity=".85"/>
-        <text x="313" y="189" text-anchor="middle" font-size="10.5" font-weight="700" fill="#1E2F5C" font-family="sans-serif">Xin chào</text>
+        <text x="313" y="189" text-anchor="middle" font-size="10.5" font-weight="700" fill="#5A5EA6" font-family="sans-serif">고마워요</text>
         <circle cx="314" cy="234" r="14" fill="#fff" fill-opacity=".9"/>
-        <path d="M308 230l-3 3h-2v4h2l3 3zM313 231a4 4 0 0 1 0 5" stroke="#1E2F5C" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M308 230l-3 3h-2v4h2l3 3zM313 231a4 4 0 0 1 0 5" stroke="#5A5EA6" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
       </g>
-      <circle cx="160" cy="60" r="4" fill="#F7A072"/><circle cx="250" cy="52" r="3" fill="#8FB0F5"/><circle cx="205" cy="300" r="3.5" fill="#fff" fill-opacity=".5"/>
+      <circle cx="160" cy="60" r="4" fill="#F6B7A6"/><circle cx="250" cy="52" r="3" fill="#8FB0F5"/><circle cx="205" cy="300" r="3.5" fill="#fff" fill-opacity=".5"/>
     </svg>
   </div>
   <div>
@@ -260,6 +309,7 @@ textarea.inp{resize:vertical;min-height:90px;line-height:1.5}
   <div class="hhead">
     <div class="logo"><svg class="ic" data-i="chat"></svg></div>
     <h2 data-t="appName">원격 통역 대화</h2>
+    <button class="instpill hidden" id="instBtn" data-act="install"><svg class="ic" data-i="download"></svg><span data-t="installShort">설치</span></button>
     <button class="ver" data-ver data-five></button>
     <button class="iconbtn" data-act="settings"><svg class="ic" data-i="gear"></svg></button>
   </div>
@@ -298,18 +348,28 @@ textarea.inp{resize:vertical;min-height:90px;line-height:1.5}
     <button class="iconbtn on" id="sndBtn" data-act="sound"><svg class="ic" data-i="vol"></svg></button>
     <button class="iconbtn" data-act="settings"><svg class="ic" data-i="gear"></svg></button>
   </div>
+  <div class="modebar hidden" id="modebar"></div>
   <div id="chat" class="scroll"></div>
   <div id="talking"></div>
   <div class="live" id="live"></div>
   <div class="bottom">
     <div class="side">
       <button class="tool" data-act="clear"><span class="tb"><svg class="ic" data-i="trash"></svg></span><span data-t="clearShort">기록 삭제</span></button>
+      <button class="tool" data-act="dim"><span class="tb"><svg class="ic" data-i="moon"></svg></span><span data-t="dim">어둡게</span></button>
     </div>
-    <div class="micwrap">
-      <button id="mic" data-act="mic"><svg class="ic" data-i="mic"></svg></button>
-      <span class="micl" id="micl" data-t="tapSpeak">눌러서 말하기</span>
+    <div class="center">
+      <div class="micwrap" id="micwrap">
+        <button id="mic" data-act="mic"><svg class="ic" data-i="mic"></svg></button>
+        <span class="micl" id="micl" data-t="tapSpeak">눌러서 말하기</span>
+      </div>
+      <div class="micwrap hidden" id="handwrap">
+        <button id="handBtn" data-act="hand"><svg class="ic" data-i="hand"></svg></button>
+        <span class="micl" id="handl" data-t="hand">손 들기</span>
+      </div>
     </div>
     <div class="side r">
+      <button class="tool hidden" data-act="speed" id="spdBtn"></button>
+      <button class="tool hidden" data-act="askText" id="askBtn"><span class="tb"><svg class="ic" data-i="ask"></svg></span><span data-t="textQ">문자 질문</span></button>
       <button class="tool" data-act="font"><span class="tb"><span class="fsg" id="fsg">가</span></span><span data-t="fontSize">글씨 크기</span></button>
     </div>
   </div>
@@ -348,10 +408,12 @@ textarea.inp{resize:vertical;min-height:90px;line-height:1.5}
 </div>
 
 <div id="modal" class="hidden"><div class="box"><h3 id="mdT"></h3><p id="mdP"></p><div class="btns" id="mdB"></div></div></div>
+<div id="dimOv" class="hidden"><div class="dbox"><div class="dt" data-t="dimText"></div><div class="ds" data-t="dimSub"></div><button class="db" data-act="undim" data-t="dimBack"></button></div></div>
 <div id="toast"></div>
 
 <script type="module">
-const VERSION='v1.0';
+const VERSION='v1.1';
+const FAST='gemini-3.5-flash-lite',ACC='gemini-3.8-flash';
 const FB_VER='10.12.2';
 const DEFAULT_FB={authDomain:"talk-app-3fb0e.firebaseapp.com",databaseURL:"https://talk-app-3fb0e-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"talk-app-3fb0e"};
 
@@ -377,7 +439,15 @@ const IC={
  chat:'<path d="M20 11.5a7.5 7.5 0 0 1-10.9 6.7L4.5 19.5l1.2-4.1A7.5 7.5 0 1 1 20 11.5z"/>',
  link:'<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
  edit:'<path d="M4.5 19.5h4l10-10-4-4-10 10z"/><path d="M13 7l4 4"/>',
- ext:'<path d="M14 4.5h5.5V10M19.5 4.5L11 13M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>'
+ ext:'<path d="M14 4.5h5.5V10M19.5 4.5L11 13M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>',
+ hand:'<path d="M8 13V6.5a1.5 1.5 0 0 1 3 0V12M11 11V5a1.5 1.5 0 0 1 3 0v6M14 11V6.5a1.5 1.5 0 0 1 3 0V14c0 3.6-2.4 6.5-6 6.5-2.6 0-4.2-1.3-5.5-3.6L4 14.2a1.5 1.5 0 0 1 2.5-1.6L8 14.5"/>',
+ moon:'<path d="M19.5 14.5A8 8 0 0 1 9.5 4.5a8 8 0 1 0 10 10z"/>',
+ bolt:'<path d="M13 3L5 13.5h6L10 21l8-10.5h-6z"/>',
+ target:'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r=".8"/>',
+ download:'<path d="M12 4v11M7.5 10.5L12 15l4.5-4.5"/><path d="M5 19.5h14"/>',
+ ask:'<path d="M20 11.5a7.5 7.5 0 0 1-10.9 6.7L4.5 19.5l1.2-4.1A7.5 7.5 0 1 1 20 11.5z"/><path d="M10 9.5a2 2 0 1 1 2.8 1.8c-.5.3-.8.7-.8 1.2M12 14.8v.1"/>',
+ lecture:'<rect x="3.5" y="4.5" width="17" height="11" rx="1.5"/><path d="M12 15.5V20M8.5 20h7"/>',
+ file:'<path d="M14 3.5H7a1.5 1.5 0 0 0-1.5 1.5v14A1.5 1.5 0 0 0 7 20.5h10a1.5 1.5 0 0 0 1.5-1.5V8z"/><path d="M14 3.5V8h4.5M9 13h6M9 16.5h4"/>'
 };
 function icon(n,cls='ic'){return `<svg class="${cls}" viewBox="0 0 24 24">${IC[n]||''}</svg>`}
 function paintIcons(root=document){root.querySelectorAll('svg[data-i]').forEach(s=>{s.setAttribute('viewBox','0 0 24 24');s.innerHTML=IC[s.dataset.i]||''})}
@@ -397,15 +467,22 @@ const LANGS=[
  ['hi','힌디어','हिन्दी','Hindi','hi-IN','hi']
 ].map(a=>({c:a[0],ko:a[1],nat:a[2],en:a[3],sr:a[4],g:a[5]}));
 const L=c=>LANGS.find(x=>x.c===c)||LANGS[0];
-function guessLang(){const n=(navigator.language||'ko').toLowerCase();if(n.startsWith('zh'))return /tw|hk|hant/.test(n)?'zt':'zh';const b=n.slice(0,2);if(b==='fi'&&n.startsWith('fil'))return 'tl';return LANGS.find(x=>x.c===b)?b:(b==='ko'?'ko':'en')}
+/* 테스트 기간: 한국어·일본어만 (안정되면 여기에 언어 코드를 더 넣으면 됨) */
+const ACTIVE=['ko','ja'];
+const devKo=/^ko/i.test(navigator.language||'');
+function guessLang(){return devKo?'ko':'ja'}
+const LN=c=>ui()==='ko'?L(c).ko:L(c).nat;
 
 /* ---------- 화면 글자(한국어 / 그 외 영어) ---------- */
 const T={
  ko:{appName:'원격 통역 대화',tagline:'멀리 있어도, 서로의 말로',tapStart:'눌러서 시작',myName:'내 이름',namePh:'이름을 입력하세요',newRoom:'새 대화방<br>만들기',joinCode:'방 번호로 들어가기',codePh:'6자리 번호',rooms:'대화방',noRooms:'아직 대화방이 없어요.<br>새 대화방을 만들어 보세요.',host:'방장',guest:'참여',clearShort:'기록 삭제',tapSpeak:'눌러서 말하기',listening:'듣는 중 · 누르면 멈춤',fontSize:'글씨 크기',phrases:'자주 쓰는 문구',typePh:'글로 써서 보내기',phHint:'짧게 누르면 보내기 · 길게 누르면 고치기',settings:'설정',tBasic:'기본',tWords:'단어장',tTravel:'여행 문구',tAdv:'고급',people:'참여자',me:'나',online:'접속 중',offline:'나감',translating:'번역 중…',sendIn:'초 후 보냄',edit:'고치기',cancel:'취소',send:'보내기',del:'삭제',save:'저장',ok:'확인',close:'닫기',invite:'초대하기',inviteCopy:'초대 링크 복사',inviteShare:'초대 보내기',copied:'복사했어요',emptyChat:'마이크를 누르고 말해 보세요.<br>상대방 휴대폰에서 번역되어 들려요.',inviteBtn:'상대방 초대하기',clearQ:'대화 기록을 지울까요?',clearMine:'내 화면에서만 지우기',clearAll:'모두의 기록 지우기',delRoomQ:'이 대화방을 삭제할까요?',delRoomHost:'내가 만든 방이라 서버에서도 지워지고,\n참여자들도 더 이상 들어올 수 없어요.',delRoomGuest:'목록에서만 지워져요.',noRoom:'없는 방 번호예요',needName:'이름을 먼저 입력해 주세요',noSR:'이 브라우저는 음성 인식을 지원하지 않아요. 크롬을 써 주세요.',micDenied:'마이크 권한을 허용해 주세요',offlineFb:'서버에 연결되지 않았어요',serverMe:'내 폰이 번역 서버',hostTr:'방장 번역',freeTr:'무료 번역',disconnected:'연결 끊김',persons:'명',talkingNow:'님이 말하는 중…',myLang:'내 언어',roomName:'방 이름',changeName:'이름 바꾸기',pickLang:'언어 고르기',added:'추가했어요',newPhrase:'문구 추가',phTitle:'제목(버튼에 보이는 글)',phText:'보낼 내용',shareTitle:'대화 기록'},
  en:{appName:'Remote Interpreter',tagline:'Far apart, each in your own language',tapStart:'Tap to start',myName:'My name',namePh:'Enter your name',newRoom:'Create<br>new room',joinCode:'Join with room number',codePh:'6 digits',rooms:'Rooms',noRooms:'No rooms yet.',host:'Host',guest:'Joined',clearShort:'Clear',tapSpeak:'Tap to speak',listening:'Listening · tap to stop',fontSize:'Text size',phrases:'Quick phrases',typePh:'Type a message',phHint:'Tap to send · hold to edit',settings:'Settings',tBasic:'Basic',tWords:'Glossary',tTravel:'Phrases',tAdv:'Advanced',people:'People',me:'Me',online:'online',offline:'left',translating:'Translating…',sendIn:'s to send',edit:'Edit',cancel:'Cancel',send:'Send',del:'Delete',save:'Save',ok:'OK',close:'Close',invite:'Invite',inviteCopy:'Copy invite link',inviteShare:'Send invite',copied:'Copied',emptyChat:'Tap the mic and speak.<br>The other person hears it translated.',inviteBtn:'Invite someone',clearQ:'Clear chat history?',clearMine:'Clear on my screen',clearAll:'Clear for everyone',delRoomQ:'Delete this room?',delRoomHost:'You created this room, so it will be removed for everyone.',delRoomGuest:'It will be removed from your list.',noRoom:'Room not found',needName:'Please enter your name first',noSR:'Speech recognition is not supported. Please use Chrome.',micDenied:'Please allow the microphone',offlineFb:'Not connected to server',serverMe:'My phone translates',hostTr:'Host translation',freeTr:'Free translation',disconnected:'Disconnected',persons:' on',talkingNow:' is speaking…',myLang:'My language',roomName:'Room name',changeName:'Change name',pickLang:'Choose language',added:'Added',newPhrase:'Add phrase',phTitle:'Title',phText:'Message',shareTitle:'Chat history'}
 };
+Object.assign(T.ko,{talkingNow:'님 말하는 중',modeTalk:'대화 모드',modeLec:'설명 모드',lecTr:'번역해서 보내기',lecKo:'한국어 그대로',lecEnd:'설명 마치기',lecEndQ:'설명을 마칠까요?',lecEndP:'듣는 분들에게 오늘 설명 내용을 저장하라는 안내가 가요.',questions:'질문',hand:'손 들기',handDown:'손 내리기',handSent:'손을 들었어요. 방장이 허락하면 말할 수 있어요.',textQ:'문자 질문',qPh:'질문을 적어 주세요',qSent:'질문을 보냈어요',qNew:'문자 질문이 왔어요',handUp:'님이 손을 들었어요',letSpeak:'말하게 하기',later:'나중에',asking:'님 질문 중',endQ:'끝내기',yourTurn:'지금 말씀하세요',lecListening:'설명 듣는 중',lecKoTag:'한국어 그대로',noQs:'아직 질문이 없어요',clearQs:'질문 모두 지우기',lecEndedQ:'설명이 끝났어요',lecEndedP:'오늘 설명 내용을 내 언어로 저장할 수 있어요.',saveFile:'파일로 저장',shareOut:'공유하기',saveQ:'대화 기록 저장',dim:'어둡게',dimText:'화면만 어둡게 했어요 · 소리는 계속 나와요',dimSub:'두 번 누르면 밝아져요',dimBack:'화면 되돌리기',fast:'빠름',acc:'정확',fastOn:'빠른 번역으로 바꿨어요',accOn:'정확한 번역으로 바꿨어요',replay:'다시 듣기',retr:'다시 번역',retrIng:'정확하게 다시 번역하는 중…',retrFail:'방장 폰이 응답하지 않아요',copy:'복사',original:'원문',installShort:'설치',installed:'설치됐어요. 홈 화면 아이콘으로 여세요.',install:'홈 화면에 설치',installAnd:'크롬 오른쪽 위 메뉴(⋮) → "앱 설치" 또는 "홈 화면에 추가"를 눌러 주세요.',iosTitle:'아이폰에 설치하기',ios1:'사파리 아래쪽 공유 버튼을 눌러요',ios2:'"홈 화면에 추가"를 눌러요',ios3:'오른쪽 위 "추가"를 누르면 끝!',iosSafari:'아이폰은 꼭 사파리에서 열어 주세요. 처음 들어갈 때 화면을 한 번 눌러야 소리가 나와요.',inApp:'이 앱 안에서는 마이크가 안 될 수 있어요. 크롬이나 사파리로 열어 주세요.',openBrowser:'브라우저로 열기',copyLink:'링크 복사',qrHint:'휴대폰 카메라로 찍으면 바로 들어와요 · 누르면 크게',inviteDef:'원격 통역 대화방에 초대합니다. 링크를 누르고 이름을 적으면 바로 대화할 수 있어요.\n通訳チャットルームへのご招待です。リンクを開いて名前を入力すると、すぐに会話できます。'});
+T.ja={appName:'リモート通訳チャット',tagline:'離れていても、それぞれの言葉で',tapStart:'タップしてスタート',myName:'名前',namePh:'名前を入力してください',newRoom:'新しいルームを<br>作る',joinCode:'ルーム番号で入る',codePh:'6桁の番号',rooms:'ルーム',noRooms:'まだルームがありません。',host:'ホスト',guest:'参加',clearShort:'履歴削除',tapSpeak:'タップして話す',listening:'聞いています · タップで停止',fontSize:'文字サイズ',phrases:'よく使うフレーズ',typePh:'文字で送る',phHint:'タップで送信 · 長押しで編集',settings:'設定',tBasic:'基本',tWords:'単語帳',tTravel:'フレーズ',tAdv:'詳細',people:'参加者',me:'自分',online:'接続中',offline:'退出',translating:'翻訳中…',sendIn:'秒後に送信',edit:'修正',cancel:'キャンセル',send:'送信',del:'削除',save:'保存',ok:'OK',close:'閉じる',invite:'招待する',inviteCopy:'招待リンクをコピー',inviteShare:'招待を送る',copied:'コピーしました',emptyChat:'マイクをタップして話してください。<br>相手のスマホで翻訳されて聞こえます。',inviteBtn:'相手を招待する',clearQ:'会話の履歴を消しますか？',clearMine:'自分の画面だけ消す',clearAll:'全員の履歴を消す',delRoomQ:'このルームを削除しますか？',delRoomHost:'自分が作ったルームなので、サーバーからも削除されます。',delRoomGuest:'リストからのみ削除されます。',noRoom:'存在しないルーム番号です',needName:'先に名前を入力してください',noSR:'このブラウザは音声認識に対応していません。Chromeをお使いください。',micDenied:'マイクの使用を許可してください',offlineFb:'サーバーに接続されていません',serverMe:'自分のスマホが翻訳サーバー',hostTr:'ホスト翻訳',freeTr:'無料翻訳',disconnected:'接続が切れました',persons:'人',talkingNow:'さんが話しています',myLang:'自分の言語',roomName:'ルーム名',changeName:'名前を変更',pickLang:'言語を選ぶ',added:'追加しました',newPhrase:'フレーズ追加',phTitle:'タイトル(ボタンに表示)',phText:'送る内容',shareTitle:'会話の記録',
+ modeTalk:'会話モード',modeLec:'説明モード',lecTr:'翻訳して送る',lecKo:'韓国語のまま',lecEnd:'説明を終える',questions:'質問',hand:'手を挙げる',handDown:'手を下ろす',handSent:'手を挙げました。ホストが許可すると話せます。',textQ:'文字で質問',qPh:'質問を入力してください',qSent:'質問を送りました',qNew:'文字の質問が届きました',handUp:'さんが手を挙げました',letSpeak:'話してもらう',later:'あとで',asking:'さんが質問中',endQ:'終了',yourTurn:'どうぞお話しください',lecListening:'説明を聞いています',lecKoTag:'韓国語のまま',noQs:'まだ質問はありません',clearQs:'質問をすべて消す',lecEndedQ:'説明が終わりました',lecEndedP:'今日の説明内容を自分の言語で保存できます。',saveFile:'ファイルに保存',shareOut:'共有する',saveQ:'会話記録の保存',dim:'暗くする',dimText:'画面だけ暗くしました · 音声は続きます',dimSub:'2回タップで明るくなります',dimBack:'画面を戻す',fast:'速い',acc:'正確',replay:'もう一度聞く',retr:'再翻訳',retrIng:'正確に再翻訳しています…',retrFail:'ホストのスマホが応答しません',copy:'コピー',original:'原文',installShort:'インストール',installed:'インストールしました',install:'ホーム画面に追加',installAnd:'Chrome右上のメニュー(⋮) →「アプリをインストール」または「ホーム画面に追加」をタップしてください。',iosTitle:'iPhoneにインストール',ios1:'Safari下の共有ボタンをタップ',ios2:'「ホーム画面に追加」をタップ',ios3:'右上の「追加」で完了！',iosSafari:'iPhoneは必ずSafariで開いてください。最初に画面を一度タップすると音が出ます。',inApp:'このアプリ内ではマイクが使えない場合があります。ChromeかSafariで開いてください。',openBrowser:'ブラウザで開く',copyLink:'リンクをコピー',qrHint:'スマホのカメラで読み取るとすぐ入れます · タップで拡大'};
 const t=k=>(T[ui()][k]??T.ko[k]??k);
-const ui=()=>me.lang==='ko'?'ko':'en';
+const ui=()=>(me.lang==='ko'||devKo)?'ko':me.lang==='ja'?'ja':'en';
 function applyTexts(){document.documentElement.lang=me.lang;document.querySelectorAll('[data-t]').forEach(e=>e.innerHTML=t(e.dataset.t));document.querySelectorAll('[data-tp]').forEach(e=>e.placeholder=t(e.dataset.tp));document.querySelectorAll('[data-ver]').forEach(e=>e.textContent=VERSION)}
 
 /* ---------- 저장 ---------- */
@@ -415,13 +492,16 @@ const inviteCode=(params.get('room')||'').replace(/\D/g,'').slice(0,6);
 if(S.get('guestOnly',null)===null) S.set('guestOnly',!!inviteCode);
 const me={cid:S.get('cid',null),name:S.get('name',''),lang:S.get('lang',null)||guessLang()};
 if(!me.cid){me.cid='c'+Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);S.set('cid',me.cid)}
-const DEF_SET={confirm:2,rate:1.3,voices:{},prefetch:true,catchup:true,theme:'basic',fs:1,sound:true,engine:'free',gkey:'',gmodel:'gemini-2.5-flash',ckey:'',cmodel:'claude-haiku-4-5',okey:'',omodel:'gpt-4.1-mini',gloss:'',invite:''};
+if(!ACTIVE.includes(me.lang)){me.lang=guessLang();S.set('lang',me.lang)}
+const DEF_SET={confirm:2,rate:1.3,voices:{},prefetch:true,catchup:true,theme:'basic',fs:1,sound:true,engine:'free',gkey:'',gmodel:FAST,ckey:'',cmodel:'claude-haiku-4-5',okey:'',omodel:'gpt-4.1-mini',gloss:'',invite:''};
 const set={...DEF_SET,...S.get('set',{})};
 set.sound=true; /* 켤 때는 항상 소리 켬 */
+if(!set.gmodel||set.gmodel==='gemini-2.5-flash')set.gmodel=FAST;
 const saveSet=()=>S.set('set',set);
 const DEF_PH={ko:[['안녕하세요','안녕하세요, 반갑습니다.'],['잘 들려요?','제 말 잘 들리세요?'],['다시 한번','죄송하지만 다시 한번 말씀해 주시겠어요?'],['잠시만요','잠시만 기다려 주세요.'],['천천히','조금만 천천히 말씀해 주세요.'],['감사합니다','감사합니다.'],['좋아요','네, 좋습니다.'],['자기소개','저는 한국폴리텍대학 서울정수캠퍼스 교수입니다.'],['시작할게요','그럼 시작하겠습니다.'],['수고하셨어요','오늘 수고 많으셨습니다. 다음에 또 연락드리겠습니다.']],
+ ja:[['こんにちは','こんにちは、よろしくお願いします。'],['聞こえますか','私の声、聞こえますか？'],['もう一度','すみません、もう一度言っていただけますか？'],['少々お待ちを','少々お待ちください。'],['ゆっくり','もう少しゆっくり話していただけますか？'],['ありがとう','ありがとうございます。'],['いいですね','はい、いいですね。'],['お疲れ様','今日はお疲れ様でした。']],
  en:[['Hello','Hello, nice to meet you.'],['Can you hear?','Can you hear me well?'],['Once more','Sorry, could you say that again?'],['Wait','Please wait a moment.'],['Slowly','Please speak a little more slowly.'],['Thanks','Thank you.'],['OK','Yes, that sounds good.'],['Bye','Thank you for today. Talk to you soon.']]};
-const defPhrases=()=>(DEF_PH[me.lang==='ko'?'ko':'en']).map(([t,x])=>({t,x}));
+const defPhrases=()=>(DEF_PH[me.lang]||DEF_PH.en).map(([t,x])=>({t,x}));
 let phrases=S.get('phrases',null)||defPhrases();
 let rooms=S.get('rooms',[]);
 
@@ -433,9 +513,9 @@ function modal(title,text,buttons){return new Promise(res=>{$('#mdT').textConten
 let openSheetEl=null,sheetOnClose=null;
 function openSheet(id,onClose){closeSheet(true);openSheetEl=$(id);sheetOnClose=onClose||null;openSheetEl.classList.add('open');$('#dim').classList.add('on')}
 function closeSheet(silent){if(openSheetEl){openSheetEl.classList.remove('open');openSheetEl=null}$('#drawer').classList.remove('open');$('#dim').classList.remove('on');const f=sheetOnClose;sheetOnClose=null;if(f&&!silent)f()}
-function genSheet(title,html,onClose){$('#genBody').onclick=null;$('#genTitle').textContent=title;$('#genBody').innerHTML=html;paintIcons($('#genBody'));openSheet('#shGen',onClose)}
+function genSheet(title,html,onClose){$('#genBody').onclick=null;$('#genBody').dataset.k='';$('#genTitle').textContent=title;$('#genBody').innerHTML=html;paintIcons($('#genBody'));openSheet('#shGen',onClose)}
 async function copyText(s){try{await navigator.clipboard.writeText(s)}catch{const a=document.createElement('textarea');a.value=s;document.body.appendChild(a);a.select();document.execCommand('copy');a.remove()}toast(t('copied'))}
-function applyTheme(){document.body.dataset.theme=set.theme;document.documentElement.style.setProperty('--fs',set.fs);const m=document.querySelector('meta[name=theme-color]');if(m)m.content=set.theme==='night'?'#0E1424':set.theme==='sea'?'#0F5E6B':'#1E2F5C'}
+function applyTheme(){document.body.dataset.theme=set.theme;document.documentElement.style.setProperty('--fs',set.fs);const m=document.querySelector('meta[name=theme-color]');if(m)m.content=set.theme==='night'?'#0E1424':set.theme==='sea'?'#0F5E6B':'#EEEDF8'}
 function show(id){['#splash','#home','#room'].forEach(s=>$(s).classList.toggle('hidden',s!==id))}
 
 /* ---------- Firebase ---------- */
@@ -453,7 +533,7 @@ async function fbInit(){
 const R=p=>fb.ref(fb.db,p);
 
 /* ---------- 홈 ---------- */
-function renderMe(){$('#meName').value=me.name;$('#meAva').textContent=(me.name||t('me')).trim().slice(0,1).toUpperCase();$('#meLang').textContent=me.lang==='ko'?L(me.lang).ko:L(me.lang).nat}
+function renderMe(){$('#meName').value=me.name;$('#meAva').textContent=(me.name||t('me')).trim().slice(0,1).toUpperCase();$('#meLang').textContent=LN(me.lang)}
 function renderRooms(){
  const box=$('#roomList');$('#roomCount').textContent=rooms.length?rooms.length:'';
  if(!rooms.length){box.innerHTML=`<div class="empty">${t('noRooms')}</div>`;return}
@@ -471,7 +551,7 @@ async function delRoom(code){
  if(r.role==='host'&&fb){try{await fb.remove(R('rooms/'+code))}catch{}}
 }
 function langSheet(cb){
- genSheet(t('pickLang'),`<div class="lgrid">${LANGS.map(l=>`<button data-lc="${l.c}" class="${l.c===me.lang?'on':''}"><b>${esc(l.nat)}</b><small>${esc(l.ko)}</small></button>`).join('')}</div>`);
+ genSheet(t('pickLang'),`<div class="lgrid">${LANGS.filter(l=>ACTIVE.includes(l.c)).map(l=>`<button data-lc="${l.c}" class="${l.c===me.lang?'on':''}"><b>${esc(l.nat)}</b><small>${esc(l.ko)}</small></button>`).join('')}</div>`);
  $('#genBody').onclick=e=>{const b=e.target.closest('[data-lc]');if(!b)return;const was=ui();me.lang=b.dataset.lc;S.set('lang',me.lang);if(!S.get('phrases',null))phrases=defPhrases();if(was!==ui())applyTexts();renderMe();renderRooms();closeSheet();cb&&cb()}
 }
 function needName(){if(me.name.trim())return false;toast(t('needName'));$('#meName').focus();return true}
@@ -494,23 +574,24 @@ async function enterRoom(code){
  let ms;try{ms=await fb.get(R(`rooms/${code}/meta`))}catch{toast(t('offlineFb'));return}
  if(!ms.exists()){toast(t('noRoom'));rooms=rooms.filter(r=>r.code!==code);S.set('rooms',rooms);renderRooms();return}
  const meta=ms.val();
- room={code,meta,isHost:meta.host===me.cid,members:{},msgs:new Map(),unsub:[],joinKey:fb.push(R('x')).key,clearKey:S.get('clr_'+code,'')};
+ room={code,meta,isHost:meta.host===me.cid,members:{},msgs:new Map(),unsub:[],joinKey:fb.push(R('x')).key,clearKey:S.get('clr_'+code,''),qs:new Map(),seenQ:new Set(S.get('seenq_'+code,[])),wasFloor:false};
  saveRoomEntry(code,meta.title,room.isHost?'host':'guest');
  const mref=R(`rooms/${code}/members/${me.cid}`);
  await fb.update(mref,{name:me.name,lang:me.lang,online:true,talk:false,ts:fb.serverTimestamp()});
  fb.onDisconnect(mref).update({online:false,talk:false});
- room.unsub.push(fb.onValue(R(`rooms/${code}/meta`),s=>{if(!room)return;if(!s.exists()){leaveRoom();toast(t('noRoom'));return}room.meta=s.val();updateStatus()}));
- room.unsub.push(fb.onValue(R(`rooms/${code}/members`),s=>{if(!room)return;room.members=s.val()||{};updateStatus();updateTalking();if(room.isHost)room.msgs.forEach((m,id)=>{if(id>room.joinKey)hostProcess(id)})}));
+ room.unsub.push(fb.onValue(R(`rooms/${code}/meta`),s=>{if(!room)return;if(!s.exists()){leaveRoom();toast(t('noRoom'));return}room.meta=s.val();updateStatus();renderRoomMode();checkEnded()}));
+ room.unsub.push(fb.onValue(R(`rooms/${code}/members`),s=>{if(!room)return;room.members=s.val()||{};updateStatus();updateTalking();renderRoomMode();if(room.isHost)room.msgs.forEach((m,id)=>{if(id>room.joinKey)hostProcess(id)})}));
  const q=fb.query(R(`rooms/${code}/msgs`),fb.limitToLast(150));
  room.unsub.push(fb.onChildAdded(q,s=>onMsg(s.key,s.val())));
  room.unsub.push(fb.onChildChanged(q,s=>onMsg(s.key,s.val())));
  room.unsub.push(fb.onChildRemoved(q,s=>{if(!room)return;room.msgs.delete(s.key);document.getElementById('m-'+s.key)?.remove();checkEmpty()}));
+ if(room.isHost){room.unsub.push(fb.onChildAdded(R(`rooms/${code}/qs`),s=>onQ(s.key,s.val())));room.unsub.push(fb.onChildRemoved(R(`rooms/${code}/qs`),s=>{if(!room)return;room.qs.delete(s.key);updateQBadge();refreshQs()}))}
  $('#chat').innerHTML='';checkEmpty();
  history.replaceState(null,'',location.pathname+'?room='+code);
- show('#room');updateStatus();updateMicUI();wake(true);
+ show('#room');updateStatus();updateMicUI();renderRoomMode();wake(true);
 }
 function leaveRoom(){
- if(!room)return;stopListen();speechSynthesis.cancel();ttsQ.length=0;speaking=false;
+ if(!room)return;stopListen();speechSynthesis.cancel();ttsQ.length=0;speaking=false;setDim(false);closeSheet(true);
  pending.forEach((p,id)=>{if(p.written)fb.remove(R(`rooms/${room.code}/msgs/${id}`)).catch(()=>{})});pending.clear();
  try{fb.update(R(`rooms/${room.code}/members/${me.cid}`),{online:false,talk:false})}catch{}
  room.unsub.forEach(f=>{try{f()}catch{}});room=null;wake(false);
@@ -526,12 +607,12 @@ function updateStatus(){
  $('#rTitle').textContent=room.meta.title||room.code;
  const n=membersOnline().length;const dot=$('#rDot');let txt;
  if(!connected){dot.className='dot off';txt=t('disconnected')}
- else if(room.isHost){const e=activeEngine();dot.className='dot'+(e==='free'?' free':'');txt=engineName(e)}
+ else if(room.isHost){const e=activeEngine();dot.className='dot'+(e==='free'?' free':'');txt=engineName(e)+(e==='gemini'?' · '+t(set.gmodel===ACC?'acc':'fast'):'')}
  else if(hostOnline()){dot.className='dot';txt=t('hostTr')}
  else{dot.className='dot free';txt=t('freeTr')}
  $('#rSub').textContent=`${room.code} · ${n}${t('persons')} · ${txt}`;
 }
-function updateTalking(){const ns=Object.entries(room?.members||{}).filter(([id,m])=>id!==me.cid&&m.online&&m.talk).map(([,m])=>m.name);$('#talking').textContent=ns.length?ns.join(', ')+t('talkingNow'):''}
+function updateTalking(){const ns=Object.entries(room?.members||{}).filter(([id,m])=>id!==me.cid&&m.online&&m.talk).map(([,m])=>m.name);const el=$('#talking');if(ns.length)el.innerHTML=`<span class="wv"><i></i><i></i><i></i><i></i></span><span>${esc(ns.join(', '))}${t('talkingNow')}</span>`;el.classList.toggle('on',!!ns.length)}
 function checkEmpty(){
  const chat=$('#chat');const has=chat.querySelector('.msg');let e=chat.querySelector('.chat-empty');
  if(has){e&&e.remove();return}
@@ -544,8 +625,9 @@ function onMsg(id,v){
  room.msgs.set(id,{id,...v});
  if(room.isHost)hostProcess(id);
  renderMsg(id);maybeSpeak(id);
+ if(retrWait.has(id)&&v.retr&&v.retrDone===v.retr){retrWait.delete(id);const m=room.msgs.get(id);if(m.from!==me.cid){const x=trFor(m,me.lang);if(x)speak(x,me.lang,true)}else toast('✓')}
 }
-function trFor(m,lang){if(m.lang===lang)return m.text;if(m.tr&&m.tr[lang]&&m.trSrc===m.text)return m.tr[lang];return localTr.get(id2(m,lang))}
+function trFor(m,lang){if(m.lang===lang||m.ko)return m.text;if(m.tr&&m.tr[lang]&&m.trSrc===m.text)return m.tr[lang];return localTr.get(id2(m,lang))}
 const id2=(m,lang)=>m.id+'|'+lang+'|'+m.text;
 function renderMsg(id){
  const m=room.msgs.get(id);if(!m)return;
@@ -559,15 +641,14 @@ function renderMsg(id){
  let main,sub='';
  if(mine){
   main=esc(m.text);
-  if(!p){const tl=targetLangs(m.lang);const tx=(tl.length?tl:Object.keys(m.tr||{})).slice(0,3).map(l=>{const x=trFor(m,l);return x?`<div class="sub"><i>${esc(L(l).nat)}</i>${esc(x)}</div>`:''}).join('');sub=tx||(tl.length?`<div class="sub wait">${t('translating')}</div>`:'')}
+  if(!p&&!m.ko){const tl=targetLangs(m.lang);const tx=(tl.length?tl:Object.keys(m.tr||{})).slice(0,3).map(l=>{const x=trFor(m,l);return x?`<div class="sub"><i>${esc(L(l).nat)}</i>${esc(x)}</div>`:''}).join('');sub=tx||(tl.length?`<div class="sub wait">${t('translating')}</div>`:'')}
  }else{
   const x=trFor(m,me.lang);
   main=x?esc(x):`<span class="wait">${t('translating')}</span>`;
-  if(m.lang!==me.lang)sub=`<div class="sub">${esc(m.text)}</div>`;
   if(!x)scheduleLocalTr(m);
  }
  const free=m.eng==='free'&&!mine?`<span class="free-tag">${t('freeTr')}</span>`:'';
- el.innerHTML=`<div class="who">${esc(mine?t('me'):m.name)} · ${esc(L(m.lang).nat)}${free}</div><div class="bub"${p?' data-act="editDraft" data-id="'+id+'"':''}><div class="main">${main}</div>${sub}${p?'':`<button class="say" data-act="say" data-id="${id}">${icon('vol')}</button>`}</div>${p?`<div class="dbar"><div class="pg"><div id="pg-${id}"></div></div><button data-act="editDraft" data-id="${id}">${t('edit')}</button><button class="x" data-act="cancelDraft" data-id="${id}">${t('cancel')}</button></div>`:''}`;
+ el.innerHTML=`<div class="who">${esc(mine?t('me'):m.name)} · ${esc(LN(m.lang))}${free}</div><div class="bub"${p?' data-act="editDraft" data-id="'+id+'"':' data-mid="'+id+'"'}><div class="main">${main}</div>${sub}${p?'':`<button class="say" data-act="say" data-id="${id}">${icon('vol')}</button>`}</div>${p?`<div class="dbar"><div class="pg"><div id="pg-${id}"></div></div><button data-act="editDraft" data-id="${id}">${t('edit')}</button><button class="x" data-act="cancelDraft" data-id="${id}">${t('cancel')}</button></div>`:''}`;
  if(atBottom||mine)chat.scrollTop=chat.scrollHeight;
 }
 const localTrPending=new Set();
@@ -583,7 +664,7 @@ function scheduleLocalTr(m){
 function newDraft(text){
  if(!room||!text)return;
  const r=fb.push(R(`rooms/${room.code}/msgs`));const id=r.key;
- const base={from:me.cid,name:me.name,lang:me.lang,text,state:'draft',ts:fb.serverTimestamp()};
+ const base={from:me.cid,name:me.name,lang:me.lang,text,state:'draft',ts:fb.serverTimestamp(),...(koOnly()?{ko:true}:{})};
  if(!set.confirm){fb.set(r,{...base,state:'sent'});afterSent(id);return}
  const written=!!set.prefetch;
  pending.set(id,{left:set.confirm*1000,total:set.confirm*1000,paused:false,written,base});
@@ -621,14 +702,14 @@ function editDraft(id){
 function sendNow(text){
  if(!room||!(text=text.trim()))return;
  const r=fb.push(R(`rooms/${room.code}/msgs`));
- fb.set(r,{from:me.cid,name:me.name,lang:me.lang,text,state:'sent',ts:fb.serverTimestamp()});
+ fb.set(r,{from:me.cid,name:me.name,lang:me.lang,text,state:'sent',ts:fb.serverTimestamp(),...(koOnly()?{ko:true}:{})});
  afterSent(r.key);
 }
 /* 방장 폰이 없거나 느리면 보낸 사람 폰이 무료 번역으로 채움 */
 function afterSent(id){
  if(!room||room.isHost)return;
  setTimeout(async()=>{
-  const m=room?.msgs.get(id);if(!m)return;
+  const m=room?.msgs.get(id);if(!m||m.ko)return;
   const need=targetLangs(m.lang).filter(l=>!(m.tr&&m.tr[l]&&m.trSrc===m.text));
   if(!need.length)return;
   try{const out={};for(const l of need)out[l]=await freeTranslate(m.text,m.lang,l);
@@ -643,15 +724,16 @@ function afterSent(id){
 /* ---------- 방장 폰 = 번역 서버 ---------- */
 const inflight=new Set();
 async function hostProcess(id){
- const m=room?.msgs.get(id);if(!m||!m.text||m.state==='cancel')return;
- const targets=targetLangs(m.lang);if(!targets.length)return;
- const fresh=m.trSrc!==m.text;
+ const m=room?.msgs.get(id);if(!m||!m.text||m.state==='cancel'||m.ko)return;
+ const force=!!(m.retr&&m.retr!==m.retrDone);
+ const targets=force?[...new Set([...targetLangs(m.lang),...Object.keys(m.tr||{})])].filter(l=>l!==m.lang):targetLangs(m.lang);if(!targets.length)return;
+ const fresh=force||m.trSrc!==m.text;
  const need=fresh?targets:targets.filter(l=>!(m.tr||{})[l]);if(!need.length)return;
- const key=id+'|'+m.text+'|'+need.join(',');if(inflight.has(key))return;inflight.add(key);
+ const key=id+'|'+m.text+'|'+need.join(',')+'|'+(force?m.retr:'');if(inflight.has(key))return;inflight.add(key);
  try{
-  const r=await translateMulti(m.text,m.lang,need);
+  const r=await translateMulti(m.text,m.lang,need,activeEngine(),force?ACC:null);
   const cur=room?.msgs.get(id);if(!cur||cur.text!==m.text)return;
-  const upd={trSrc:m.text,eng:r.eng};
+  const upd={trSrc:m.text,eng:r.eng};if(force)upd.retrDone=m.retr;
   if(cur.trSrc===m.text){need.forEach(l=>{if(r.out[l])upd['tr/'+l]=r.out[l]})}else upd.tr=r.out;
   await fb.update(R(`rooms/${room.code}/msgs/${id}`),upd);
  }catch(e){console.warn(e)}finally{inflight.delete(key)}
@@ -663,21 +745,27 @@ function aiPrompt(text,src,targets){
  return `You are a live interpreter in a voice call. Translate the ${L(src).en} sentence into each target language. Keep it natural and spoken, same tone and politeness, no explanations.${g?`\nGlossary (use these exact terms):\n${g}`:''}\nTargets (JSON keys): ${targets.map(c=>`"${c}" = ${L(c).en}`).join(', ')}\nReply ONLY with a JSON object like {${targets.map(c=>`"${c}":"..."`).join(',')}}.\nSentence: ${text}`;
 }
 function parseJSON(s){s=String(s||'').replace(/^```(json)?/i,'').replace(/```\s*$/,'').trim();const a=s.indexOf('{'),b=s.lastIndexOf('}');return JSON.parse(s.slice(a,b+1))}
-async function translateMulti(text,src,targets,engine=activeEngine()){
+async function translateMulti(text,src,targets,engine=activeEngine(),model=null){
  if(engine!=='free'){
-  try{const out=await aiTranslate(engine,text,src,targets);if(targets.every(l=>out[l]))return{out,eng:engine}}catch(e){console.warn('AI 번역 실패, 무료로 대체',e)}
+  try{const out=await aiTranslate(engine,text,src,targets,model);if(targets.every(l=>out[l]))return{out,eng:engine}}catch(e){console.warn('AI 번역 실패, 무료로 대체',e)}
  }
  const out={};await Promise.all(targets.map(async l=>{out[l]=await freeTranslate(text,src,l)}));
  return{out,eng:'free'};
 }
-async function aiTranslate(engine,text,src,targets){
+const gVar={};/* 모델마다 통한 '생각 끄기' 방식을 기억해 두고 다음부터 한 번에 보냄(속도) */
+async function aiTranslate(engine,text,src,targets,model){
  const prompt=aiPrompt(text,src,targets);
  if(engine==='gemini'){
-  const url=`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(set.gmodel||'gemini-2.5-flash')}:generateContent?key=${encodeURIComponent(set.gkey)}`;
-  const body=th=>({contents:[{role:'user',parts:[{text:prompt}]}],generationConfig:{temperature:.2,responseMimeType:'application/json',...(th?{thinkingConfig:{thinkingBudget:0}}:{})}});
-  let r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body(true))});
-  if(r.status===400)r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body(false))});
+  const mdl=model||set.gmodel||FAST;
+  const url=`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(mdl)}:generateContent?key=${encodeURIComponent(set.gkey)}`;
+  const vars=/^gemini-[3-9]/.test(mdl)?[{thinkingConfig:{thinkingLevel:'minimal'}},{thinkingConfig:{thinkingLevel:'low'}},{}]:[{thinkingConfig:{thinkingBudget:0}},{}];
+  let r,i=gVar[mdl]||0;
+  for(;i<vars.length;i++){
+   r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{role:'user',parts:[{text:prompt}]}],generationConfig:{temperature:.2,responseMimeType:'application/json',...vars[i]}})});
+   if(r.status!==400)break;
+  }
   if(!r.ok)throw new Error('Gemini '+r.status);
+  gVar[mdl]=Math.min(i,vars.length-1);
   const j=await r.json();return parseJSON(j.candidates?.[0]?.content?.parts?.map(p=>p.text).join(''));
  }
  if(engine==='claude'){
@@ -701,27 +789,40 @@ async function freeTranslate(text,src,tgt){
 /* ---------- 소리(휴대폰 기본 목소리) ---------- */
 const ttsQ=[];let speaking=false,ttsGuard;
 function voicesFor(lang){const sr=L(lang).sr.toLowerCase().replace('_','-');const b=sr.split('-')[0];const vs=speechSynthesis.getVoices();return vs.filter(v=>v.lang.toLowerCase().replace('_','-')===sr).concat(vs.filter(v=>{const l=v.lang.toLowerCase().replace('_','-');return l!==sr&&l.split('-')[0]===b&&(b!=='zh'||l.includes(sr.split('-')[1]))}))}
-function speak(text,lang,front){if(!text)return;const it={text,lang};front?ttsQ.unshift(it):ttsQ.push(it);if(!speaking)nextTTS()}
+let deferT;
+function speak(text,lang,front){
+ if(!text)return;const it={text,lang};front?ttsQ.unshift(it):ttsQ.push(it);
+ if(speaking)return;
+ /* 내가 말하는 도중이면 끊지 않고, 내 말이 끝나면 읽음(최대 5초 기다림) */
+ if(rec&&talkState&&!front){clearTimeout(deferT);deferT=setTimeout(()=>{if(!speaking&&ttsQ.length)nextTTS()},5000);return}
+ nextTTS();
+}
 function nextTTS(){
- clearTimeout(ttsGuard);const it=ttsQ.shift();
+ clearTimeout(ttsGuard);clearTimeout(deferT);const it=ttsQ.shift();
  if(!it){speaking=false;updateMicUI();resumeRec();return}
- speaking=true;abortRec();updateMicUI();
- const u=new SpeechSynthesisUtterance(it.text);u.lang=L(it.lang).sr;
- const pick=set.voices[it.lang];const vs=voicesFor(it.lang);const v=vs.find(x=>x.voiceURI===pick)||vs[0];if(v)u.voice=v;
- u.rate=set.catchup?Math.min(2,set.rate+0.25*ttsQ.length):set.rate;
- let done=false;const fin=()=>{if(done)return;done=true;nextTTS()};
- u.onend=fin;u.onerror=fin;
- ttsGuard=setTimeout(fin,4000+it.text.length*260/u.rate);
- speechSynthesis.speak(u);
+ speaking=true;const hadRec=!!rec;abortRec();updateMicUI();
+ const go=()=>{
+  /* 마이크를 막 끈 직후에는 소리가 묻히는 폰이 있어 잠깐 기다렸다 읽음 */
+  try{if(speechSynthesis.speaking||speechSynthesis.pending)speechSynthesis.cancel();speechSynthesis.resume()}catch{}
+  const u=new SpeechSynthesisUtterance(it.text);u.lang=L(it.lang).sr;
+  const pick=set.voices[it.lang];const vs=voicesFor(it.lang);const v=vs.find(x=>x.voiceURI===pick)||vs[0];if(v)u.voice=v;
+  u.rate=set.catchup?Math.min(2,set.rate+0.25*ttsQ.length):set.rate;
+  let done=false;const fin=()=>{if(done)return;done=true;nextTTS()};
+  u.onend=fin;u.onerror=fin;
+  ttsGuard=setTimeout(fin,4000+it.text.length*260/u.rate);
+  speechSynthesis.speak(u);
+ };
+ hadRec?setTimeout(go,320):go();
 }
 function maybeSpeak(id){
  if(!room||!set.sound)return;const m=room.msgs.get(id);
  if(!m||m.from===me.cid||m.state!=='sent'||spoken.has(id)||id<=room.joinKey)return;
  const x=trFor(m,me.lang);if(!x)return;
- spoken.add(id);speak(x,me.lang);
+ spoken.add(id);speak(x,m.ko?m.lang:me.lang);
 }
 function sayMsg(id){
  const m=room.msgs.get(id);if(!m)return;
+ if(m.ko)return speak(m.text,m.lang,true);
  if(m.from===me.cid){const l=targetLangs(m.lang)[0]||Object.keys(m.tr||{})[0];if(l){const x=trFor(m,l);if(x)return speak(x,l,true)}return speak(m.text,m.lang,true)}
  speak(trFor(m,me.lang)||m.text,trFor(m,me.lang)?me.lang:m.lang,true);
 }
@@ -736,10 +837,10 @@ function resumeRec(){if(listening&&!speaking&&!editing&&!rec){clearTimeout(resta
 function runRec(){
  if(!listening||speaking||editing||rec||!room)return;
  const r=new SR();rec=r;r.lang=L(me.lang).sr;r.interimResults=true;r.continuous=false;r.maxAlternatives=1;
- let fin='',lastSent='';
- r.onresult=e=>{let inter='';fin='';for(let i=0;i<e.results.length;i++){const x=e.results[i];if(x.isFinal)fin+=x[0].transcript;else inter+=x[0].transcript}$('#live').textContent=fin+inter;setTalk(true)};
+ let fin='',lastSent='',silT;
+ r.onresult=e=>{let inter='';fin='';for(let i=0;i<e.results.length;i++){const x=e.results[i];if(x.isFinal)fin+=x[0].transcript;else inter+=x[0].transcript}$('#live').textContent=fin+inter;setTalk(true);clearTimeout(silT);if(inter&&!fin)silT=setTimeout(()=>{try{r.stop()}catch{}},1100)};
  r.onerror=e=>{if(e.error==='not-allowed'||e.error==='service-not-allowed'){listening=false;toast(t('micDenied'));updateMicUI()}};
- r.onend=()=>{rec=null;$('#live').textContent='';setTalk(false);const s=fin.trim();if(s&&s!==lastSent){lastSent=s;newDraft(s)}if(listening&&!speaking&&!editing){restartT=setTimeout(runRec,120)}updateMicUI()};
+ r.onend=()=>{clearTimeout(silT);rec=null;$('#live').textContent='';setTalk(false);const s=fin.trim();if(s&&s!==lastSent){lastSent=s;newDraft(s)}if(ttsQ.length&&!speaking){nextTTS();return}if(listening&&!speaking&&!editing){restartT=setTimeout(runRec,80)}updateMicUI()};
  try{r.start()}catch{rec=null}
 }
 let talkState=false;function setTalk(v){if(!room||talkState===v)return;talkState=v;fb.update(R(`rooms/${room.code}/members/${me.cid}`),{talk:v}).catch(()=>{})}
@@ -771,26 +872,44 @@ function phraseEdit(i){
 
 /* ---------- 초대 / 참여자 / 공유 ---------- */
 const inviteUrl=()=>location.origin+location.pathname+'?room='+room.code;
-function inviteMsg(){const base=set.invite||(ui()==='ko'?'원격 통역 대화방에 초대합니다. 아래 링크를 누르고 이름과 언어를 고르면 바로 대화할 수 있어요.\nYou are invited to a live interpreted chat. Open the link, choose your language, and start talking.':'Join my interpreted chat room:');return `${base}\n${inviteUrl()}\n(${room.code})`}
+function inviteMsg(){const base=set.invite||t('inviteDef');return `${base}\n${inviteUrl()}\n(${room.code})`}
+let qrLoad=null;
+function loadQR(){return qrLoad||(qrLoad=new Promise((res,rej)=>{if(window.qrcode)return res();const sc=document.createElement('script');sc.src='https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js';sc.onload=()=>res();sc.onerror=()=>{qrLoad=null;rej()};document.head.appendChild(sc)}))}
 function inviteSheet(){
- genSheet(t('invite'),`<div class="code-big">${room.code}</div><div class="hint" style="text-align:center;color:var(--sub);font-size:13px;margin-bottom:16px;word-break:break-all">${esc(inviteUrl())}</div><div class="btns"><button class="btn" id="ivCopy">${icon('copy')}${t('inviteCopy')}</button><button class="btn pri" id="ivShare">${icon('share')}${t('inviteShare')}</button></div>`);
+ genSheet(t('invite'),`<div class="qr" id="qrBox"></div><div class="qrh">${t('qrHint')}</div><div class="code-big">${room.code}</div><div class="hint" style="text-align:center;color:var(--sub);font-size:13px;margin-bottom:16px;word-break:break-all">${esc(inviteUrl())}</div><div class="btns"><button class="btn" id="ivCopy">${icon('copy')}${t('inviteCopy')}</button><button class="btn pri" id="ivShare">${icon('share')}${t('inviteShare')}</button></div>`);
+ const box=$('#qrBox'),url=inviteUrl();
+ loadQR().then(()=>{const q=qrcode(0,'M');q.addData(url);q.make();box.innerHTML=q.createSvgTag({cellSize:6,margin:1,scalable:true})}).catch(()=>{box.innerHTML=`<img alt="QR" src="https://api.qrserver.com/v1/create-qr-code/?size=400x400&margin=4&data=${encodeURIComponent(url)}">`});
+ box.onclick=()=>box.classList.toggle('big');
  $('#ivCopy').onclick=()=>copyText(inviteMsg());
  $('#ivShare').onclick=async()=>{if(navigator.share){try{await navigator.share({title:t('appName'),text:inviteMsg()})}catch{}}else copyText(inviteMsg())};
 }
 function peopleSheet(){
  const ms=Object.entries(room.members).sort((a,b)=>(b[1].online-a[1].online));
  genSheet(t('people'),`<div class="row"><label>${t('changeName')}</label><div style="display:flex;gap:8px"><input class="inp" id="pnName" value="${esc(me.name)}" maxlength="20"><button class="btn pri" id="pnOk">${t('save')}</button></div></div>
- <div class="row sw"><span>${t('myLang')}</span><button class="chip" id="pnLang">${esc(L(me.lang).nat)}</button></div>
+ <div class="row sw"><span>${t('myLang')}</span><button class="chip" id="pnLang">${esc(LN(me.lang))}</button></div>
  ${room.isHost?`<div class="row"><label>${t('roomName')}</label><div style="display:flex;gap:8px"><input class="inp" id="rnName" value="${esc(room.meta.title||'')}" maxlength="30"><button class="btn" id="rnOk">${t('save')}</button></div></div>`:''}
- <div style="margin-top:6px">${ms.map(([id,m])=>`<div class="mem"><div class="ava" style="${m.online?'':'filter:grayscale(1);opacity:.5'}">${esc((m.name||'?').slice(0,1))}</div><div class="mi"><b>${esc(m.name)}${id===me.cid?` (${t('me')})`:''}${id===room.meta.host?`<span class="badge">${t('host')}</span>`:''}</b><small>${esc(L(m.lang).nat)} · ${t(m.online?'online':'offline')}</small></div></div>`).join('')}</div>`);
+ <div style="margin-top:6px">${ms.map(([id,m])=>`<div class="mem"><div class="ava" style="${m.online?'':'filter:grayscale(1);opacity:.5'}">${esc((m.name||'?').slice(0,1))}</div><div class="mi"><b>${esc(m.name)}${id===me.cid?` (${t('me')})`:''}${id===room.meta.host?`<span class="badge">${t('host')}</span>`:''}</b><small>${esc(LN(m.lang))} · ${t(m.online?'online':'offline')}</small></div></div>`).join('')}</div>`);
  $('#pnOk').onclick=()=>{const v=$('#pnName').value.trim();if(!v)return;me.name=v;S.set('name',v);fb.update(R(`rooms/${room.code}/members/${me.cid}`),{name:v});renderMe();toast('✓');closeSheet()};
  $('#pnLang').onclick=()=>langSheet(()=>{fb.update(R(`rooms/${room.code}/members/${me.cid}`),{lang:me.lang});if(listening){abortRec()}});
  if(room.isHost)$('#rnOk').onclick=()=>{const v=$('#rnName').value.trim();if(!v)return;fb.update(R(`rooms/${room.code}/meta`),{title:v});saveRoomEntry(room.code,v,'host');closeSheet()};
 }
+function buildLog(){
+ const d=new Date();const head=`${room.meta.title||room.code}\n${d.getFullYear()}.${d.getMonth()+1}.${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}\n`;
+ const lines=[...room.msgs.values()].filter(m=>m.state==='sent'&&!(room.clearKey&&m.id<=room.clearKey)).map(m=>{
+  let out=`[${m.name}] ${m.text}`;if(m.ko)return out;
+  if(m.from===me.cid){Object.keys(m.tr||{}).forEach(l=>{const x=trFor(m,l);if(x)out+=`\n   → (${LN(l)}) ${x}`})}
+  else if(m.lang!==me.lang){const x=trFor(m,me.lang);if(x)out+=`\n   → ${x}`}
+  return out});
+ return head+'\n'+lines.join('\n\n');
+}
+function saveLogFile(){
+ const text=buildLog();const name=(room.meta.title||room.code).replace(/[\\/:*?"<>|]/g,'_');
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['﻿'+text],{type:'text/plain;charset=utf-8'}));a.download=name+'.txt';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},2000);
+}
+async function shareOut(){const text=buildLog();if(navigator.share){try{await navigator.share({title:t('shareTitle'),text})}catch{}}else copyText(text)}
 async function shareLog(){
- const lines=[...room.msgs.values()].filter(m=>m.state==='sent'&&!(room.clearKey&&m.id<=room.clearKey)).map(m=>{const x=m.lang===me.lang?'':trFor(m,me.lang);return `[${m.name}] ${m.text}${x?`\n  → ${x}`:''}`});
- const text=`${room.meta.title}\n\n${lines.join('\n')}`;
- if(navigator.share){try{await navigator.share({title:t('shareTitle'),text})}catch{}}else copyText(text);
+ const v=await modal(t('saveQ'),'',[[t('shareOut'),'share','pri'],[t('saveFile'),'file'],[t('cancel'),null]]);
+ if(v==='share')shareOut();else if(v==='file')saveLogFile();
 }
 async function clearChat(){
  const btns=[[t('clearMine'),'mine','pri']];if(room.isHost)btns.push([t('clearAll'),'all','warn']);btns.push([t('cancel'),null]);
@@ -802,32 +921,33 @@ async function clearChat(){
 
 /* ---------- 설정 ---------- */
 const TRAVEL={ko:{'인사·소개':['처음 뵙겠습니다.','만나서 반갑습니다.','저는 한국에서 왔습니다.','오늘 시간 내 주셔서 감사합니다.'],'통화·회의':['제 목소리 잘 들리세요?','화면이 잘 보이세요?','잠깐 연결이 끊겼어요. 다시 말씀해 주세요.','오늘 회의 내용을 정리해서 보내 드리겠습니다.'],'일정·약속':['몇 시에 만날까요?','내일 다시 연락드리겠습니다.','일정 확인 후 알려 드릴게요.','편하신 시간을 알려 주세요.'],'식사·이동':['같이 식사하실래요?','어디서 만날까요?','주소를 보내 주시겠어요?','조금 늦을 것 같아요. 죄송합니다.']},
+ ja:{'あいさつ':['はじめまして。','お会いできてうれしいです。','日本から来ました。','今日はお時間をいただきありがとうございます。'],'通話・会議':['声は聞こえますか？','画面は見えますか？','接続が切れました。もう一度お願いします。'],'予定':['何時に会いましょうか？','明日また連絡します。','ご都合のいい時間を教えてください。']},
  en:{'Greetings':['Nice to meet you.','Thank you for your time today.'],'Calls':['Can you hear me?','Can you see my screen?','The connection dropped. Please say that again.'],'Plans':['What time shall we meet?','I will contact you tomorrow.','Please tell me a convenient time.']}};
 let setTab='basic';
 function openSettings(tab){
  if(tab)setTab=tab;$('#tabAdv').classList.toggle('hidden',!!S.get('guestOnly',false)&&!rooms.some(r=>r.role==='host'));
  document.querySelectorAll('#setTabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===setTab));
- renderSetTab();openSheet('#shSettings',()=>{if(room)updateStatus()});
+ renderSetTab();openSheet('#shSettings',()=>{if(room){updateStatus();renderRoomMode()}});
 }
 const seg=(key,opts)=>`<div class="seg" data-seg="${key}">${opts.map(([v,l])=>`<button data-v="${v}" class="${String(set[key])===String(v)?'on':''}">${l}</button>`).join('')}</div>`;
 const tog=(key,label)=>`<div class="row sw"><span>${label}</span><button class="tg ${set[key]?'on':''}" data-tog="${key}"></button></div>`;
 function renderSetTab(){
- const B=$('#setBody');const ko=ui()==='ko';let h='';
+ const B=$('#setBody');const U=ui(),ko=U==='ko';const X=(k,j,e)=>U==='ko'?k:U==='ja'?j:e;let h='';
  if(setTab==='basic'){
   const vs=voicesFor(me.lang);
-  h=`<div class="row"><span class="rl">${ko?'말이 끝난 뒤 확인 시간':'Time to check before sending'}</span>${seg('confirm',[[0,ko?'바로 번역':'Instant'],[1,ko?'1초':'1s'],[2,ko?'2초':'2s'],[3,ko?'3초':'3s']])}<div class="hint">${ko?'말이 끝나면 이 시간 동안 문장을 보여 줘요. 눌러서 고치거나 취소할 수 있어요.':'You can tap to edit or cancel during this time.'}</div></div>
-  <div class="row"><span class="rl">${ko?'읽기 속도':'Reading speed'}</span><div class="range"><input type="range" min="0.8" max="2" step="0.1" value="${set.rate}" id="sRate"><b id="sRateV">${set.rate.toFixed(1)}×</b></div></div>
-  <div class="row"><span class="rl">${ko?'목소리 (휴대폰 기본 목소리)':'Voice (phone voice)'}</span><select class="inp" id="sVoice"><option value="">${ko?'기본':'Default'}</option>${vs.map(v=>`<option value="${esc(v.voiceURI)}" ${set.voices[me.lang]===v.voiceURI?'selected':''}>${esc(v.name)}</option>`).join('')}</select></div>
-  ${tog('prefetch',ko?'중간 번역 미리 시작':'Start translating early')}
-  ${tog('catchup',ko?'밀리면 최대 2배 빠르게 따라잡기':'Catch up up to 2× when behind')}
-  <div class="row"><span class="rl">${ko?'테마':'Theme'}</span>${seg('theme',[['basic',ko?'기본':'Basic'],['sea',ko?'바다':'Sea'],['night',ko?'밤':'Night']])}</div>
-  <div class="row"><label>${ko?'초대 문구':'Invite message'}</label><textarea class="inp" id="sInvite" placeholder="${ko?'비워 두면 기본 문구를 써요':'Leave empty for default'}">${esc(set.invite)}</textarea></div>
-  <div class="row"><div class="btns"><button class="btn" id="sUrl">${icon('link')}${ko?'웹 주소 보내기':'Share app link'}</button><button class="btn" id="sPhDef">${ko?'자주 쓰는 문구 기본값':'Reset phrases'}</button></div></div>`;
+  h=`<div class="row"><span class="rl">${X('말이 끝난 뒤 확인 시간','話し終わった後の確認時間','Time to check before sending')}</span>${seg('confirm',[[0,X('바로 번역','すぐ翻訳','Instant')],[1,X('1초','1秒','1s')],[2,X('2초','2秒','2s')],[3,X('3초','3秒','3s')]])}<div class="hint">${X('말이 끝나면 이 시간 동안 문장을 보여 줘요. 눌러서 고치거나 취소할 수 있어요.','話し終わるとこの時間だけ文を表示します。タップで修正・取り消しができます。','You can tap to edit or cancel during this time.')}</div></div>
+  <div class="row"><span class="rl">${X('읽기 속도','読み上げ速度','Reading speed')}</span><div class="range"><input type="range" min="0.8" max="2" step="0.1" value="${set.rate}" id="sRate"><b id="sRateV">${set.rate.toFixed(1)}×</b></div></div>
+  <div class="row"><span class="rl">${X('목소리 (휴대폰 기본 목소리)','声(スマホの標準音声)','Voice (phone voice)')}</span><select class="inp" id="sVoice"><option value="">${X('기본','標準','Default')}</option>${vs.map(v=>`<option value="${esc(v.voiceURI)}" ${set.voices[me.lang]===v.voiceURI?'selected':''}>${esc(v.name)}</option>`).join('')}</select></div>
+  ${tog('prefetch',X('중간 번역 미리 시작','途中から先に翻訳を始める','Start translating early'))}
+  ${tog('catchup',X('밀리면 최대 2배 빠르게 따라잡기','遅れたら最大2倍速で追いつく','Catch up up to 2× when behind'))}
+  <div class="row"><span class="rl">${X('테마','テーマ','Theme')}</span>${seg('theme',[['basic',X('기본','基本','Basic')],['sea',X('바다','海','Sea')],['night',X('밤','夜','Night')]])}</div>
+  <div class="row"><label>${X('초대 문구','招待メッセージ','Invite message')}</label><textarea class="inp" id="sInvite" placeholder="${X('비워 두면 기본 문구(한국어·일본어)를 써요','空欄なら標準メッセージを使います','Leave empty for default')}">${esc(set.invite)}</textarea></div>
+  <div class="row"><div class="btns"><button class="btn" id="sUrl">${icon('link')}${X('웹 주소 보내기','アプリのリンクを送る','Share app link')}</button><button class="btn" id="sPhDef">${X('자주 쓰는 문구 기본값','フレーズを初期化','Reset phrases')}</button></div></div>`;
  }else if(setTab==='words'){
-  h=`<div class="row"><label>${ko?'내 단어장':'Glossary'}</label><textarea class="inp" id="sGloss" style="min-height:220px" placeholder="${ko?'한 줄에 하나씩\n금형 = mold\n선반 = lathe\n폴리텍 = Korea Polytechnics':'one per line\nmold = 金型'}">${esc(set.gloss)}</textarea><div class="hint">${ko?'"원래 말 = 번역" 형식으로 적으면 AI 번역(Gemini·Claude·ChatGPT) 때 이 단어로 번역해요. 방장 폰의 단어장이 쓰여요.':'Used by AI translation on the host phone.'}</div></div>`;
+  h=`<div class="row"><label>${X('내 단어장','単語帳','Glossary')}</label><textarea class="inp" id="sGloss" style="min-height:220px" placeholder="${X('한 줄에 하나씩\n금형 = 金型\n선반 = 旋盤\n폴리텍 = ポリテク大学','1行に1つずつ\n金型 = 금형','one per line\nmold = 金型')}">${esc(set.gloss)}</textarea><div class="hint">${X('"원래 말 = 번역" 형식으로 적으면 AI 번역(Gemini·Claude·ChatGPT) 때 이 단어로 번역해요. 방장 폰의 단어장이 쓰여요.','「元の言葉 = 訳語」の形で書くと、AI翻訳のときにこの言葉で訳します。ホストのスマホの単語帳が使われます。','Used by AI translation on the host phone.')}</div></div>`;
  }else if(setTab==='travel'){
-  const tv=TRAVEL[ko?'ko':'en'];
-  h=`<div class="travel"><div class="hint" style="color:var(--sub);font-size:13px">${ko?'+ 를 누르면 자주 쓰는 문구에 들어가요.':'Tap + to add to quick phrases.'}</div>${Object.entries(tv).map(([k,arr])=>`<h4>${esc(k)}</h4>${arr.map(s=>`<div class="tp"><span>${esc(s)}</span><button data-addtp="${esc(s)}">${icon('plus')}</button></div>`).join('')}`).join('')}</div>`;
+  const tv=TRAVEL[U]||TRAVEL.en;
+  h=`<div class="travel"><div class="hint" style="color:var(--sub);font-size:13px">${X('+ 를 누르면 자주 쓰는 문구에 들어가요.','+ をタップするとよく使うフレーズに追加されます。','Tap + to add to quick phrases.')}</div>${Object.entries(tv).map(([k,arr])=>`<h4>${esc(k)}</h4>${arr.map(s=>`<div class="tp"><span>${esc(s)}</span><button data-addtp="${esc(s)}">${icon('plus')}</button></div>`).join('')}`).join('')}</div>`;
  }else{
   h=`<div class="row"><span class="rl">번역 엔진</span>${seg('engine',[['free','무료'],['gemini','Gemini'],['claude','Claude'],['openai','ChatGPT']])}<div class="hint">내가 만든 방에서는 <b>이 휴대폰이 번역 서버</b>가 돼서, 초대한 사람들 말도 모두 이 키로 번역돼요. 키는 이 휴대폰에만 저장되고 다른 사람에게는 보이지 않아요. 대화하는 동안 이 폰에서 앱을 켜 두세요.</div></div>
   <div class="row"><label>Gemini 키</label><input class="inp" type="password" id="k_gkey" value="${esc(set.gkey)}" placeholder="AIza…" autocomplete="off"><a class="lnk" href="https://aistudio.google.com/apikey" target="_blank">키 받으러 가기 ›</a><label style="margin-top:12px">모델 이름</label><input class="inp" id="k_gmodel" value="${esc(set.gmodel)}"></div>
@@ -842,14 +962,14 @@ function bindSet(){
  B.querySelectorAll('[data-seg]').forEach(s=>s.onclick=e=>{const b=e.target.closest('button');if(!b)return;const k=s.dataset.seg;let v=b.dataset.v;if(k==='confirm')v=+v;set[k]=v;saveSet();s.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));if(k==='theme')applyTheme();if(k==='engine'&&room)updateStatus()});
  B.querySelectorAll('[data-tog]').forEach(b=>b.onclick=()=>{const k=b.dataset.tog;set[k]=!set[k];saveSet();b.classList.toggle('on',set[k])});
  const rate=$('#sRate');if(rate)rate.oninput=()=>{set.rate=+rate.value;$('#sRateV').textContent=set.rate.toFixed(1)+'×';saveSet()};
- const vo=$('#sVoice');if(vo)vo.onchange=()=>{set.voices[me.lang]=vo.value;saveSet();speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(me.lang==='ko'?'이 목소리로 읽어 드려요.':'I will read with this voice.');u.lang=L(me.lang).sr;const v=voicesFor(me.lang).find(x=>x.voiceURI===vo.value);if(v)u.voice=v;u.rate=set.rate;speechSynthesis.speak(u)};
+ const vo=$('#sVoice');if(vo)vo.onchange=()=>{set.voices[me.lang]=vo.value;saveSet();speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(me.lang==='ko'?'이 목소리로 읽어 드려요.':me.lang==='ja'?'この声で読み上げます。':'I will read with this voice.');u.lang=L(me.lang).sr;const v=voicesFor(me.lang).find(x=>x.voiceURI===vo.value);if(v)u.voice=v;u.rate=set.rate;speechSynthesis.speak(u)};
  const inv=$('#sInvite');if(inv)inv.oninput=()=>{set.invite=inv.value;saveSet()};
  const g=$('#sGloss');if(g)g.oninput=()=>{set.gloss=g.value;saveSet()};
  const u=$('#sUrl');if(u)u.onclick=async()=>{const url=location.origin+location.pathname;if(navigator.share){try{await navigator.share({title:t('appName'),url})}catch{}}else copyText(url)};
- const pd=$('#sPhDef');if(pd)pd.onclick=async()=>{if(await modal(ui()==='ko'?'자주 쓰는 문구를 기본값으로 되돌릴까요?':'Reset quick phrases?','',[[t('ok'),true,'pri'],[t('cancel'),false]])){phrases=defPhrases();savePhrases();toast('✓')}};
+ const pd=$('#sPhDef');if(pd)pd.onclick=async()=>{if(await modal(ui()==='ko'?'자주 쓰는 문구를 기본값으로 되돌릴까요?':ui()==='ja'?'フレーズを初期化しますか？':'Reset quick phrases?','',[[t('ok'),true,'pri'],[t('cancel'),false]])){phrases=defPhrases();savePhrases();toast('✓')}};
  B.querySelectorAll('[data-addtp]').forEach(b=>b.onclick=()=>{const s=b.dataset.addtp;phrases.push({t:s.slice(0,12),x:s});savePhrases();toast(t('added'))});
  ['gkey','gmodel','ckey','cmodel','okey','omodel'].forEach(k=>{const i=$('#k_'+k);if(i)i.oninput=()=>{set[k]=i.value.trim();saveSet()}});
- const ts=$('#sTest');if(ts)ts.onclick=async()=>{const e=set.engine;const out=$('#sTestR');out.textContent='번역하는 중…';const t0=performance.now();try{if(e==='free'){out.textContent=`무료 번역: ${await freeTranslate('안녕하세요, 만나서 반갑습니다.','ko','en')} (${Math.round(performance.now()-t0)}ms)`}else{const o=await aiTranslate(e,'안녕하세요, 만나서 반갑습니다.','ko',['en','zh']);out.textContent=`${engineName(e)} 성공 · ${Math.round(performance.now()-t0)}ms\nEN: ${o.en}\n中文: ${o.zh}`}}catch(err){out.textContent='실패: '+err.message+' — 키와 모델 이름을 확인해 주세요.'}out.style.whiteSpace='pre-line'};
+ const ts=$('#sTest');if(ts)ts.onclick=async()=>{const e=set.engine;const out=$('#sTestR');out.textContent='번역하는 중…';const t0=performance.now();try{if(e==='free'){out.textContent=`무료 번역: ${await freeTranslate('안녕하세요, 만나서 반갑습니다.','ko','ja')} (${Math.round(performance.now()-t0)}ms)`}else{const o=await aiTranslate(e,'안녕하세요, 만나서 반갑습니다.','ko',['ja']);out.textContent=`${engineName(e)} 성공 · ${e==='gemini'?set.gmodel+' · ':''}${Math.round(performance.now()-t0)}ms\n日本語: ${o.ja}`}}catch(err){out.textContent='실패: '+err.message+' — 키와 모델 이름을 확인해 주세요.'}out.style.whiteSpace='pre-line'};
 }
 
 /* ---------- 숨은 메뉴(버전 다섯 번) ---------- */
@@ -875,6 +995,8 @@ document.addEventListener('click',e=>{
  const five=e.target.closest('[data-five]');if(five){fiveTap();return}
  if(e.target.closest('[data-close]')){closeSheet();return}
  if(e.target.closest('#setTabs button')){setTab=e.target.closest('button').dataset.tab;document.querySelectorAll('#setTabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===setTab));renderSetTab();return}
+ const mv=e.target.closest('[data-mv]');if(mv){setMode(mv.dataset.mv);return}
+ const kv=e.target.closest('[data-kv]');if(kv){setLko(kv.dataset.kv==='1');return}
  const a=e.target.closest('[data-act]');if(!a)return;const act=a.dataset.act,id=a.dataset.id;
  switch(act){
   case 'settings':openSettings();break;
@@ -891,7 +1013,18 @@ document.addEventListener('click',e=>{
   case 'clear':clearChat();break;
   case 'mic':listening?stopListen():startListen();break;
   case 'font':{const i=(FS.indexOf(set.fs)+1)%FS.length;set.fs=FS[i];saveSet();updateFs();break}
-  case 'drawer':$('#drawer').classList.add('open');$('#dim').classList.add('on');break;
+  case 'drawer':openDrawer();break;
+  case 'dim':setDim(true);break;
+  case 'undim':setDim(false);break;
+  case 'speed':set.gmodel=set.gmodel===ACC?FAST:ACC;saveSet();updateSpd();updateStatus();toast(t(set.gmodel===ACC?'accOn':'fastOn')+' ('+set.gmodel+')');break;
+  case 'hand':toggleHand();break;
+  case 'askText':askText();break;
+  case 'qs':qsSheet();break;
+  case 'lecEnd':lecEnd();break;
+  case 'grant':grantFloor(id);break;
+  case 'handLater':fb.update(R(`rooms/${room.code}/members/${id}`),{hand:null});break;
+  case 'endFloor':fb.update(R(`rooms/${room.code}/meta`),{floor:''});break;
+  case 'install':doInstall();break;
   case 'drawerClose':closeSheet();break;
   case 'sendText':{const x=$('#composeTx');sendNow(x.value);x.value='';x.style.height='';closeSheet();break}
   case 'addPhrase':phraseEdit(null);break;
@@ -904,7 +1037,8 @@ $('#dim').onclick=()=>closeSheet();
 $('#meName').addEventListener('input',e=>{me.name=e.target.value.trim();S.set('name',me.name);$('#meAva').textContent=(me.name||t('me')).slice(0,1).toUpperCase()});
 $('#joinCode').addEventListener('keydown',e=>{if(e.key==='Enter')$('[data-act=join]').click()});
 $('#composeTx').addEventListener('input',e=>{const x=e.target;x.style.height='auto';x.style.height=Math.min(120,x.scrollHeight)+'px'});
-$('#splash').addEventListener('click',()=>{
+$('#splash').addEventListener('click',e=>{
+ if(e.target.closest('.inapp'))return;
  try{speechSynthesis.speak(Object.assign(new SpeechSynthesisUtterance(' '),{volume:0}))}catch{}
  show('#home');
  if(inviteCode){$('#joinCode').value=inviteCode;if(me.name.trim()){waitFb().then(()=>enterRoom(inviteCode))}else{setTimeout(()=>{toast(t('needName'));$('#meName').focus()},300)}}
@@ -913,6 +1047,137 @@ $('#meName').addEventListener('change',()=>{if(inviteCode&&me.name.trim()&&!room
 function waitFb(){return new Promise(r=>{let n=0;const c=()=>{if((fb&&connected)||n++>40)r();else setTimeout(c,150)};c()})}
 speechSynthesis.onvoiceschanged=()=>{};
 if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+
+/* ---------- 설명 모드 ---------- */
+const koOnly=()=>!!(room&&room.meta.mode==='lec'&&room.meta.lko);
+function setMode(v){if(!room?.isHost)return;const up={mode:v,floor:''};if(v==='lec'&&room.meta.lko==null)up.lko=false;fb.update(R(`rooms/${room.code}/meta`),up)}
+function setLko(v){if(!room?.isHost)return;fb.update(R(`rooms/${room.code}/meta`),{lko:v})}
+function grantFloor(id){fb.update(R(`rooms/${room.code}/meta`),{floor:id});fb.update(R(`rooms/${room.code}/members/${id}`),{hand:null})}
+async function lecEnd(){
+ const ok=await modal(t('lecEndQ'),t('lecEndP'),[[t('lecEnd'),true,'pri'],[t('cancel'),false]]);if(!ok)return;
+ fb.update(R(`rooms/${room.code}/meta`),{mode:'talk',floor:'',ended:Date.now()});
+ Object.entries(room.members).forEach(([id,m])=>{if(m.hand)fb.update(R(`rooms/${room.code}/members/${id}`),{hand:null})});
+}
+function checkEnded(){
+ if(!room||room.isHost)return;const e=room.meta.ended;if(!e)return;const k='end_'+room.code;
+ if(S.get(k,0)===e)return;S.set(k,e);
+ if(!room.msgs.size)return;
+ modal(t('lecEndedQ'),t('lecEndedP'),[[t('saveFile'),'file','pri'],[t('shareOut'),'share'],[t('close'),null]]).then(v=>{if(v==='file')saveLogFile();else if(v==='share')shareOut()});
+}
+function toggleHand(){if(!room)return;const up=!!room.members[me.cid]?.hand;fb.update(R(`rooms/${room.code}/members/${me.cid}`),{hand:up?null:Date.now()});if(!up)toast(t('handSent'))}
+function updateSpd(){const b=$('#spdBtn');if(!b)return;const acc=set.gmodel===ACC;b.innerHTML=`<span class="tb">${icon(acc?'target':'bolt')}</span><span>${t(acc?'acc':'fast')}</span>`}
+function renderRoomMode(){
+ if(!room)return;const M=room.meta||{};const lec=M.mode==='lec';const floorMe=M.floor===me.cid;
+ const gLock=!room.isHost&&lec&&!floorMe;
+ $('#micwrap').classList.toggle('hidden',gLock);$('#handwrap').classList.toggle('hidden',!gLock);
+ $('#askBtn').classList.toggle('hidden',room.isHost||!lec);
+ $('#spdBtn').classList.toggle('hidden',!(room.isHost&&activeEngine()==='gemini'));
+ $('#handle').classList.toggle('hidden',gLock);
+ if(gLock){if(listening)stopListen();$('#drawer').classList.remove('open')}
+ if(!room.isHost){
+  if(floorMe&&!room.wasFloor){toast(t('yourTurn'));if(!listening)startListen()}
+  if(!floorMe&&room.wasFloor&&listening&&lec)stopListen();
+  room.wasFloor=floorMe;
+ }
+ const up=!!room.members[me.cid]?.hand;$('#handBtn').classList.toggle('up',up);$('#handl').textContent=t(up?'handDown':'hand');
+ updateSpd();renderModebar();
+}
+function renderModebar(){
+ const mb=$('#modebar');const M=room.meta||{};const lec=M.mode==='lec';
+ if(room.isHost){
+  let h=`<div class="seg mseg">${[['talk',t('modeTalk')],['lec',t('modeLec')]].map(([v,l])=>`<button data-mv="${v}" class="${(lec?'lec':'talk')===v?'on':''}">${l}</button>`).join('')}</div>`;
+  if(lec){
+   h+=`<button class="mb-btn" data-act="qs">${icon('ask')}${t('questions')}<span class="bdg hidden" id="qBdg"></span></button><button class="mb-btn" data-act="lecEnd">${t('lecEnd')}</button><div class="seg mseg2">${[[0,t('lecTr')],[1,t('lecKo')]].map(([v,l])=>`<button data-kv="${v}" class="${(M.lko?1:0)===v?'on':''}">${l}</button>`).join('')}</div>`;
+   const fl=M.floor&&room.members[M.floor];
+   const hands=membersOnline().filter(([id,m])=>m.hand&&id!==me.cid).sort((a,b)=>a[1].hand-b[1].hand);
+   if(fl)h+=`<div class="note"><span class="wv"><i></i><i></i><i></i><i></i></span><b>${esc(fl.name)}${t('asking')}</b><button data-act="endFloor">${t('endQ')}</button></div>`;
+   else if(hands.length){const [hid,hm]=hands[0];h+=`<div class="note">${icon('hand')}<b>${esc(hm.name)}${t('handUp')}${hands.length>1?` (+${hands.length-1})`:''}</b><button data-act="grant" data-id="${hid}">${t('letSpeak')}</button><button class="g" data-act="handLater" data-id="${hid}">${t('later')}</button></div>`}
+  }
+  mb.innerHTML=h;mb.classList.remove('hidden');updateQBadge();
+ }else{
+  if(!lec){mb.classList.add('hidden');mb.innerHTML='';return}
+  mb.innerHTML=`<div class="lecpill">${icon(M.floor===me.cid?'mic':'lecture')}<span>${M.floor===me.cid?t('yourTurn'):t('lecListening')}${M.lko?' · '+t('lecKoTag'):''}</span></div>`;mb.classList.remove('hidden');
+ }
+}
+/* 문자 질문: 소리 없이 살짝 알림 + 숫자 */
+function onQ(id,v){
+ if(!room||!v)return;room.qs.set(id,v);
+ if(!v.ko&&v.lang!==me.lang){translateMulti(v.text,v.lang,[me.lang]).then(r=>{v.trx=r.out[me.lang];refreshQs()}).catch(()=>{})}
+ if(!room.seenQ.has(id)&&id>room.joinKey)toast(t('qNew'));
+ updateQBadge();refreshQs();
+}
+function updateQBadge(){const b=$('#qBdg');if(!b||!room)return;const n=[...room.qs.keys()].filter(k=>!room.seenQ.has(k)).length;b.textContent=n;b.classList.toggle('hidden',!n)}
+function qsHtml(){const list=[...room.qs.entries()].reverse();if(!list.length)return `<div class="empty">${t('noQs')}</div>`;return list.map(([id,q])=>`<div class="qi${room.seenQ.has(id)?'':' new'}"><div class="qn">${esc(q.name)} · ${esc(LN(q.lang))}</div><div class="qt">${esc(q.trx||q.text)}</div>${q.trx&&q.trx!==q.text?`<div class="qo">${esc(q.text)}</div>`:''}</div>`).join('')+`<div class="btns" style="margin-top:14px"><button class="btn warn" id="qClr">${icon('trash')}${t('clearQs')}</button></div>`}
+function bindQs(){const c=$('#qClr');if(c)c.onclick=()=>{fb.remove(R(`rooms/${room.code}/qs`)).catch(()=>{})}}
+function qsSheet(){genSheet(t('questions'),qsHtml());$('#genBody').dataset.k='qs';bindQs();setTimeout(()=>{room.qs.forEach((_,k)=>room.seenQ.add(k));S.set('seenq_'+room.code,[...room.seenQ].slice(-300));updateQBadge()},400)}
+function refreshQs(){if(openSheetEl===$('#shGen')&&$('#genBody').dataset.k==='qs'){$('#genBody').innerHTML=qsHtml();paintIcons($('#genBody'));bindQs();room.qs.forEach((_,k)=>room.seenQ.add(k));S.set('seenq_'+room.code,[...room.seenQ].slice(-300));updateQBadge()}}
+function askText(){
+ genSheet(t('textQ'),`<textarea class="inp" id="qTx" placeholder="${t('qPh')}" style="font-size:17px"></textarea><div class="btns" style="margin-top:10px"><button class="btn pri" id="qOk">${icon('send')}${t('send')}</button></div>`);
+ $('#qTx').focus();
+ $('#qOk').onclick=()=>{const v=$('#qTx').value.trim();if(!v)return;fb.set(fb.push(R(`rooms/${room.code}/qs`)),{from:me.cid,name:me.name,lang:me.lang,text:v,ts:fb.serverTimestamp(),...(koOnly()?{ko:true}:{})});closeSheet();toast(t('qSent'))};
+}
+
+/* ---------- 말풍선: 누르면 다시 듣기, 길게 누르면 원문·다시 번역 ---------- */
+const retrWait=new Set();
+function msgMenu(id){
+ const m=room?.msgs.get(id);if(!m)return;const mine=m.from===me.cid;
+ let rows=`<div class="row"><label>${t('original')} · ${esc(LN(m.lang))}</label><div class="mtx">${esc(m.text)}</div></div>`;
+ const langs=m.ko?[]:mine?Object.keys(m.tr||{}):(m.lang!==me.lang?[me.lang]:[]);
+ langs.forEach(l=>{const x=trFor(m,l);if(x)rows+=`<div class="row"><label>${esc(LN(l))}</label><div class="mtx">${esc(x)}</div></div>`});
+ const canR=!m.ko&&(mine?(targetLangs(m.lang).length||Object.keys(m.tr||{}).length):m.lang!==me.lang);
+ genSheet(t('original'),rows+`<div class="btns" style="margin-top:12px"><button class="btn" id="mmSay">${icon('vol')}${t('replay')}</button>${canR?`<button class="btn" id="mmRetr">${icon('target')}${t('retr')}</button>`:''}<button class="btn" id="mmCopy">${icon('copy')}${t('copy')}</button></div>`);
+ $('#mmSay').onclick=()=>{closeSheet();sayMsg(id)};
+ $('#mmCopy').onclick=()=>{copyText(m.text+langs.map(l=>trFor(m,l)?'\n'+trFor(m,l):'').join(''))};
+ if(canR)$('#mmRetr').onclick=()=>{closeSheet();retranslate(id)};
+}
+function retranslate(id){
+ if(!room)return;if(!room.isHost&&!hostOnline()){toast(t('retrFail'));return}
+ retrWait.add(id);fb.update(R(`rooms/${room.code}/msgs/${id}`),{retr:Date.now()});toast(t('retrIng'));
+ setTimeout(()=>{if(retrWait.has(id)){retrWait.delete(id);toast(t('retrFail'))}},15000);
+}
+(function(){let lt,long=false,sx=0,sy=0;const c=$('#chat');
+ c.addEventListener('pointerdown',e=>{const b=e.target.closest('.bub[data-mid]');if(!b||e.target.closest('[data-act]'))return;long=false;sx=e.clientX;sy=e.clientY;clearTimeout(lt);lt=setTimeout(()=>{long=true;try{navigator.vibrate&&navigator.vibrate(15)}catch{}msgMenu(b.dataset.mid)},550)});
+ c.addEventListener('pointermove',e=>{if(Math.abs(e.clientX-sx)>10||Math.abs(e.clientY-sy)>10)clearTimeout(lt)});
+ ['pointerup','pointercancel','pointerleave'].forEach(ev=>c.addEventListener(ev,()=>clearTimeout(lt)));
+ c.addEventListener('contextmenu',e=>{if(e.target.closest('.bub'))e.preventDefault()});
+ c.addEventListener('click',e=>{const b=e.target.closest('.bub[data-mid]');if(!b||e.target.closest('[data-act]'))return;if(long){long=false;return}sayMsg(b.dataset.mid)});
+})();
+
+/* ---------- 서랍: 오른쪽에서 왼쪽으로 밀면 열림, 반대로 밀면 닫힘 ---------- */
+function openDrawer(){if(!room||$('#handle').classList.contains('hidden'))return;$('#drawer').classList.add('open');$('#dim').classList.add('on')}
+(function(){let sx=0,sy=0,mode=null;
+ document.addEventListener('touchstart',e=>{const p=e.touches[0];sx=p.clientX;sy=p.clientY;mode=null;
+  if($('#drawer').classList.contains('open')){if(e.target.closest('#drawer')||e.target.closest('#dim'))mode='close'}
+  else if(room&&!openSheetEl&&$('#modal').classList.contains('hidden')&&$('#dimOv').classList.contains('hidden')&&sx>innerWidth-Math.max(44,innerWidth*.16))mode='open'},{passive:true});
+ document.addEventListener('touchend',e=>{if(!mode)return;const p=e.changedTouches[0];const dx=p.clientX-sx,dy=Math.abs(p.clientY-sy);const m=mode;mode=null;if(dy>Math.abs(dx))return;
+  if(m==='open'&&dx<-40)openDrawer();else if(m==='close'&&dx>60)closeSheet()},{passive:true});
+})();
+
+/* ---------- 화면 어둡게(여행 통역 웹과 같은 방식) ---------- */
+function setDim(on){const o=$('#dimOv');o.classList.toggle('hidden',!on);if(on){const b=o.querySelector('.dbox');b.style.top=(20+Math.random()*50)+'%';b.style.left=(8+Math.random()*30)+'%'}}
+(function(){let last=0;$('#dimOv').addEventListener('pointerup',e=>{if(e.target.closest('.db'))return;const n=Date.now();if(n-last<400)setDim(false);last=n})})();
+
+/* ---------- 설치 · 카카오톡 · 아이폰 ---------- */
+const UA=navigator.userAgent;
+const isIOS=/iPhone|iPad|iPod/.test(UA)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+const isKakao=/KAKAOTALK/i.test(UA);
+const inApp=isKakao||/NAVER\(|Instagram|FBAN|FBAV|Line\/|DaumApps|BAND\//i.test(UA);
+const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+let installEvent=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEvent=e;$('#instBtn').classList.remove('hidden')});
+window.addEventListener('appinstalled',()=>{$('#instBtn').classList.add('hidden');toast(t('installed')||'✓')});
+if(!standalone&&!inApp&&(isIOS||/Android/i.test(UA)))$('#instBtn').classList.remove('hidden');
+function iosGuide(){genSheet(t('iosTitle'),`<ol class="ios"><li>${icon('share')} ${t('ios1')}</li><li>${icon('plus')} ${t('ios2')}</li><li>✓ ${t('ios3')}</li></ol><div class="hint" style="color:var(--sub);font-size:13px;line-height:1.6;margin-top:6px">${t('iosSafari')}</div>`)}
+async function doInstall(){if(installEvent){installEvent.prompt();try{await installEvent.userChoice}catch{}installEvent=null;return}if(isIOS)return iosGuide();modal(t('install'),t('installAnd'),[[t('ok'),1,'pri']])}
+function openOutside(){const url=location.href;if(isKakao){location.href='kakaotalk://web/openExternal?url='+encodeURIComponent(url)}else if(!isIOS){location.href='intent://'+url.replace(/^https?:\/\//,'')+'#Intent;scheme=https;package=com.android.chrome;end'}}
+if(inApp){
+ const d=document.createElement('div');d.className='inapp';
+ d.innerHTML=`<div>${t('inApp')}</div><div class="btns">${isKakao||!isIOS?`<button class="btn pri" id="iaOpen">${t('openBrowser')}</button>`:''}<button class="btn" id="iaCopy">${t('copyLink')}</button></div>`;
+ $('#splash').appendChild(d);
+ const o=d.querySelector('#iaOpen');if(o)o.onclick=openOutside;
+ d.querySelector('#iaCopy').onclick=()=>copyText(location.href);
+ setTimeout(openOutside,300);
+}
 
 /* ---------- 시작 ---------- */
 paintIcons();applyTexts();applyTheme();updateFs();renderMe();renderRooms();renderPhrases();
