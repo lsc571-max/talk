@@ -283,8 +283,9 @@ button:disabled{opacity:.45;cursor:default}
 .lgrid button.on small{color:#32684D}
 .tg.on{background:#45956B;box-shadow:inset 0 0 0 1px #2F7951}
 .admin-connection{margin-bottom:16px;border:1px solid #DFE7E4;border-radius:14px;padding:12px}.admin-connection summary{cursor:pointer;color:var(--sub);font-size:14px;font-weight:600}.admin-connection[open] summary{margin-bottom:12px}
+.mic-engine{font-size:11px;line-height:1.3;color:#38634F;background:#E5F2EA;border:1px solid #C9E1D2;border-radius:999px;padding:3px 9px;white-space:nowrap;max-width:100%}
 </style>
-<meta name="app-build" content="20261107-auto1">
+<meta name="app-build" content="20261107-engine1">
 </head>
 <body data-theme="basic">
 
@@ -365,6 +366,7 @@ button:disabled{opacity:.45;cursor:default}
       <div class="micwrap" id="micwrap">
         <button id="mic" data-act="mic"><svg class="ic" data-i="mic"></svg></button>
         <span class="micl" id="micl" data-t="tapSpeak">눌러서 말하기</span>
+        <span id="micEngine" class="mic-engine" aria-live="polite" hidden></span>
       </div>
       <div class="micwrap hidden" id="handwrap">
         <button id="handBtn" data-act="hand"><svg class="ic" data-i="hand"></svg></button>
@@ -416,7 +418,7 @@ button:disabled{opacity:.45;cursor:default}
 <div id="toast"></div>
 
 <script type="module">
-const VERSION='v1.2 · ChatGPT';
+const VERSION='v1.3 · ChatGPT';
 const FAST='gemini-3.5-flash-lite',ACC='gemini-3.8-flash';
 const FB_VER='10.12.2';
 const DEFAULT_FB={authDomain:"talk-app-3fb0e.firebaseapp.com",databaseURL:"https://talk-app-3fb0e-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"talk-app-3fb0e"};
@@ -487,7 +489,7 @@ T.ja={appName:'リモート通訳チャット',tagline:'離れていても、そ
  modeTalk:'会話モード',modeLec:'説明モード',lecTr:'翻訳して送る',lecKo:'韓国語のまま',lecEnd:'説明を終える',questions:'質問',hand:'手を挙げる',handDown:'手を下ろす',handSent:'手を挙げました。ホストが許可すると話せます。',textQ:'文字で質問',qPh:'質問を入力してください',qSent:'質問を送りました',qNew:'文字の質問が届きました',handUp:'さんが手を挙げました',letSpeak:'話してもらう',later:'あとで',asking:'さんが質問中',endQ:'終了',yourTurn:'どうぞお話しください',lecListening:'説明を聞いています',lecKoTag:'韓国語のまま',noQs:'まだ質問はありません',clearQs:'質問をすべて消す',lecEndedQ:'説明が終わりました',lecEndedP:'今日の説明内容を自分の言語で保存できます。',saveFile:'ファイルに保存',shareOut:'共有する',saveQ:'会話記録の保存',dim:'暗くする',dimText:'画面だけ暗くしました · 音声は続きます',dimSub:'2回タップで明るくなります',dimBack:'画面を戻す',fast:'速い',acc:'正確',replay:'もう一度聞く',retr:'再翻訳',retrIng:'正確に再翻訳しています…',retrFail:'ホストのスマホが応答しません',copy:'コピー',original:'原文',installShort:'インストール',installed:'インストールしました',install:'ホーム画面に追加',installAnd:'Chrome右上のメニュー(⋮) →「アプリをインストール」または「ホーム画面に追加」をタップしてください。',iosTitle:'iPhoneにインストール',ios1:'Safari下の共有ボタンをタップ',ios2:'「ホーム画面に追加」をタップ',ios3:'右上の「追加」で完了！',iosSafari:'iPhoneは必ずSafariで開いてください。最初に画面を一度タップすると音が出ます。',inApp:'このアプリ内ではマイクが使えない場合があります。ChromeかSafariで開いてください。',openBrowser:'ブラウザで開く',copyLink:'リンクをコピー',qrHint:'スマホのカメラで読み取るとすぐ入れます · タップで拡大'};
 const t=k=>(T[ui()][k]??T.ko[k]??k);
 const ui=()=>(me.lang==='ko'||devKo)?'ko':me.lang==='ja'?'ja':'en';
-function applyTexts(){updateSoundUI();document.documentElement.lang=me.lang;document.querySelectorAll('[data-t]').forEach(e=>e.innerHTML=t(e.dataset.t));document.querySelectorAll('[data-tp]').forEach(e=>e.placeholder=t(e.dataset.tp));document.querySelectorAll('[data-ver]').forEach(e=>e.textContent=VERSION)}
+function applyTexts(){updateSoundUI();document.documentElement.lang=me.lang;document.querySelectorAll('[data-t]').forEach(e=>e.innerHTML=t(e.dataset.t));document.querySelectorAll('[data-tp]').forEach(e=>e.placeholder=t(e.dataset.tp));document.querySelectorAll('[data-ver]').forEach(e=>e.textContent=VERSION);updateMicEngine()}
 
 /* ---------- 저장 ---------- */
 const S={get(k,d){try{const v=localStorage.getItem('rt_'+k);return v==null?d:JSON.parse(v)}catch{return d}},set(k,v){try{localStorage.setItem('rt_'+k,JSON.stringify(v))}catch{}}};
@@ -563,6 +565,7 @@ function needName(){if(me.name.trim())return false;toast(t('needName'));$('#meNa
 
 /* ---------- 대화방 ---------- */
 let room=null;
+let micEngineResult=null,micEngineTimer=null;
 const pending=new Map();let tickT=null;
 const spoken=new Set();const localTr=new Map();
 async function createRoom(){
@@ -608,7 +611,24 @@ function membersOnline(){return Object.entries(room?.members||{}).filter(([,m])=
 function targetLangs(src){const s=new Set();membersOnline().forEach(([,m])=>{if(m.lang&&m.lang!==src)s.add(m.lang)});return [...s]}
 function hostOnline(){return !!(room&&room.members[room.meta.host]?.online)}
 function engineName(e){return {gemini:'Gemini',claude:'Claude',openai:'ChatGPT',free:t('freeTr')}[e]||e}
+
+function updateMicEngine(engine){
+ if(engine)micEngineResult={code:room?.code||'',engine};
+ const badge=document.getElementById('micEngine');if(!badge)return;
+ let e=room&&!room.isHost&&hostOnline()?'host':activeEngine();
+ if(micEngineResult&&micEngineResult.code===(room?.code||''))e=micEngineResult.engine;
+ const lang=ui();
+ const labels=lang==='ko'?{free:'무료 번역',gemini:'Gemini 번역',claude:'Claude 번역',openai:'ChatGPT 번역',host:t('hostTr')}:
+  lang==='ja'?{free:'無料翻訳',gemini:'Gemini 翻訳',claude:'Claude 翻訳',openai:'ChatGPT 翻訳',host:t('hostTr')}:
+  {free:'Free translation',gemini:'Gemini translation',claude:'Claude translation',openai:'ChatGPT translation',host:t('hostTr')};
+ badge.textContent=labels[e]||labels.free;
+ clearTimeout(micEngineTimer);
+ badge.hidden=!(listening||engine);
+ if(!badge.hidden)micEngineTimer=setTimeout(()=>{badge.hidden=true},3000);
+}
+
 function updateStatus(){
+ updateMicEngine();
  if(!room)return;
  $('#rTitle').textContent=room.meta.title||room.code;
  const n=membersOnline().length;const dot=$('#rDot');let txt;
@@ -631,6 +651,7 @@ function onMsg(id,v){
  room.msgs.set(id,{id,...v});
  if(room.isHost)hostProcess(id);
  renderMsg(id);maybeSpeak(id);
+ if(v.from===me.cid&&v.eng&&v.trSrc===v.text)updateMicEngine(v.eng);
  if(retrWait.has(id)&&v.retr&&v.retrDone===v.retr){retrWait.delete(id);const m=room.msgs.get(id);if(m.from!==me.cid){const x=trFor(m,me.lang);if(x)speak(x,me.lang,true)}else toast('✓')}
 }
 function trFor(m,lang){if(m.lang===lang||m.ko)return m.text;if(m.tr&&m.tr[lang]&&m.trSrc===m.text)return m.tr[lang];return localTr.get(id2(m,lang))}
@@ -736,6 +757,7 @@ function afterSent(id){
   if(!need.length)return;
   try{const out={};for(const l of need)out[l]=await freeTranslate(m.text,m.lang,l);
    if(room!==session)return;
+  updateMicEngine(r.eng);
   const cur=session.msgs.get(id);if(!cur||cur.text!==m.text)return;
    const still=need.filter(l=>!(cur.tr&&cur.tr[l]&&cur.trSrc===cur.text));if(!still.length)return;
    const upd={trSrc:m.text,eng:'free'};if(cur.trSrc===m.text)still.forEach(l=>upd['tr/'+l]=out[l]);else upd.tr=out;
@@ -755,6 +777,7 @@ async function hostProcess(id){
  const need=fresh?targets:targets.filter(l=>!(m.tr||{})[l]);if(!need.length)return;
  const key=id+'|'+m.text+'|'+need.join(',')+'|'+(force?m.retr:'');if(inflight.has(key))return;inflight.add(key);
  try{
+  updateMicEngine(activeEngine());
   const r=await translateMulti(m.text,m.lang,need,activeEngine(),force?ACC:null);
   if(room!==session)return;
   const cur=session.msgs.get(id);if(!cur||cur.text!==m.text)return;
@@ -871,7 +894,7 @@ function runRec(){
  try{r.start()}catch{rec=null}
 }
 let talkState=false;function setTalk(v){if(!room||talkState===v)return;talkState=v;fb.update(R(`rooms/${room.code}/members/${me.cid}`),{talk:v}).catch(()=>{})}
-function updateMicUI(){const b=$('#mic');if(!b)return;b.classList.toggle('on',listening);b.classList.toggle('hold',listening&&speaking);b.innerHTML=icon(listening?'stop':'mic');$('#micl').textContent=t(listening?'listening':'tapSpeak')}
+function updateMicUI(){const b=$('#mic');if(!b)return;b.classList.toggle('on',listening);b.classList.toggle('hold',listening&&speaking);b.innerHTML=icon(listening?'stop':'mic');$('#micl').textContent=t(listening?'listening':'tapSpeak');updateMicEngine()}
 
 /* ---------- 화면 꺼짐 방지 ---------- */
 let wl=null;async function wake(on){try{if(on&&'wakeLock'in navigator){wl=await navigator.wakeLock.request('screen')}else if(!on&&wl){await wl.release();wl=null}}catch{}}
@@ -986,7 +1009,7 @@ function renderSetTab(){
 }
 function bindSet(){
  const B=$('#setBody');
- B.querySelectorAll('[data-seg]').forEach(s=>s.onclick=e=>{const b=e.target.closest('button');if(!b)return;const k=s.dataset.seg;let v=b.dataset.v;if(k==='confirm')v=+v;set[k]=v;saveSet();s.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));if(k==='theme')applyTheme();if(k==='engine'&&room)updateStatus()});
+ B.querySelectorAll('[data-seg]').forEach(s=>s.onclick=e=>{const b=e.target.closest('button');if(!b)return;const k=s.dataset.seg;let v=b.dataset.v;if(k==='confirm')v=+v;set[k]=v;saveSet();s.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));if(k==='theme')applyTheme();if(k==='engine'){micEngineResult=null;updateStatus()}});
  B.querySelectorAll('[data-tog]').forEach(b=>b.onclick=()=>{const k=b.dataset.tog;set[k]=!set[k];saveSet();b.classList.toggle('on',set[k])});
  const rate=$('#sRate');if(rate)rate.oninput=()=>{set.rate=+rate.value;$('#sRateV').textContent=set.rate.toFixed(1)+'×';saveSet()};
  const vo=$('#sVoice');if(vo)vo.onchange=()=>{set.voices[me.lang]=vo.value;saveSet();speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(me.lang==='ko'?'이 목소리로 읽어 드려요.':me.lang==='ja'?'この声で読み上げます。':'I will read with this voice.');u.lang=L(me.lang).sr;const v=voicesFor(me.lang).find(x=>x.voiceURI===vo.value);if(v)u.voice=v;u.rate=set.rate;speechSynthesis.speak(u)};
@@ -1081,7 +1104,7 @@ function waitFb(){return new Promise(r=>{let n=0;const c=()=>{if((fb&&connected)
 speechSynthesis.onvoiceschanged=()=>{};
 
 /* 새 버전은 확인하되 대화와 입력 중에는 적용하지 않습니다. */
-const APP_BUILD='20261107-auto1';
+const APP_BUILD='20261107-engine1';
 let updateAvailable=false,updateChecking=false,updateReloading=false;
 function canApplyAppUpdate(){
  return !document.hidden&&!room&&!listening&&!speaking&&!editing&&!pending.size&&!openSheetEl
@@ -1264,3 +1287,4 @@ fbInit();
 </script>
 </body>
 </html>
+
