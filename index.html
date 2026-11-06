@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#EEEDF8">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>원격 통역 대화</title>
@@ -254,6 +254,29 @@ textarea.inp{resize:vertical;min-height:90px;line-height:1.5}
 #dimOv .dt{font-size:15px}#dimOv .ds{font-size:12px;color:#4a4a4a;margin-top:4px}
 #dimOv .db{margin-top:12px;border:1px solid #333;background:#111;color:#8a8a8a;border-radius:16px;padding:8px 14px;font-size:13px}
 @keyframes drift{to{transform:translate(30px,70px)}}
+
+/* 스마트폰 전체 화면 및 선명한 대화 디자인 */
+:root{--bg:#f7f9fc;--bgg:#f7f9fc;--ink:#14285a;--sub:#61708a;--line:#e2e8f0;--navy:#14285a;--navy2:#2563eb;--coral:#2563eb;--coral2:#5390f5;--mine:#2563eb;--soft:#edf2fa}
+#splash{background:#f7f9fc;color:#14285a;cursor:default}
+#splash .go{background:#2563eb;color:white;animation:none;box-shadow:0 8px 24px #2563eb25;width:min(84vw,340px);min-height:54px}
+#splash .art{padding-top:20px}#splash .art svg{max-height:46dvh}
+#splash h1{font-size:clamp(25px,7vw,34px)}
+.card-join{background:#e8efff;color:#14285a;box-shadow:none}.joinrow button{background:#2563eb}
+#sndBtn{width:66px;flex:none;height:48px;gap:1px;font-size:10px;line-height:1.2}#sndBtn .ic{width:20px;height:20px}
+.retry{display:block;margin-top:10px;background:#fff;color:#14285a;border:1px solid #ccd5e6;border-radius:10px;padding:8px 12px;font-size:14px}
+button:focus-visible{outline:3px solid #f59e0b;outline-offset:2px}
+.screen{width:100%;height:100vh;height:100dvh;padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}
+@media(max-width:360px){.top{gap:0;padding-left:2px;padding-right:2px}.top .iconbtn{width:31px}.ttl{padding:2px}.ttl b{font-size:14px}.bottom{padding-left:8px;padding-right:8px}}
+@media(max-height:550px){#splash .art svg{max-height:36dvh}#splash .go{margin:12px 0 16px}#splash h1{font-size:24px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;scroll-behavior:auto!important}}
+
+
+*{scrollbar-width:none;-ms-overflow-style:none}*::-webkit-scrollbar{display:none;width:0;height:0}
+.scroll{overflow-x:hidden;overscroll-behavior:contain;touch-action:pan-y;min-height:0}
+#handle{width:30px;height:68px;background:#dfebfb;color:#35609c;border:1px solid #c4d7ef;border-right:0;box-shadow:-2px 0 9px #14285a12;border-radius:15px 0 0 15px}
+#handle .ic{width:18px;height:18px;stroke-width:2.2}
+#drawer{max-height:100dvh}#drawer .scroll{flex:1}.sheet .scroll{min-height:0;overflow-y:auto}
+button:disabled{opacity:.45;cursor:default}
 </style>
 </head>
 <body data-theme="basic">
@@ -262,39 +285,13 @@ textarea.inp{resize:vertical;min-height:90px;line-height:1.5}
 <div id="splash" class="screen">
   <div class="ver" data-ver></div>
   <div class="art">
-    <svg viewBox="0 0 400 330" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="gA" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff" stop-opacity=".6"/><stop offset="1" stop-color="#ffffff" stop-opacity=".28"/></linearGradient>
-        <linearGradient id="gB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F6B7A6"/><stop offset="1" stop-color="#EC9AB4"/></linearGradient>
-        <linearGradient id="gC" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9EB6F3"/><stop offset="1" stop-color="#8E87DE"/></linearGradient>
-      </defs>
-      <circle cx="200" cy="165" r="118" fill="none" stroke="#fff" stroke-opacity=".4" stroke-width="1.5"/>
-      <circle cx="200" cy="165" r="150" fill="none" stroke="#fff" stroke-opacity=".25" stroke-width="1.5"/>
-      <g stroke="#fff" stroke-opacity=".6" stroke-width="1.4" fill="none">
-        <circle cx="200" cy="165" r="44"/><path d="M156 165h88M200 121c14 13 20 27 20 44s-6 31-20 44c-14-13-20-27-20-44s6-31 20-44z"/>
-      </g>
-      <path d="M118 150 C 150 90, 250 90, 282 150" fill="none" stroke="#fff" stroke-opacity=".85" stroke-width="2" stroke-dasharray="3 8" stroke-linecap="round"/>
-      <g class="float">
-        <rect x="40" y="110" width="92" height="170" rx="20" fill="url(#gA)" stroke="#fff" stroke-opacity=".9" stroke-width="2"/>
-        <rect x="74" y="122" width="24" height="5" rx="2.5" fill="#fff" fill-opacity=".5"/>
-        <rect x="52" y="146" width="66" height="30" rx="12" fill="url(#gB)"/>
-        <text x="85" y="166" text-anchor="middle" font-size="12" font-weight="700" fill="#fff" font-family="sans-serif">안녕하세요</text>
-        <rect x="56" y="186" width="58" height="26" rx="11" fill="#fff" fill-opacity=".85"/>
-        <text x="85" y="203" text-anchor="middle" font-size="10" font-weight="700" fill="#5A5EA6" font-family="sans-serif">こんにちは</text>
-        <circle cx="86" cy="248" r="14" fill="#fff" fill-opacity=".9"/>
-        <rect x="83" y="239" width="6" height="10" rx="3" fill="none" stroke="#5A5EA6" stroke-width="1.8"/><path d="M80 246a6 6 0 0 0 12 0M86 252v3" stroke="#5A5EA6" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-      </g>
-      <g class="float d2">
-        <rect x="268" y="96" width="92" height="170" rx="20" fill="url(#gA)" stroke="#fff" stroke-opacity=".9" stroke-width="2"/>
-        <rect x="302" y="108" width="24" height="5" rx="2.5" fill="#fff" fill-opacity=".5"/>
-        <rect x="280" y="132" width="66" height="30" rx="12" fill="url(#gC)"/>
-        <text x="313" y="152" text-anchor="middle" font-size="10.5" font-weight="700" fill="#fff" font-family="sans-serif">ありがとう</text>
-        <rect x="284" y="172" width="58" height="26" rx="11" fill="#fff" fill-opacity=".85"/>
-        <text x="313" y="189" text-anchor="middle" font-size="10.5" font-weight="700" fill="#5A5EA6" font-family="sans-serif">고마워요</text>
-        <circle cx="314" cy="234" r="14" fill="#fff" fill-opacity=".9"/>
-        <path d="M308 230l-3 3h-2v4h2l3 3zM313 231a4 4 0 0 1 0 5" stroke="#5A5EA6" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-      </g>
-      <circle cx="160" cy="60" r="4" fill="#F6B7A6"/><circle cx="250" cy="52" r="3" fill="#8FB0F5"/><circle cx="205" cy="300" r="3.5" fill="#fff" fill-opacity=".5"/>
+    <svg viewBox="0 0 400 330" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="한국어와 일본어로 나누는 대화">
+      <rect x="35" y="45" width="252" height="128" rx="32" fill="#14285a"/>
+      <path d="M82 162v31l39-31" fill="#14285a"/>
+      <text x="161" y="122" text-anchor="middle" font-size="34" font-weight="700" fill="white" font-family="sans-serif">안녕하세요</text>
+      <rect x="112" y="183" width="253" height="110" rx="30" fill="#2563eb"/>
+      <path d="M320 280v29l-36-29" fill="#2563eb"/>
+      <text x="238" y="249" text-anchor="middle" font-size="30" font-weight="600" fill="white" font-family="sans-serif">こんにちは</text>
     </svg>
   </div>
   <div>
@@ -354,7 +351,7 @@ textarea.inp{resize:vertical;min-height:90px;line-height:1.5}
   <div class="live" id="live"></div>
   <div class="bottom">
     <div class="side">
-      <button class="tool" data-act="clear"><span class="tb"><svg class="ic" data-i="trash"></svg></span><span data-t="clearShort">기록 삭제</span></button>
+      <button class="tool" data-act="drawer"><span class="tb"><svg class="ic" data-i="chat"></svg></span><span data-t="textPhrases">문자·문구</span></button>
       <button class="tool" data-act="dim"><span class="tb"><svg class="ic" data-i="moon"></svg></span><span data-t="dim">어둡게</span></button>
     </div>
     <div class="center">
@@ -483,7 +480,7 @@ T.ja={appName:'リモート通訳チャット',tagline:'離れていても、そ
  modeTalk:'会話モード',modeLec:'説明モード',lecTr:'翻訳して送る',lecKo:'韓国語のまま',lecEnd:'説明を終える',questions:'質問',hand:'手を挙げる',handDown:'手を下ろす',handSent:'手を挙げました。ホストが許可すると話せます。',textQ:'文字で質問',qPh:'質問を入力してください',qSent:'質問を送りました',qNew:'文字の質問が届きました',handUp:'さんが手を挙げました',letSpeak:'話してもらう',later:'あとで',asking:'さんが質問中',endQ:'終了',yourTurn:'どうぞお話しください',lecListening:'説明を聞いています',lecKoTag:'韓国語のまま',noQs:'まだ質問はありません',clearQs:'質問をすべて消す',lecEndedQ:'説明が終わりました',lecEndedP:'今日の説明内容を自分の言語で保存できます。',saveFile:'ファイルに保存',shareOut:'共有する',saveQ:'会話記録の保存',dim:'暗くする',dimText:'画面だけ暗くしました · 音声は続きます',dimSub:'2回タップで明るくなります',dimBack:'画面を戻す',fast:'速い',acc:'正確',replay:'もう一度聞く',retr:'再翻訳',retrIng:'正確に再翻訳しています…',retrFail:'ホストのスマホが応答しません',copy:'コピー',original:'原文',installShort:'インストール',installed:'インストールしました',install:'ホーム画面に追加',installAnd:'Chrome右上のメニュー(⋮) →「アプリをインストール」または「ホーム画面に追加」をタップしてください。',iosTitle:'iPhoneにインストール',ios1:'Safari下の共有ボタンをタップ',ios2:'「ホーム画面に追加」をタップ',ios3:'右上の「追加」で完了！',iosSafari:'iPhoneは必ずSafariで開いてください。最初に画面を一度タップすると音が出ます。',inApp:'このアプリ内ではマイクが使えない場合があります。ChromeかSafariで開いてください。',openBrowser:'ブラウザで開く',copyLink:'リンクをコピー',qrHint:'スマホのカメラで読み取るとすぐ入れます · タップで拡大'};
 const t=k=>(T[ui()][k]??T.ko[k]??k);
 const ui=()=>(me.lang==='ko'||devKo)?'ko':me.lang==='ja'?'ja':'en';
-function applyTexts(){document.documentElement.lang=me.lang;document.querySelectorAll('[data-t]').forEach(e=>e.innerHTML=t(e.dataset.t));document.querySelectorAll('[data-tp]').forEach(e=>e.placeholder=t(e.dataset.tp));document.querySelectorAll('[data-ver]').forEach(e=>e.textContent=VERSION)}
+function applyTexts(){updateSoundUI();document.documentElement.lang=me.lang;document.querySelectorAll('[data-t]').forEach(e=>e.innerHTML=t(e.dataset.t));document.querySelectorAll('[data-tp]').forEach(e=>e.placeholder=t(e.dataset.tp));document.querySelectorAll('[data-ver]').forEach(e=>e.textContent=VERSION)}
 
 /* ---------- 저장 ---------- */
 const S={get(k,d){try{const v=localStorage.getItem('rt_'+k);return v==null?d:JSON.parse(v)}catch{return d}},set(k,v){try{localStorage.setItem('rt_'+k,JSON.stringify(v))}catch{}}};
@@ -495,7 +492,7 @@ if(!me.cid){me.cid='c'+Math.random().toString(36).slice(2,10)+Date.now().toStrin
 if(!ACTIVE.includes(me.lang)){me.lang=guessLang();S.set('lang',me.lang)}
 const DEF_SET={confirm:2,rate:1.3,voices:{},prefetch:true,catchup:true,theme:'basic',fs:1,sound:true,engine:'free',gkey:'',gmodel:FAST,ckey:'',cmodel:'claude-haiku-4-5',okey:'',omodel:'gpt-4.1-mini',gloss:'',invite:''};
 const set={...DEF_SET,...S.get('set',{})};
-set.sound=true; /* 켤 때는 항상 소리 켬 */
+/* 마지막 자동 읽기 선택을 유지합니다. */
 if(!set.gmodel||set.gmodel==='gemini-2.5-flash')set.gmodel=FAST;
 const saveSet=()=>S.set('set',set);
 const DEF_PH={ko:[['안녕하세요','안녕하세요, 반갑습니다.'],['잘 들려요?','제 말 잘 들리세요?'],['다시 한번','죄송하지만 다시 한번 말씀해 주시겠어요?'],['잠시만요','잠시만 기다려 주세요.'],['천천히','조금만 천천히 말씀해 주세요.'],['감사합니다','감사합니다.'],['좋아요','네, 좋습니다.'],['자기소개','저는 한국폴리텍대학 서울정수캠퍼스 교수입니다.'],['시작할게요','그럼 시작하겠습니다.'],['수고하셨어요','오늘 수고 많으셨습니다. 다음에 또 연락드리겠습니다.']],
@@ -515,7 +512,7 @@ function openSheet(id,onClose){closeSheet(true);openSheetEl=$(id);sheetOnClose=o
 function closeSheet(silent){if(openSheetEl){openSheetEl.classList.remove('open');openSheetEl=null}$('#drawer').classList.remove('open');$('#dim').classList.remove('on');const f=sheetOnClose;sheetOnClose=null;if(f&&!silent)f()}
 function genSheet(title,html,onClose){$('#genBody').onclick=null;$('#genBody').dataset.k='';$('#genTitle').textContent=title;$('#genBody').innerHTML=html;paintIcons($('#genBody'));openSheet('#shGen',onClose)}
 async function copyText(s){try{await navigator.clipboard.writeText(s)}catch{const a=document.createElement('textarea');a.value=s;document.body.appendChild(a);a.select();document.execCommand('copy');a.remove()}toast(t('copied'))}
-function applyTheme(){document.body.dataset.theme=set.theme;document.documentElement.style.setProperty('--fs',set.fs);const m=document.querySelector('meta[name=theme-color]');if(m)m.content=set.theme==='night'?'#0E1424':set.theme==='sea'?'#0F5E6B':'#EEEDF8'}
+function applyTheme(){document.body.dataset.theme=set.theme;document.documentElement.style.setProperty('--fs',set.fs);const m=document.querySelector('meta[name=theme-color]');if(m)m.content=set.theme==='night'?'#0E1424':set.theme==='sea'?'#0F5E6B':'#f7f9fc'}
 function show(id){['#splash','#home','#room'].forEach(s=>$(s).classList.toggle('hidden',s!==id))}
 
 /* ---------- Firebase ---------- */
@@ -574,6 +571,7 @@ async function enterRoom(code){
  let ms;try{ms=await fb.get(R(`rooms/${code}/meta`))}catch{toast(t('offlineFb'));return}
  if(!ms.exists()){toast(t('noRoom'));rooms=rooms.filter(r=>r.code!==code);S.set('rooms',rooms);renderRooms();return}
  const meta=ms.val();
+ if(room)leaveRoom();
  room={code,meta,isHost:meta.host===me.cid,members:{},msgs:new Map(),unsub:[],joinKey:fb.push(R('x')).key,clearKey:S.get('clr_'+code,''),qs:new Map(),seenQ:new Set(S.get('seenq_'+code,[])),wasFloor:false};
  saveRoomEntry(code,meta.title,room.isHost?'host':'guest');
  const mref=R(`rooms/${code}/members/${me.cid}`);
@@ -591,7 +589,7 @@ async function enterRoom(code){
  show('#room');updateStatus();updateMicUI();renderRoomMode();wake(true);
 }
 function leaveRoom(){
- if(!room)return;stopListen();speechSynthesis.cancel();ttsQ.length=0;speaking=false;setDim(false);closeSheet(true);
+ if(!room)return;localTrTimers.forEach(clearTimeout);localTrTimers.clear();localTrPending.clear();localTrErrors.clear();localTr.clear();spoken.clear();inflight.clear();stopListen();speechSynthesis.cancel();ttsQ.length=0;speaking=false;setDim(false);closeSheet(true);
  pending.forEach((p,id)=>{if(p.written)fb.remove(R(`rooms/${room.code}/msgs/${id}`)).catch(()=>{})});pending.clear();
  try{fb.update(R(`rooms/${room.code}/members/${me.cid}`),{online:false,talk:false})}catch{}
  room.unsub.forEach(f=>{try{f()}catch{}});room=null;wake(false);
@@ -645,19 +643,33 @@ function renderMsg(id){
  }else{
   const x=trFor(m,me.lang);
   main=x?esc(x):`<span class="wait">${t('translating')}</span>`;
-  if(!x)scheduleLocalTr(m);
+  if(!x){if(localTrErrors.has(id2(m,me.lang)))main=`<span class="wait">${t('trFailed')}</span><button class="retry" data-act="retryTr" data-id="${esc(id)}">${t('retry')}</button>`;else scheduleLocalTr(m);}
  }
  const free=m.eng==='free'&&!mine?`<span class="free-tag">${t('freeTr')}</span>`:'';
  el.innerHTML=`<div class="who">${esc(mine?t('me'):m.name)} · ${esc(LN(m.lang))}${free}</div><div class="bub"${p?' data-act="editDraft" data-id="'+id+'"':' data-mid="'+id+'"'}><div class="main">${main}</div>${sub}${p?'':`<button class="say" data-act="say" data-id="${id}">${icon('vol')}</button>`}</div>${p?`<div class="dbar"><div class="pg"><div id="pg-${id}"></div></div><button data-act="editDraft" data-id="${id}">${t('edit')}</button><button class="x" data-act="cancelDraft" data-id="${id}">${t('cancel')}</button></div>`:''}`;
  if(atBottom||mine)chat.scrollTop=chat.scrollHeight;
 }
 const localTrPending=new Set();
+const localTrErrors=new Set();
+const localTrTimers=new Set();
 function scheduleLocalTr(m){
- const k=id2(m,me.lang);if(localTrPending.has(k))return;localTrPending.add(k);
- setTimeout(async()=>{
-  const cur=room?.msgs.get(m.id);if(!cur||cur.text!==m.text||trFor(cur,me.lang))return;
-  try{const out=await freeTranslate(m.text,m.lang,me.lang);localTr.set(k,out);renderMsg(m.id);maybeSpeak(m.id)}catch{}
+ const session=room,lang=me.lang,k=id2(m,lang);
+ if(!session||localTrPending.has(k)||localTrErrors.has(k))return;
+ localTrPending.add(k);
+ const timer=setTimeout(async()=>{
+  localTrTimers.delete(timer);
+  try{
+   if(room!==session||me.lang!==lang)return;
+   const cur=session.msgs.get(m.id);if(!cur||cur.text!==m.text||trFor(cur,lang))return;
+   const out=await freeTranslate(m.text,m.lang,lang);
+   if(room!==session||me.lang!==lang||session.msgs.get(m.id)?.text!==m.text)return;
+   if(!out)throw new Error('Empty translation');
+   localTr.set(k,out);localTrErrors.delete(k);renderMsg(m.id);maybeSpeak(m.id);
+  }catch{
+   if(room===session&&me.lang===lang){localTrErrors.add(k);renderMsg(m.id)}
+  }finally{localTrPending.delete(k)}
  },hostOnline()?6000:1200);
+ localTrTimers.add(timer);
 }
 
 /* 내 말 → 초안(확인 시간) → 보내기 */
@@ -708,12 +720,15 @@ function sendNow(text){
 /* 방장 폰이 없거나 느리면 보낸 사람 폰이 무료 번역으로 채움 */
 function afterSent(id){
  if(!room||room.isHost)return;
+ const session=room;
  setTimeout(async()=>{
-  const m=room?.msgs.get(id);if(!m||m.ko)return;
+  if(room!==session)return;
+  const m=session.msgs.get(id);if(!m||m.ko)return;
   const need=targetLangs(m.lang).filter(l=>!(m.tr&&m.tr[l]&&m.trSrc===m.text));
   if(!need.length)return;
   try{const out={};for(const l of need)out[l]=await freeTranslate(m.text,m.lang,l);
-   const cur=room?.msgs.get(id);if(!cur||cur.text!==m.text)return;
+   if(room!==session)return;
+  const cur=session.msgs.get(id);if(!cur||cur.text!==m.text)return;
    const still=need.filter(l=>!(cur.tr&&cur.tr[l]&&cur.trSrc===cur.text));if(!still.length)return;
    const upd={trSrc:m.text,eng:'free'};if(cur.trSrc===m.text)still.forEach(l=>upd['tr/'+l]=out[l]);else upd.tr=out;
    fb.update(R(`rooms/${room.code}/msgs/${id}`),upd);
@@ -724,6 +739,7 @@ function afterSent(id){
 /* ---------- 방장 폰 = 번역 서버 ---------- */
 const inflight=new Set();
 async function hostProcess(id){
+ const session=room;
  const m=room?.msgs.get(id);if(!m||!m.text||m.state==='cancel'||m.ko)return;
  const force=!!(m.retr&&m.retr!==m.retrDone);
  const targets=force?[...new Set([...targetLangs(m.lang),...Object.keys(m.tr||{})])].filter(l=>l!==m.lang):targetLangs(m.lang);if(!targets.length)return;
@@ -732,7 +748,8 @@ async function hostProcess(id){
  const key=id+'|'+m.text+'|'+need.join(',')+'|'+(force?m.retr:'');if(inflight.has(key))return;inflight.add(key);
  try{
   const r=await translateMulti(m.text,m.lang,need,activeEngine(),force?ACC:null);
-  const cur=room?.msgs.get(id);if(!cur||cur.text!==m.text)return;
+  if(room!==session)return;
+  const cur=session.msgs.get(id);if(!cur||cur.text!==m.text)return;
   const upd={trSrc:m.text,eng:r.eng};if(force)upd.retrDone=m.retr;
   if(cur.trSrc===m.text){need.forEach(l=>{if(r.out[l])upd['tr/'+l]=r.out[l]})}else upd.tr=r.out;
   await fb.update(R(`rooms/${room.code}/msgs/${id}`),upd);
@@ -782,7 +799,9 @@ async function aiTranslate(engine,text,src,targets,model){
 }
 async function freeTranslate(text,src,tgt){
  const u=`https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&sl=${L(src).g}&tl=${L(tgt).g}&q=${encodeURIComponent(text)}`;
- const r=await fetch(u);if(!r.ok)throw new Error('free '+r.status);const j=await r.json();
+ const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),15000);
+ let r,j;try{r=await fetch(u,{signal:controller.signal});if(!r.ok)throw new Error('free '+r.status);j=await r.json()}finally{clearTimeout(timer)}
+ if(!r.ok)throw new Error('free '+r.status);
  return (j[0]||[]).map(x=>x[0]).join('');
 }
 
@@ -935,7 +954,7 @@ function renderSetTab(){
  const B=$('#setBody');const U=ui(),ko=U==='ko';const X=(k,j,e)=>U==='ko'?k:U==='ja'?j:e;let h='';
  if(setTab==='basic'){
   const vs=voicesFor(me.lang);
-  h=`<div class="row"><span class="rl">${X('말이 끝난 뒤 확인 시간','話し終わった後の確認時間','Time to check before sending')}</span>${seg('confirm',[[0,X('바로 번역','すぐ翻訳','Instant')],[1,X('1초','1秒','1s')],[2,X('2초','2秒','2s')],[3,X('3초','3秒','3s')]])}<div class="hint">${X('말이 끝나면 이 시간 동안 문장을 보여 줘요. 눌러서 고치거나 취소할 수 있어요.','話し終わるとこの時間だけ文を表示します。タップで修正・取り消しができます。','You can tap to edit or cancel during this time.')}</div></div>
+  h=`<div class="row"><button class="btn full" data-act="fullscreen">${t('fullscreen')}</button><div class="hint">${t('onlineNote')}</div></div><div class="row"><button class="btn full" data-act="clear">${t('clearShort')}</button></div><div class="row"><span class="rl">${X('말이 끝난 뒤 확인 시간','話し終わった後の確認時間','Time to check before sending')}</span>${seg('confirm',[[0,X('바로 번역','すぐ翻訳','Instant')],[1,X('1초','1秒','1s')],[2,X('2초','2秒','2s')],[3,X('3초','3秒','3s')]])}<div class="hint">${X('말이 끝나면 이 시간 동안 문장을 보여 줘요. 눌러서 고치거나 취소할 수 있어요.','話し終わるとこの時間だけ文を表示します。タップで修正・取り消しができます。','You can tap to edit or cancel during this time.')}</div></div>
   <div class="row"><span class="rl">${X('읽기 속도','読み上げ速度','Reading speed')}</span><div class="range"><input type="range" min="0.8" max="2" step="0.1" value="${set.rate}" id="sRate"><b id="sRateV">${set.rate.toFixed(1)}×</b></div></div>
   <div class="row"><span class="rl">${X('목소리 (휴대폰 기본 목소리)','声(スマホの標準音声)','Voice (phone voice)')}</span><select class="inp" id="sVoice"><option value="">${X('기본','標準','Default')}</option>${vs.map(v=>`<option value="${esc(v.voiceURI)}" ${set.voices[me.lang]===v.voiceURI?'selected':''}>${esc(v.name)}</option>`).join('')}</select></div>
   ${tog('prefetch',X('중간 번역 미리 시작','途中から先に翻訳を始める','Start translating early'))}
@@ -980,8 +999,10 @@ function adminSheet(){
  const cfg=fb?.cfg||S.get('fbcfg',null)||DEFAULT_FB;
  genSheet('관리자',`<div class="row"><label>Firebase 설정</label><textarea class="inp" id="aCfg" style="min-height:140px;font-size:13px;font-family:monospace" placeholder="Firebase 콘솔에서 복사한 firebaseConfig 를 통째로 붙여 넣으세요">${esc('const firebaseConfig = '+JSON.stringify(cfg,null,2)+';')}</textarea><div class="hint">Firebase 콘솔 › 프로젝트 설정 › 내 앱 › 구성에서 <b>통째로 복사해 붙여 넣으면</b> 필요한 값만 알아서 골라 저장해요.</div><div class="btns" style="margin-top:10px"><button class="btn" id="aPaste">붙여넣기</button><button class="btn pri" id="aSave">저장하고 다시 연결</button></div><button class="lnk" id="aDef" style="background:none">기본값으로 되돌리기</button></div>
  <div class="row sw"><span id="aStat">${connected?'● Firebase 연결됨':'● 연결 안 됨'}</span><button class="btn" id="aTest">연결 확인</button></div>
+ <div class="row"><button class="btn full" id="aGithub">GitHub에 올리기</button><div class="hint">파일을 선택해 저장소의 파일을 교체합니다.</div></div>
  <div class="row"><a class="btn full" style="text-decoration:none" target="_blank" href="https://console.firebase.google.com/project/${esc(cfg.projectId||'')}/database">${icon('ext')}Firebase 콘솔 바로가기</a></div>
  <div class="row"><button class="btn full" id="aFresh">최신 버전 받기 (앱 새로 받기)</button><div class="hint">GitHub에 새 파일을 올렸는데 화면이 그대로일 때 눌러요.</div></div>`);
+ $('#aGithub').onclick=githubSheet;
  $('#aStat').style.color=connected?'var(--teal)':'#E04848';
  $('#aPaste').onclick=async()=>{try{$('#aCfg').value=await navigator.clipboard.readText()}catch{toast('직접 길게 눌러 붙여 넣어 주세요')}};
  $('#aSave').onclick=()=>{const o=parseFbConfig($('#aCfg').value);if(!o){toast('databaseURL 을 찾지 못했어요');return}S.set('fbcfg',o);toast('저장했어요. 다시 연결합니다');setTimeout(()=>location.reload(),700)};
@@ -1009,7 +1030,9 @@ document.addEventListener('click',e=>{
   case 'people':peopleSheet();break;
   case 'invite':inviteSheet();break;
   case 'share':shareLog();break;
-  case 'sound':set.sound=!set.sound;if(!set.sound){speechSynthesis.cancel();ttsQ.length=0}a.classList.toggle('on',set.sound);a.classList.toggle('muted',!set.sound);a.innerHTML=icon(set.sound?'vol':'volx');break;
+  case 'sound':set.sound=!set.sound;saveSet();if(!set.sound){speechSynthesis.cancel();ttsQ.length=0}updateSoundUI();break;
+  case 'fullscreen':fullScreen();break;
+  case 'retryTr':{const m=room?.msgs.get(id);if(m){localTrErrors.delete(id2(m,me.lang));scheduleLocalTr(m);renderMsg(id)}break;}
   case 'clear':clearChat();break;
   case 'mic':listening?stopListen():startListen();break;
   case 'font':{const i=(FS.indexOf(set.fs)+1)%FS.length;set.fs=FS[i];saveSet();updateFs();break}
@@ -1039,6 +1062,7 @@ $('#joinCode').addEventListener('keydown',e=>{if(e.key==='Enter')$('[data-act=jo
 $('#composeTx').addEventListener('input',e=>{const x=e.target;x.style.height='auto';x.style.height=Math.min(120,x.scrollHeight)+'px'});
 $('#splash').addEventListener('click',e=>{
  if(e.target.closest('.inapp'))return;
+ fullScreen(true);
  try{speechSynthesis.speak(Object.assign(new SpeechSynthesisUtterance(' '),{volume:0}))}catch{}
  show('#home');
  if(inviteCode){$('#joinCode').value=inviteCode;if(me.name.trim()){waitFb().then(()=>enterRoom(inviteCode))}else{setTimeout(()=>{toast(t('needName'));$('#meName').focus()},300)}}
@@ -1177,6 +1201,48 @@ if(inApp){
  const o=d.querySelector('#iaOpen');if(o)o.onclick=openOutside;
  d.querySelector('#iaCopy').onclick=()=>copyText(location.href);
  setTimeout(openOutside,300);
+}
+
+Object.assign(T.ko,{autoRead:'자동 읽기',manualRead:'수동 읽기',trFailed:'번역에 실패했어요',retry:'다시 시도',textPhrases:'문자·문구',fullscreen:'전체 화면',onlineNote:'통역에는 인터넷 연결이 필요합니다. 전체 화면이 지원되지 않으면 홈 화면에 설치해 사용하세요.'});
+Object.assign(T.ja,{autoRead:'自動読み上げ',manualRead:'手動読み上げ',trFailed:'翻訳できませんでした',retry:'再試行',textPhrases:'文字・フレーズ',fullscreen:'全画面',onlineNote:'通訳にはインターネット接続が必要です。全画面非対応の場合はホーム画面に追加してください。'});
+Object.assign(T.en,{autoRead:'Auto read',manualRead:'Manual read',trFailed:'Translation failed',retry:'Retry',textPhrases:'Text / phrases',fullscreen:'Full screen',onlineNote:'Internet is required for interpreting. Install on your home screen if full screen is unavailable.'});
+function updateSoundUI(){const b=document.querySelector('#sndBtn');if(!b)return;const label=t(set.sound?'autoRead':'manualRead');b.innerHTML=icon(set.sound?'vol':'volx')+'<span>'+esc(label)+'</span>';b.classList.toggle('on',set.sound);b.classList.toggle('muted',!set.sound);b.setAttribute('aria-label',label);b.setAttribute('aria-pressed',String(set.sound))}
+async function fullScreen(quiet=false){if(document.fullscreenElement)return;try{if(document.documentElement.requestFullscreen){await document.documentElement.requestFullscreen();return}}catch{}if(!quiet)toast(t('onlineNote'))}
+function githubSheet(){
+ const g=S.get('github',{});
+ genSheet('GitHub에 올리기',`<div class="hint">수정 파일을 선택해 지정한 저장소에 올립니다. 같은 이름의 파일은 교체됩니다. GitHub Pages 배포 완료는 저장소에서 확인해 주세요.</div>
+ <div class="row"><label>소유자 / 저장소</label><input class="inp" id="ghRepo" placeholder="사용자명/저장소명" value="${esc(g.repo||'')}"></div>
+ <div class="row"><label>브랜치</label><input class="inp" id="ghBranch" value="${esc(g.branch||'main')}"></div>
+ <div class="row"><label>업로드 폴더 (기본: 최상위)</label><input class="inp" id="ghFolder" placeholder="예: docs" value="${esc(g.folder||'')}"></div>
+ <div class="row"><label>GitHub 인증 토큰</label><input class="inp" id="ghToken" type="password" autocomplete="off" spellcheck="false"><div class="hint">해당 저장소의 Contents: Read and write 권한을 가진 fine-grained 토큰을 사용하세요. 토큰은 저장하지 않습니다.</div><a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer">GitHub에서 토큰 만들기</a></div>
+ <div class="row"><label>업로드할 파일</label><input class="inp" id="ghFiles" type="file" multiple accept=".html,.json,.js,.png,.svg,.ico"><div class="hint">ZIP은 먼저 압축을 풀고 파일을 선택하세요. 첫 적용은 기존 GitHub 업로드 화면에서 진행해 주세요.</div></div>
+ <div class="hint" id="ghPreview" style="white-space:pre-wrap"></div><button class="btn full" id="ghCheck">업로드 위치 확인</button><button class="btn pri full" id="ghUpload" disabled style="margin-top:12px">확인한 파일 올리기</button><div class="hint" id="ghStatus" role="status" style="white-space:pre-wrap;margin-top:12px"></div>`,()=>{const t=$('#ghToken');if(t)t.value=''});
+ let plan=null;
+ const invalidate=()=>{plan=null;$('#ghUpload').disabled=true;$('#ghPreview').textContent=''};
+ for(const id of ['ghRepo','ghBranch','ghFolder','ghFiles'])$('#'+id).onchange=invalidate;
+ $('#ghCheck').onclick=()=>{
+  try{const repo=$('#ghRepo').value.trim().replace(/^https:\/\/github.com\//,'').replace(/\/$/,'');const branch=$('#ghBranch').value.trim();const folder=$('#ghFolder').value.trim().replace(/^\/+|\/+$/g,'');const files=[...$('#ghFiles').files];
+   if(!/^[\w.-]+\/[\w.-]+$/.test(repo)||!branch||!files.length)throw Error('저장소, 브랜치, 파일을 확인해 주세요.');
+   if(folder.split('/').some(x=>x==='.'||x==='..')||files.some(f=>f.size>10*1024*1024||!/^([\w.-]+)\.(html|json|js|png|svg|ico)$/i.test(f.name)))throw Error('폴더와 파일 이름을 확인해 주세요. 파일은 각각 10MB 이하만 가능합니다.');
+   if(new Set(files.map(f=>f.name)).size!==files.length)throw Error('같은 이름의 파일은 한 번만 선택해 주세요.');
+   plan={repo,branch,folder,files};S.set('github',{repo,branch,folder});$('#ghPreview').textContent=repo+' · '+branch+'\n'+files.map(f=>(folder?folder+'/':'')+f.name+' (같은 파일이 있으면 교체)').join('\n');$('#ghUpload').disabled=false;
+  }catch(e){$('#ghStatus').textContent=e.message}
+ };
+ $('#ghUpload').onclick=async()=>{
+  if(!plan)return;const token=$('#ghToken').value.trim();if(!token){$('#ghStatus').textContent='GitHub 인증 토큰을 입력해 주세요.';return}
+  const button=$('#ghUpload'),status=$('#ghStatus'),files=plan.files.slice(),{repo,branch,folder}=plan;let count=0;button.disabled=true;$('#ghCheck').disabled=true;
+  const headers={Accept:'application/vnd.github+json',Authorization:'Bearer '+token,'X-GitHub-Api-Version':'2022-11-28'};
+  async function request(url,options={}){const c=new AbortController(),timer=setTimeout(()=>c.abort(),30000);try{return await fetch(url,{...options,headers:{...headers,...options.headers},signal:c.signal})}finally{clearTimeout(timer)}}
+  try{
+   for(const f of files){status.textContent=`${count+1}/${files.length} · ${f.name} 올리는 중…`;const path=(folder?folder+'/':'')+f.name;const url='https://api.github.com/repos/'+repo+'/contents/'+path.split('/').map(encodeURIComponent).join('/');const before=await request(url+'?ref='+encodeURIComponent(branch));let sha;
+    if(before.ok){const previous=await before.json();if(!previous.sha||previous.type!=='file')throw Error('대상이 파일이 아닙니다.');sha=previous.sha}else if(before.status!==404)throw Error('저장소 확인 실패 ('+before.status+')');
+    const bytes=new Uint8Array(await f.arrayBuffer());let binary='';for(let i=0;i<bytes.length;i+=8192)binary+=String.fromCharCode(...bytes.subarray(i,i+8192));
+    const result=await request(url,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:'Update '+path,content:btoa(binary),branch,...(sha?{sha}:{})})});
+    if(!result.ok)throw Error('GitHub 응답 '+result.status+' — 토큰 권한, 브랜치 보호 및 파일 변경 여부를 확인해 주세요.');count++;
+   }
+   status.textContent=`${count}개 파일을 GitHub에 올렸습니다. 사이트 반영 여부는 GitHub Pages 배포 결과를 확인해 주세요.`;
+  }catch(e){status.textContent=`${count}/${files.length}개 완료. `+(e.name==='AbortError'?'응답 시간이 초과되었습니다. 저장소를 먼저 확인한 뒤 다시 시도하세요.':e.message)}finally{$('#ghToken').value='';$('#ghCheck').disabled=false;plan=null}
+ };
 }
 
 /* ---------- 시작 ---------- */
