@@ -277,6 +277,12 @@ button:focus-visible{outline:3px solid #f59e0b;outline-offset:2px}
 #handle .ic{width:18px;height:18px;stroke-width:2.2}
 #drawer{max-height:100dvh}#drawer .scroll{flex:1}.sheet .scroll{min-height:0;overflow-y:auto}
 button:disabled{opacity:.45;cursor:default}
+
+/* 선택한 설정을 은은한 녹색으로 선명하게 표시 */
+.seg button.on,.tabs button.on,.lgrid button.on{background:#D6EEDF;color:#174E36;box-shadow:inset 0 0 0 1.5px #65A983,0 1px 3px #174E3612;font-weight:700}
+.lgrid button.on small{color:#32684D}
+.tg.on{background:#45956B;box-shadow:inset 0 0 0 1px #2F7951}
+.admin-connection{margin-bottom:16px;border:1px solid #DFE7E4;border-radius:14px;padding:12px}.admin-connection summary{cursor:pointer;color:var(--sub);font-size:14px;font-weight:600}.admin-connection[open] summary{margin-bottom:12px}
 </style>
 </head>
 <body data-theme="basic">
@@ -490,8 +496,9 @@ if(S.get('guestOnly',null)===null) S.set('guestOnly',!!inviteCode);
 const me={cid:S.get('cid',null),name:S.get('name',''),lang:S.get('lang',null)||guessLang()};
 if(!me.cid){me.cid='c'+Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);S.set('cid',me.cid)}
 if(!ACTIVE.includes(me.lang)){me.lang=guessLang();S.set('lang',me.lang)}
-const DEF_SET={confirm:2,rate:1.3,voices:{},prefetch:true,catchup:true,theme:'basic',fs:1,sound:true,engine:'free',gkey:'',gmodel:FAST,ckey:'',cmodel:'claude-haiku-4-5',okey:'',omodel:'gpt-4.1-mini',gloss:'',invite:''};
+const DEF_SET={confirm:0,rate:1.3,voices:{},prefetch:true,catchup:true,theme:'basic',fs:1,sound:true,engine:'free',gkey:'',gmodel:FAST,ckey:'',cmodel:'claude-haiku-4-5',okey:'',omodel:'gpt-4.1-mini',gloss:'',invite:''};
 const set={...DEF_SET,...S.get('set',{})};
+if(!S.get('instantDefaultApplied',false)){set.confirm=0;S.set('set',set);S.set('instantDefaultApplied',true)}
 /* 마지막 자동 읽기 선택을 유지합니다. */
 if(!set.gmodel||set.gmodel==='gemini-2.5-flash')set.gmodel=FAST;
 const saveSet=()=>S.set('set',set);
@@ -954,7 +961,7 @@ function renderSetTab(){
  const B=$('#setBody');const U=ui(),ko=U==='ko';const X=(k,j,e)=>U==='ko'?k:U==='ja'?j:e;let h='';
  if(setTab==='basic'){
   const vs=voicesFor(me.lang);
-  h=`<div class="row"><button class="btn full" data-act="fullscreen">${t('fullscreen')}</button><div class="hint">${t('onlineNote')}</div></div><div class="row"><button class="btn full" data-act="clear">${t('clearShort')}</button></div><div class="row"><span class="rl">${X('말이 끝난 뒤 확인 시간','話し終わった後の確認時間','Time to check before sending')}</span>${seg('confirm',[[0,X('바로 번역','すぐ翻訳','Instant')],[1,X('1초','1秒','1s')],[2,X('2초','2秒','2s')],[3,X('3초','3秒','3s')]])}<div class="hint">${X('말이 끝나면 이 시간 동안 문장을 보여 줘요. 눌러서 고치거나 취소할 수 있어요.','話し終わるとこの時間だけ文を表示します。タップで修正・取り消しができます。','You can tap to edit or cancel during this time.')}</div></div>
+  h=`<div class="row"><span class="rl">${X('말이 끝난 뒤 확인 시간','話し終わった後の確認時間','Time to check before sending')}</span>${seg('confirm',[[0,X('바로 번역','すぐ翻訳','Instant')],[1,X('1초','1秒','1s')],[2,X('2초','2秒','2s')],[3,X('3초','3秒','3s')]])}<div class="hint">${X('말이 끝나면 이 시간 동안 문장을 보여 줘요. 눌러서 고치거나 취소할 수 있어요.','話し終わるとこの時間だけ文を表示します。タップで修正・取り消しができます。','You can tap to edit or cancel during this time.')}</div></div>
   <div class="row"><span class="rl">${X('읽기 속도','読み上げ速度','Reading speed')}</span><div class="range"><input type="range" min="0.8" max="2" step="0.1" value="${set.rate}" id="sRate"><b id="sRateV">${set.rate.toFixed(1)}×</b></div></div>
   <div class="row"><span class="rl">${X('목소리 (휴대폰 기본 목소리)','声(スマホの標準音声)','Voice (phone voice)')}</span><select class="inp" id="sVoice"><option value="">${X('기본','標準','Default')}</option>${vs.map(v=>`<option value="${esc(v.voiceURI)}" ${set.voices[me.lang]===v.voiceURI?'selected':''}>${esc(v.name)}</option>`).join('')}</select></div>
   ${tog('prefetch',X('중간 번역 미리 시작','途中から先に翻訳を始める','Start translating early'))}
@@ -997,12 +1004,13 @@ function fiveTap(){fiveN++;clearTimeout(fiveT);fiveT=setTimeout(()=>fiveN=0,1500
 function parseFbConfig(s){const o={};s.replace(/["']?(\w+)["']?\s*:\s*["']([^"']+)["']/g,(_,k,v)=>{o[k]=v});if(!o.databaseURL){const m=s.match(/https:\/\/[\w.-]+(firebaseio\.com|firebasedatabase\.app)/);if(m)o.databaseURL=m[0]}if(!o.databaseURL)return null;if(!o.projectId){const m=o.databaseURL.match(/https:\/\/([\w-]+?)(-default-rtdb)?\./);if(m)o.projectId=m[1]}return o}
 function adminSheet(){
  const cfg=fb?.cfg||S.get('fbcfg',null)||DEFAULT_FB;
- genSheet('관리자',`<div class="row"><label>Firebase 설정</label><textarea class="inp" id="aCfg" style="min-height:140px;font-size:13px;font-family:monospace" placeholder="Firebase 콘솔에서 복사한 firebaseConfig 를 통째로 붙여 넣으세요">${esc('const firebaseConfig = '+JSON.stringify(cfg,null,2)+';')}</textarea><div class="hint">Firebase 콘솔 › 프로젝트 설정 › 내 앱 › 구성에서 <b>통째로 복사해 붙여 넣으면</b> 필요한 값만 알아서 골라 저장해요.</div><div class="btns" style="margin-top:10px"><button class="btn" id="aPaste">붙여넣기</button><button class="btn pri" id="aSave">저장하고 다시 연결</button></div><button class="lnk" id="aDef" style="background:none">기본값으로 되돌리기</button></div>
+ genSheet('관리자',`<details class="admin-connection"><summary>연결 설정 펼치기</summary><div class="row"><label>Firebase 설정</label><textarea class="inp" id="aCfg" style="min-height:140px;font-size:13px;font-family:monospace" placeholder="Firebase 콘솔에서 복사한 firebaseConfig 를 통째로 붙여 넣으세요">${esc('const firebaseConfig = '+JSON.stringify(cfg,null,2)+';')}</textarea><div class="hint">Firebase 콘솔 › 프로젝트 설정 › 내 앱 › 구성에서 <b>통째로 복사해 붙여 넣으면</b> 필요한 값만 알아서 골라 저장해요.</div><div class="btns" style="margin-top:10px"><button class="btn" id="aPaste">붙여넣기</button><button class="btn pri" id="aSave">저장하고 다시 연결</button></div><button class="lnk" id="aDef" style="background:none">기본값으로 되돌리기</button></div>
  <div class="row sw"><span id="aStat">${connected?'● Firebase 연결됨':'● 연결 안 됨'}</span><button class="btn" id="aTest">연결 확인</button></div>
- <div class="row"><button class="btn full" id="aGithub">GitHub에 올리기</button><div class="hint">파일을 선택해 저장소의 파일을 교체합니다.</div></div>
+</details>
+ <div class="row"><a class="btn full" id="aGithub" style="display:block;text-align:center;text-decoration:none" href="https://github.com/lsc571-max/talk/upload/main" target="_blank" rel="noopener noreferrer">GitHub에 올리기</a><div class="hint">교수님 저장소의 업로드 화면을 바로 엽니다.</div></div><div class="row"><button class="btn full" id="aShareApp">앱 주소 공유</button></div>
  <div class="row"><a class="btn full" style="text-decoration:none" target="_blank" href="https://console.firebase.google.com/project/${esc(cfg.projectId||'')}/database">${icon('ext')}Firebase 콘솔 바로가기</a></div>
  <div class="row"><button class="btn full" id="aFresh">최신 버전 받기 (앱 새로 받기)</button><div class="hint">GitHub에 새 파일을 올렸는데 화면이 그대로일 때 눌러요.</div></div>`);
- $('#aGithub').onclick=githubSheet;
+ $('#aShareApp').onclick=async()=>{const url=location.origin+location.pathname;if(navigator.share){try{await navigator.share({title:t('appName'),url})}catch(e){if(e.name!=='AbortError')copyText(url)}}else copyText(url)};
  $('#aStat').style.color=connected?'var(--teal)':'#E04848';
  $('#aPaste').onclick=async()=>{try{$('#aCfg').value=await navigator.clipboard.readText()}catch{toast('직접 길게 눌러 붙여 넣어 주세요')}};
  $('#aSave').onclick=()=>{const o=parseFbConfig($('#aCfg').value);if(!o){toast('databaseURL 을 찾지 못했어요');return}S.set('fbcfg',o);toast('저장했어요. 다시 연결합니다');setTimeout(()=>location.reload(),700)};
@@ -1208,43 +1216,6 @@ Object.assign(T.ja,{autoRead:'自動読み上げ',manualRead:'手動読み上げ
 Object.assign(T.en,{autoRead:'Auto read',manualRead:'Manual read',trFailed:'Translation failed',retry:'Retry',textPhrases:'Text / phrases',fullscreen:'Full screen',onlineNote:'Internet is required for interpreting. Install on your home screen if full screen is unavailable.'});
 function updateSoundUI(){const b=document.querySelector('#sndBtn');if(!b)return;const label=t(set.sound?'autoRead':'manualRead');b.innerHTML=icon(set.sound?'vol':'volx')+'<span>'+esc(label)+'</span>';b.classList.toggle('on',set.sound);b.classList.toggle('muted',!set.sound);b.setAttribute('aria-label',label);b.setAttribute('aria-pressed',String(set.sound))}
 async function fullScreen(quiet=false){if(document.fullscreenElement)return;try{if(document.documentElement.requestFullscreen){await document.documentElement.requestFullscreen();return}}catch{}if(!quiet)toast(t('onlineNote'))}
-function githubSheet(){
- const g=S.get('github',{});
- genSheet('GitHub에 올리기',`<div class="hint">수정 파일을 선택해 지정한 저장소에 올립니다. 같은 이름의 파일은 교체됩니다. GitHub Pages 배포 완료는 저장소에서 확인해 주세요.</div>
- <div class="row"><label>소유자 / 저장소</label><input class="inp" id="ghRepo" placeholder="사용자명/저장소명" value="${esc(g.repo||'')}"></div>
- <div class="row"><label>브랜치</label><input class="inp" id="ghBranch" value="${esc(g.branch||'main')}"></div>
- <div class="row"><label>업로드 폴더 (기본: 최상위)</label><input class="inp" id="ghFolder" placeholder="예: docs" value="${esc(g.folder||'')}"></div>
- <div class="row"><label>GitHub 인증 토큰</label><input class="inp" id="ghToken" type="password" autocomplete="off" spellcheck="false"><div class="hint">해당 저장소의 Contents: Read and write 권한을 가진 fine-grained 토큰을 사용하세요. 토큰은 저장하지 않습니다.</div><a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer">GitHub에서 토큰 만들기</a></div>
- <div class="row"><label>업로드할 파일</label><input class="inp" id="ghFiles" type="file" multiple accept=".html,.json,.js,.png,.svg,.ico"><div class="hint">ZIP은 먼저 압축을 풀고 파일을 선택하세요. 첫 적용은 기존 GitHub 업로드 화면에서 진행해 주세요.</div></div>
- <div class="hint" id="ghPreview" style="white-space:pre-wrap"></div><button class="btn full" id="ghCheck">업로드 위치 확인</button><button class="btn pri full" id="ghUpload" disabled style="margin-top:12px">확인한 파일 올리기</button><div class="hint" id="ghStatus" role="status" style="white-space:pre-wrap;margin-top:12px"></div>`,()=>{const t=$('#ghToken');if(t)t.value=''});
- let plan=null;
- const invalidate=()=>{plan=null;$('#ghUpload').disabled=true;$('#ghPreview').textContent=''};
- for(const id of ['ghRepo','ghBranch','ghFolder','ghFiles'])$('#'+id).onchange=invalidate;
- $('#ghCheck').onclick=()=>{
-  try{const repo=$('#ghRepo').value.trim().replace(/^https:\/\/github.com\//,'').replace(/\/$/,'');const branch=$('#ghBranch').value.trim();const folder=$('#ghFolder').value.trim().replace(/^\/+|\/+$/g,'');const files=[...$('#ghFiles').files];
-   if(!/^[\w.-]+\/[\w.-]+$/.test(repo)||!branch||!files.length)throw Error('저장소, 브랜치, 파일을 확인해 주세요.');
-   if(folder.split('/').some(x=>x==='.'||x==='..')||files.some(f=>f.size>10*1024*1024||!/^([\w.-]+)\.(html|json|js|png|svg|ico)$/i.test(f.name)))throw Error('폴더와 파일 이름을 확인해 주세요. 파일은 각각 10MB 이하만 가능합니다.');
-   if(new Set(files.map(f=>f.name)).size!==files.length)throw Error('같은 이름의 파일은 한 번만 선택해 주세요.');
-   plan={repo,branch,folder,files};S.set('github',{repo,branch,folder});$('#ghPreview').textContent=repo+' · '+branch+'\n'+files.map(f=>(folder?folder+'/':'')+f.name+' (같은 파일이 있으면 교체)').join('\n');$('#ghUpload').disabled=false;
-  }catch(e){$('#ghStatus').textContent=e.message}
- };
- $('#ghUpload').onclick=async()=>{
-  if(!plan)return;const token=$('#ghToken').value.trim();if(!token){$('#ghStatus').textContent='GitHub 인증 토큰을 입력해 주세요.';return}
-  const button=$('#ghUpload'),status=$('#ghStatus'),files=plan.files.slice(),{repo,branch,folder}=plan;let count=0;button.disabled=true;$('#ghCheck').disabled=true;
-  const headers={Accept:'application/vnd.github+json',Authorization:'Bearer '+token,'X-GitHub-Api-Version':'2022-11-28'};
-  async function request(url,options={}){const c=new AbortController(),timer=setTimeout(()=>c.abort(),30000);try{return await fetch(url,{...options,headers:{...headers,...options.headers},signal:c.signal})}finally{clearTimeout(timer)}}
-  try{
-   for(const f of files){status.textContent=`${count+1}/${files.length} · ${f.name} 올리는 중…`;const path=(folder?folder+'/':'')+f.name;const url='https://api.github.com/repos/'+repo+'/contents/'+path.split('/').map(encodeURIComponent).join('/');const before=await request(url+'?ref='+encodeURIComponent(branch));let sha;
-    if(before.ok){const previous=await before.json();if(!previous.sha||previous.type!=='file')throw Error('대상이 파일이 아닙니다.');sha=previous.sha}else if(before.status!==404)throw Error('저장소 확인 실패 ('+before.status+')');
-    const bytes=new Uint8Array(await f.arrayBuffer());let binary='';for(let i=0;i<bytes.length;i+=8192)binary+=String.fromCharCode(...bytes.subarray(i,i+8192));
-    const result=await request(url,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:'Update '+path,content:btoa(binary),branch,...(sha?{sha}:{})})});
-    if(!result.ok)throw Error('GitHub 응답 '+result.status+' — 토큰 권한, 브랜치 보호 및 파일 변경 여부를 확인해 주세요.');count++;
-   }
-   status.textContent=`${count}개 파일을 GitHub에 올렸습니다. 사이트 반영 여부는 GitHub Pages 배포 결과를 확인해 주세요.`;
-  }catch(e){status.textContent=`${count}/${files.length}개 완료. `+(e.name==='AbortError'?'응답 시간이 초과되었습니다. 저장소를 먼저 확인한 뒤 다시 시도하세요.':e.message)}finally{$('#ghToken').value='';$('#ghCheck').disabled=false;plan=null}
- };
-}
-
 /* ---------- 시작 ---------- */
 paintIcons();applyTexts();applyTheme();updateFs();renderMe();renderRooms();renderPhrases();
 fbInit();
